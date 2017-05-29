@@ -1,7 +1,7 @@
 package com.financetracker.repo
 
 import doobie.imports._
-import shapeless.{HList, :: => :::}
+import shapeless.{HList, :: => :::, HNil}
 import com.financetracker.data._
 
 trait UserRepoOp {
@@ -30,9 +30,9 @@ object UserRepoOp extends UserRepoOp {
       .update
 
   def update(id: UserId, values: HList): Update0 = (
-    Fragment.const("update users set ")
-    ++ fieldNames(values, true)
-    ++ Fragment(" where id=?", id)
+    fr"update users set"
+    ++ fieldNames(values)
+    ++ fr"where id=${id}"
   ).update
 
   def delete(id: UserId): Update0 =
@@ -42,12 +42,16 @@ object UserRepoOp extends UserRepoOp {
     sql"delete from users".update
 
   // Using only fields allowed for update here
-  private def fieldNames(list: HList, head: Boolean): Fragment = list match {
-    case (x: Password) ::: xs => Fragment(nameWithComma("password", head), x) ++ fieldNames(xs, false)
-    case (x: Role) ::: xs => Fragment(nameWithComma("role", head), x) ++ fieldNames(xs, false)
+  private def fieldNames(list: HList): Fragment = list match {
+    case (x: Password) ::: xs => 
+      fr"password=${x}" ++ maybeComma(xs) ++ fieldNames(xs)
+    case (x: Role) ::: xs => 
+      fr"role=${x}" ++ maybeComma(xs) ++ fieldNames(xs)
     case _ => Fragment.empty
   }
 
-  private def nameWithComma(name: String, head: Boolean) =
-    if (head) s"$name=?" else s", $name=?"
+  private def maybeComma(tail: HList): Fragment = tail match {
+    case HNil => Fragment.empty
+    case _ => fr","
+  }
 }
