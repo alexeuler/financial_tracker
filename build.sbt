@@ -17,6 +17,15 @@ libraryDependencies ++= Seq(
   "org.http4s" %% "http4s-blaze-server" % http4sVersion,
   "org.http4s" %% "http4s-blaze-client" % http4sVersion,
 
+  // circe (json) integration
+  "org.http4s" %% "http4s-circe" % http4sVersion,
+
+  // generic type to json derivation
+  "io.circe" %% "circe-generic" % "0.7.+",
+
+  // json string interpolation
+  "io.circe" %% "circe-literal" % "0.7.+",
+
   // Doobie (SQL ORM)
   "org.tpolecat" %% "doobie-core-cats" % doobieVersion,
   "org.tpolecat" %% "doobie-postgres-cats" % doobieVersion,
@@ -27,7 +36,7 @@ libraryDependencies ++= Seq(
   // Shapeless (generic type programming)
   "com.chuusai" %% "shapeless" % "2.3.+",
 
-    // Logging
+  // Logging
   "ch.qos.logback" % "logback-classic" % "1.1.+",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.5.+"
 )

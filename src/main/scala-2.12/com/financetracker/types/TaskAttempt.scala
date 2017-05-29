@@ -12,5 +12,8 @@ object TaskAttempt {
   def lift[A](attempt: => Attempt[A]): TaskAttempt[A] =
     apply(Task.delay(attempt))
 
+  def liftT[A](task: Task[A]): TaskAttempt[A] =
+    apply(task.attempt)
+
   def pure[A](value: => A): TaskAttempt[A] = lift(Right(value))
 }
