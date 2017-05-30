@@ -22,7 +22,7 @@ trait UserRepo {
   def deleteAll: TaskAttempt[Boolean]
 }
 
-class UserRepoImpl(userRepo: UserRepoOp, stateClient: StateClient[AppState, AppState.Event]) extends UserRepo {
+case class UserRepoImpl(userRepo: UserRepoOp, stateClient: StateClient[AppState, AppState.Event]) extends UserRepo {
 
   implicit def connectionToTaskAttempt[A](conn: ConnectionIO[A]): TaskAttempt[A] =
     for {
