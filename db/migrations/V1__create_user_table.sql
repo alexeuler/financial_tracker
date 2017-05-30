@@ -8,5 +8,3 @@ CREATE TABLE users (
   updated_at TIMESTAMP NOT NULL DEFAULT current_timestamp,
   constraint uniq_id_and_provider unique (provider, identity)
 );
-
-CREATE TRIGGER update_user_timestamp BEFORE UPDATE ON users FOR EACH ROW EXECUTE PROCEDURE update_modified_column();

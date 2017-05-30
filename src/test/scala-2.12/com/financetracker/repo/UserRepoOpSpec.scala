@@ -84,12 +84,16 @@ class UserRepoOpSpec extends FunSpec with Matchers with BeforeAndAfter with Prop
         _ <- dbWithUsers
         userBefore <- UserRepoOp.find(Provider.Email, Identity("2@gmail.com")).unique
         _ <- UserRepoOp.update(userBefore.id, Role.User :: Password("new_pass") :: HNil).run
-        userAfter <- UserRepoOp.find(Provider.Email, Identity("2@gmail.com")).option
-      } yield userAfter
+        userAfter <- UserRepoOp.find(Provider.Email, Identity("2@gmail.com")).unique
+      } yield (userBefore, userAfter)
 
-      val res = query.transact(transactor).unsafePerformIO
+      val (before, after) = query.transact(transactor).unsafePerformIO
 
-      res should matchPattern { case Some(User(_, _, _, Password("new_pass"), Role.User, _, _ )) => }
+      after.role shouldBe Role.User
+      after.password shouldBe Password("new_pass")
+      after.password should not equal (before.password)
+      after.role should not equal (before.role)
+      after.updatedAt should not equal (before.updatedAt)
     }
   }
 

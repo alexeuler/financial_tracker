@@ -1,1 +1,6 @@
-flyway -configFile=dev.conf migrate
+if [ -z "$1" ]
+then
+  echo "Usage migrate <dev|test>"
+fi
+
+flyway -configFile=$1.conf migrate
