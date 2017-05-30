@@ -26,6 +26,9 @@ libraryDependencies ++= Seq(
   // json string interpolation
   "io.circe" %% "circe-literal" % "0.7.+",
 
+  // json web token encoding and decoding
+  "com.pauldijou" %% "jwt-circe" % "0.12.+",
+
   // Doobie (SQL ORM)
   "org.tpolecat" %% "doobie-core-cats" % doobieVersion,
   "org.tpolecat" %% "doobie-postgres-cats" % doobieVersion,

@@ -5,7 +5,7 @@ import io.circe.Encoder
 import java.security.MessageDigest
 import java.util.Base64
 
-case class Password private (val value: String) extends AnyVal
+case class Password private (value: String) extends AnyVal
 
 object Password {
   // Don't expose password to API (each json will have password filtered out)
