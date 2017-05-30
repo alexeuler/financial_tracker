@@ -24,7 +24,7 @@ object Main extends StreamApp {
       env <- Env.createEnv(EnvType.Development)
     } yield {
       BlazeBuilder.bindHttp(env.http.port, env.http.host)
-        .mountService(Endpoint.serviceFromEndpoint(api.v1.UsersEndpoint.handler), "/api/v1/users")
+        .mountService(Endpoint.serviceFromEndpoint(api.v1.UsersEndpoint.handler(env.userService)), "/api/v1/users")
         .serve
     }
 

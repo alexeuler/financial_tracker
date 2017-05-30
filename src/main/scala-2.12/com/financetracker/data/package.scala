@@ -14,6 +14,8 @@ package object data {
     Encoder.encodeString.contramap[Provider](_.toString)
   implicit val encodeRole: Encoder[Role] =
     Encoder.encodeString.contramap[Role](_.toString)
+  implicit val encodeTimestamp: Encoder[Timestamp] =
+    Encoder.encodeString.contramap[Timestamp](_.toString)
 
   implicit val providerMeta: Meta[Provider] =
     Meta[String].xmap[Provider](
@@ -25,7 +27,4 @@ package object data {
       str => Role.values.find(_.toString == str).orNull,
       _.toString
     )
-
-  implicit val encodeTimestamp: Encoder[Timestamp] =
-    Encoder.encodeString.contramap[Timestamp](_.toString)
 }
