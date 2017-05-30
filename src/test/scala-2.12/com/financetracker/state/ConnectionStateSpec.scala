@@ -1,12 +1,13 @@
 package com.financetracker.state
 
-import app.helpers.AsyncPropertyChecks
 import fs2.{Strategy, Task}
 import org.scalacheck.Gen
 import org.scalatest._
 import org.scalatest.prop.PropertyChecks
 import ConnectionState._
 import cats.data.EitherT
+
+import com.financetracker.helpers.AsyncPropertyChecks
 
 class ConnectionStateSpec extends FunSpec with AsyncPropertyChecks with Matchers with BeforeAndAfter with PropertyChecks {
   var closeCounter = 0

@@ -1,4 +1,4 @@
-package app.helpers
+package com.financetracker.helpers
 
 import fs2.Task
 import org.scalacheck.{Arbitrary, Gen}
@@ -6,8 +6,9 @@ import org.scalatest.prop.PropertyChecks
 
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
-
 import scala.language.implicitConversions
+
+import com.financetracker.types._
   
   trait AsyncPropertyChecks {
     propertyChecks: PropertyChecks =>
@@ -16,6 +17,14 @@ import scala.language.implicitConversions
     private implicit def taskToFuture[A](task: Task[A]): Future[A] = task.unsafeRunAsyncFuture()
 
     def async[A](task: Task[A]): A = Await.result(task.unsafeRunAsyncFuture, timeout)
+
+    def async[A](taskAttempt: TaskAttempt[A]): A = {
+      val future = taskAttempt.value.map {
+          case Left(e) => throw e
+          case Right(x) => x
+        }.unsafeRunAsyncFuture
+      Await.result(future, timeout)
+    }
 
     def forAllAsync[A, R](f: A => Task[R])(implicit arbA: Arbitrary[A]): Unit =
       forAll { a: A => Await.result(f(a), timeout) }
