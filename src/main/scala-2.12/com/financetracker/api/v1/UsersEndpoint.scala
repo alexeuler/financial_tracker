@@ -29,12 +29,12 @@ object UsersEndpoint {
       case GET -> Root / IntVar(userId) =>
         for {
           maybeUser <- userService.findById(UserId(userId))
-          user <- maybeUser.fold[TaskAttempt[User]](TaskAttempt.fail(EntityNotFound))(u => TaskAttempt.pure(u))
+          user <- maybeUser.fold[TaskAttempt[User]](TaskAttempt.fail(NotFoundException))(u => TaskAttempt.pure(u))
         } yield user.asJson
 
       case req@POST -> Root =>
         for {
-          form <- Endpoint.requestToJson[UserForm](req)
+          form <- TaskAttempt.liftT(req.as(jsonOf[UserForm]))
           user <- userService.create(Provider.Email, Identity(form.email), Password(form.password), Role.Unconfirmed)
         } yield user.asJson
 
