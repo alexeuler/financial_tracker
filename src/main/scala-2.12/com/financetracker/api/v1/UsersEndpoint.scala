@@ -5,8 +5,6 @@ import org.http4s.dsl._
 import org.http4s.circe._
 import io.circe._
 import io.circe.syntax._
-import io.circe.generic.auto._
-import io.circe.syntax._
 import fs2.Task
 import fs2.interop.cats._
 import scala.language.implicitConversions
@@ -39,3 +37,9 @@ object UsersEndpoint {
 }
 
 case class UserForm(email: String, password: String)
+
+object UserForm {
+  import io.circe.generic.semiauto._
+  implicit val encoder: Encoder[UserForm] = deriveEncoder[UserForm]
+  implicit val decoder: Decoder[UserForm] = deriveDecoder[UserForm]
+}
