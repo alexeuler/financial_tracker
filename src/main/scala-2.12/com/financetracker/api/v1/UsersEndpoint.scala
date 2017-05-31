@@ -19,20 +19,29 @@ object UsersEndpoint {
   val handler: UserService => PureEndpoint = 
     userService => {
       case GET -> Root / "ping" =>
-        TaskAttempt.liftT(Ok("pong from users"))
+        TaskAttempt.pure("pong from users".asJson)
 
       case GET -> Root =>
         for {
           users <- userService.all
-          resp <- TaskAttempt.liftT(Ok(users.asJson))
-        } yield resp
+        } yield users.asJson
+
+      case GET -> Root / IntVar(userId) =>
+        for {
+          maybeUser <- userService.findById(UserId(userId))
+          user <- maybeUser.fold[TaskAttempt[User]](TaskAttempt.fail(EntityNotFound))(u => TaskAttempt.pure(u))
+        } yield user.asJson
 
       case req@POST -> Root =>
         for {
           form <- Endpoint.requestToJson[UserForm](req)
           user <- userService.create(Provider.Email, Identity(form.email), Password(form.password), Role.Unconfirmed)
-          resp <- TaskAttempt.liftT(Ok(user.asJson))
-        } yield resp
+        } yield user.asJson
+
+      case DELETE -> Root / IntVar(userId) =>
+        for {
+          res <- userService.delete(UserId(userId))
+        } yield res.asJson
     }
 }
 

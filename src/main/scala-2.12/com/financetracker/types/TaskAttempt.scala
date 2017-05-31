@@ -12,6 +12,8 @@ object TaskAttempt {
   def lift[A](attempt: => Attempt[A]): TaskAttempt[A] =
     apply(Task.delay(attempt))
 
+  def fail[A](error: Throwable): TaskAttempt[A] = lift[A](Left(error))
+
   def liftT[A](task: Task[A]): TaskAttempt[A] =
     apply(task.attempt)
 
