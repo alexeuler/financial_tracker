@@ -49,6 +49,6 @@ case class UserForm(email: String, password: String)
 
 object UserForm {
   import io.circe.generic.semiauto._
-  implicit val encoder: Encoder[UserForm] = deriveEncoder[UserForm]
-  implicit val decoder: Decoder[UserForm] = deriveDecoder[UserForm]
+  implicit val encoder: Encoder[UserForm] = deriveEncoder
+  implicit val decoder: Decoder[UserForm] = deriveDecoder
 }
