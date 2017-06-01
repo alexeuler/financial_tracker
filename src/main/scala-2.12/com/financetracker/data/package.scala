@@ -3,7 +3,8 @@ package com.financetracker
 import java.sql.Timestamp
 
 import doobie.imports.Meta
-import io.circe.Encoder
+import io.circe._
+import scala.util.Try
 
 
 package object data {
@@ -12,8 +13,12 @@ package object data {
 
   implicit val encodeProvider: Encoder[Provider] =
     Encoder.encodeString.contramap[Provider](_.toString)
+  implicit val decodeProvider: Decoder[Provider] = Decoder.enumDecoder(Provider)
+
   implicit val encodeRole: Encoder[Role] =
     Encoder.encodeString.contramap[Role](_.toString)
+  implicit val decodeRole: Decoder[Role] = Decoder.enumDecoder(Role)
+
   implicit val encodeTimestamp: Encoder[Timestamp] =
     Encoder.encodeString.contramap[Timestamp](_.toString)
 
