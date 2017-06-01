@@ -44,6 +44,12 @@ object ApiException {
         ("message", "Unauthorized".asJson)
       )
 
+    case OutdatedTokenApiException =>
+      Json.obj(
+        ("code", 301.asJson), 
+        ("message", "Token has expired".asJson)
+      )
+
     case _ => Json.obj(
       ("code", 999.asJson), 
       ("message", "Unknown error".asJson)
