@@ -35,7 +35,7 @@ object UsersEndpoint {
       case req@POST -> Root =>
         for {
           form <- TaskAttempt.liftT(req.as(jsonOf[UserForm]))
-          user <- userService.create(Provider.Email, Identity(form.email), Password(form.password), Role.Unconfirmed)
+          user <- userService.create(Provider.Email, form.email, form.password, form.role)
         } yield user.asJson
 
       case DELETE -> Root / IntVar(userId) =>
@@ -45,7 +45,7 @@ object UsersEndpoint {
     }
 }
 
-case class UserForm(email: String, password: String)
+case class UserForm(email: Identity, password: Password, role: Role)
 
 object UserForm {
   import io.circe.generic.semiauto._
