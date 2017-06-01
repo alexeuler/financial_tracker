@@ -16,6 +16,7 @@ import com.financetracker.types._
 trait SessionService {
   def login(identity: Identity, password: Password): TaskAttempt[JWToken]
   def getSessionData(token: JWToken): TaskAttempt[Session]
+  def authorize(token: JWToken, roles: Role*): TaskAttempt[Unit]
 }
 
 class SessionServiceImpl(expiration: Duration, key: String, userRepo: UserRepo) extends SessionService {
@@ -38,6 +39,13 @@ class SessionServiceImpl(expiration: Duration, key: String, userRepo: UserRepo) 
       case _ => TaskAttempt.fail(OutdatedTokenServiceException)
     }
   }
+
+  override def authorize(token: JWToken, roles: Role*): TaskAttempt[Unit] =
+    for {
+      session <- getSessionData(token)
+      role = session.role
+      _ <- if (roles.exists(_ == role)) TaskAttempt.pure(()) else TaskAttempt.fail(UnauthorizedServiceException)
+    } yield ()
 
   private val algo = JwtAlgorithm.HS256
 
