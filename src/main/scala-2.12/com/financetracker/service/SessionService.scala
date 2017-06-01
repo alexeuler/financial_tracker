@@ -35,7 +35,7 @@ class SessionServiceImpl(expiration: Duration, key: String, userRepo: UserRepo) 
     } yield sessionData
 
     maybeSession.fold[TaskAttempt[Session]](TaskAttempt.fail(UnauthorizedServiceException)) {
-      case session@Session(_, _, _, expires) if expires < (new Date()).getTime => TaskAttempt.pure(session)
+      case session@Session(_, _, _, expires) if expires > (new Date()).getTime => TaskAttempt.pure(session)
       case _ => TaskAttempt.fail(OutdatedTokenServiceException)
     }
   }

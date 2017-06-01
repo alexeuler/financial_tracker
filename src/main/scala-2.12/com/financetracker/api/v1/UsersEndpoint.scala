@@ -16,30 +16,38 @@ import com.financetracker.data._
 
 object UsersEndpoint {
 
-  val handler: UserService => PureEndpoint = 
-    userService => {
+  val handler: SessionService => UserService => PureEndpoint = 
+    sessionService => userService => {
       case GET -> Root / "ping" =>
         TaskAttempt.pure("pong from users".asJson)
 
-      case GET -> Root =>
+      case req @ GET -> Root =>
         for {
+          token <- Endpoint.getAuthToken(req)
+          _ <- sessionService.authorize(token, Role.Admin, Role.Manager)
           users <- userService.all
         } yield users.asJson
 
       case GET -> Root / IntVar(userId) =>
         for {
+          token <- Endpoint.getAuthToken(req)
+          _ <- sessionService.authorize(token, Role.Admin, Role.Manager)
           maybeUser <- userService.findById(UserId(userId))
           user <- maybeUser.fold[TaskAttempt[User]](TaskAttempt.fail(NotFoundException))(u => TaskAttempt.pure(u))
         } yield user.asJson
 
       case req@POST -> Root =>
         for {
+          token <- Endpoint.getAuthToken(req)
+          _ <- sessionService.authorize(token, Role.Admin, Role.Manager)
           form <- TaskAttempt.liftT(req.as(jsonOf[UserForm]))
           user <- userService.create(Provider.Email, form.email, form.password, form.role)
         } yield user.asJson
 
       case DELETE -> Root / IntVar(userId) =>
         for {
+          token <- Endpoint.getAuthToken(req)
+          _ <- sessionService.authorize(token, Role.Admin, Role.Manager)
           res <- userService.delete(UserId(userId))
         } yield res.asJson
     }
