@@ -12,10 +12,9 @@ trait UserService {
   def create(provider: Provider, identity: Identity, password: Password, role: Role): TaskAttempt[User]
   def findById(userId: UserId): TaskAttempt[Option[User]]
   def delete(id: UserId): TaskAttempt[Boolean]
-  def login(provider: Provider, identity: Identity, password: Password): TaskAttempt[Option[JWToken]]
 }
 
-case class UserServiceImpl(userRepo: UserRepo, jwtService: JWTService) extends UserService {
+case class UserServiceImpl(userRepo: UserRepo) extends UserService {
   override def all: TaskAttempt[List[User]] = userRepo.all
   override def create(provider: Provider, identity: Identity, password: Password, role: Role): TaskAttempt[User] =
     userRepo.create(provider, identity, password, role)
@@ -24,15 +23,4 @@ case class UserServiceImpl(userRepo: UserRepo, jwtService: JWTService) extends U
     userRepo.findById(userId)
 
   override def delete(id: UserId): TaskAttempt[Boolean] = userRepo.delete(id)
-
-  override def login(provider: Provider, identity: Identity, password: Password): TaskAttempt[Option[JWToken]] =
-    for {
-      maybeUser <- userRepo.find(provider, identity)
-    } yield tryIssueToken(maybeUser, password)
-
-  private def tryIssueToken(maybeUser: Option[User], password: Password): Option[JWToken] =
-    for {
-      user <- maybeUser
-      if user.password == password
-    } yield jwtService.createJWT(user)
 }

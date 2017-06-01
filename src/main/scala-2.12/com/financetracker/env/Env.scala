@@ -18,17 +18,18 @@ case class Env(
   doobie: DoobieEnv,
   http: HttpEnv,
   userService: UserService,
+  sessionService: SessionService,
   logger: Logger
 )
 
 object Env {
   def createEnv(envType: EnvType): ReaderT[Attempt, Config, Env] = for {
     doobie <- DoobieEnv.createEnv
-    jwtService <- JWTEnv.createJWTService
     http <- HttpEnv.createEnv
     logger = Logger("com.financetracker")
     stateClient = StateClientImpl(AppState.initial, AppState.fold(doobie)(logger))
     userRepo = UserRepoImpl(UserRepoOp, stateClient)
-    userService = UserServiceImpl(userRepo, jwtService)
-  } yield Env(stateClient, doobie, http, userService, logger)
+    sessionService <- SessionEnv.createSessionService(userRepo)
+    userService = UserServiceImpl(userRepo)
+  } yield Env(stateClient, doobie, http, userService, sessionService, logger)
 }

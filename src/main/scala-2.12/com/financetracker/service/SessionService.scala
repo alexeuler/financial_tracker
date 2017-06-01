@@ -4,20 +4,29 @@ import pdi.jwt.{JwtAlgorithm, JwtCirce}
 import io.circe._
 import io.circe.generic.auto._
 import io.circe.syntax._
+import fs2.interop.cats._
 import java.util.Date
 
 import scala.concurrent.duration._
 import com.financetracker.repo._
 import com.financetracker.env._
 import com.financetracker.data._
+import com.financetracker.types._
 
-trait JWTService {
-  def createJWT(user: User): JWToken
+trait SessionService {
+  def login(identity: Identity, password: Password): TaskAttempt[JWToken]
 }
 
-class JWTServiceImpl(expiration: Duration, key: String) extends JWTService {
+class SessionServiceImpl(expiration: Duration, key: String, userRepo: UserRepo) extends SessionService {
 
-  def createJWT(user: User): JWToken = {
+  override def login(id: Identity, password: Password): TaskAttempt[JWToken] =
+    for {
+      maybeUser <- userRepo.find(Provider.Email, id)
+      user <- maybeUser.fold[TaskAttempt[User]](TaskAttempt.fail(UnauthorizedServiceException))(TaskAttempt.pure(_))
+      _ <- if (password == user.password) TaskAttempt.pure(()) else TaskAttempt.fail(UnauthorizedServiceException)
+    } yield createJWT(user)
+
+  private def createJWT(user: User): JWToken = {
     val now = new Date().getTime
     val exp = new Date(now + expiration.toMillis)
 

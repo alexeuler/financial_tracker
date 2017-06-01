@@ -40,7 +40,7 @@ object ApiException {
       case e: ApiException => (e, None)
       case org.http4s.MalformedMessageBodyFailure(message, err) => (MalformedJsonException, Some(s"Malformed Json: $message: $err"))
       case org.http4s.InvalidMessageBodyFailure(message, e) => (BadTypeJsonException, Some(s"Bad type Json: $message: $e"))
-      case e: io.circe.Error => (UnknownJsonException, Some(s"Unknown Json failure: $e"))
+      case e: org.http4s.DecodeFailure => (UnknownJsonException, Some(s"Unknown Json failure: $e"))
       case e => (UnknownException, Some(s"Unknown failure: $e"))
   }
 }
