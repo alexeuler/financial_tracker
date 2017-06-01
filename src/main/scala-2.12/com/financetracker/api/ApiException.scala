@@ -5,9 +5,13 @@ import io.circe.syntax._
 
 sealed trait ApiException extends Exception
 case object NotFoundException extends ApiException
+
 case object MalformedJsonException extends ApiException
 case object BadTypeJsonException extends ApiException
 case object UnknownJsonException extends ApiException
+
+case object UnauthorizedApiException extends ApiException
+
 case object UnknownException extends ApiException
 
 
@@ -30,6 +34,13 @@ object ApiException {
         ("code", 299.asJson), 
         ("message", "Unknown error while converting Json".asJson)
       )
+
+    case UnauthorizedApiException =>
+      Json.obj(
+        ("code", 300.asJson), 
+        ("message", "Unauthorized".asJson)
+      )
+
     case _ => Json.obj(
       ("code", 999.asJson), 
       ("message", "Unknown error".asJson)
