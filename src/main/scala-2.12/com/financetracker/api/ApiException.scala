@@ -3,6 +3,8 @@ package com.financetracker.api
 import io.circe._
 import io.circe.syntax._
 
+import com.financetracker.service._
+
 sealed trait ApiException extends Exception
 case object NotFoundException extends ApiException
 
@@ -11,6 +13,7 @@ case object BadTypeJsonException extends ApiException
 case object UnknownJsonException extends ApiException
 
 case object UnauthorizedApiException extends ApiException
+case object OutdatedTokenApiException extends ApiException
 
 case object UnknownException extends ApiException
 
@@ -52,7 +55,8 @@ object ApiException {
       case org.http4s.MalformedMessageBodyFailure(message, err) => (MalformedJsonException, Some(s"Malformed Json: $message: $err"))
       case org.http4s.InvalidMessageBodyFailure(message, e) => (BadTypeJsonException, Some(s"Bad type Json: $message: $e"))
       case e: org.http4s.DecodeFailure => (UnknownJsonException, Some(s"Unknown Json failure: $e"))
+      case UnauthorizedServiceException => (UnauthorizedApiException, None)
+      case OutdatedTokenServiceException => (OutdatedTokenApiException, None)
       case e => (UnknownException, Some(s"Unknown failure: $e"))
   }
 }
-
