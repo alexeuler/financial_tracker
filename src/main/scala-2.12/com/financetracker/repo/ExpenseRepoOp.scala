@@ -12,6 +12,7 @@ trait ExpenseRepoOp {
     amount: Amount, 
     occuredAt: OccuredAt, 
     description: Description,
+    userId: UserId,
     comment: Option[Comment] = None
   ): Update0
   def update(id: ExpenseId, values: HList): Update0
@@ -27,9 +28,10 @@ object ExpenseRepoOp extends ExpenseRepoOp {
     amount: Amount, 
     occuredAt: OccuredAt, 
     description: Description,
+    userId: UserId,
     comment: Option[Comment] = None
   ): Update0 =
-    sql"insert into expenses (amount, occured_at, description, comment) values ($amount, $occuredAt, $description, $comment)".update
+    sql"insert into expenses (amount, occured_at, description, user_id, comment) values ($amount, $occuredAt, $description, $userId, $comment)".update
 
   def update(id: ExpenseId, values: HList): Update0 =
     (

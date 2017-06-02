@@ -9,6 +9,7 @@ case class Expense(
   occuredAt: OccuredAt,
   description: Description,
   comment: Option[Comment],
+  userId: UserId,
   createdAt: Timestamp,
   updatedAt: Timestamp
 )
