@@ -7,13 +7,13 @@ import java.sql.Timestamp
 import java.util.Date
 
 trait ExpenseRepoOp {
-  def all: Query0[Expense]
+  def all(userId: UserId): Query0[Expense]
   def create(
     amount: Amount, 
-    occuredAt: OccuredAt, 
     description: Description,
-    userId: UserId,
-    comment: Option[Comment] = None
+    comment: Option[Comment],
+    occuredAt: OccuredAt, 
+    userId: UserId
   ): Update0
   def update(id: ExpenseId, values: HList): Update0
   def delete(id: ExpenseId): Update0
@@ -21,15 +21,15 @@ trait ExpenseRepoOp {
 }
 
 object ExpenseRepoOp extends ExpenseRepoOp {
-  def all: Query0[Expense] =
-    sql"select * from expenses".query[Expense]
+  def all(userId: UserId): Query0[Expense] =
+    sql"select * from expenses where user_id=$userId".query[Expense]
 
   def create(
     amount: Amount, 
-    occuredAt: OccuredAt, 
     description: Description,
-    userId: UserId,
-    comment: Option[Comment] = None
+    comment: Option[Comment],
+    occuredAt: OccuredAt, 
+    userId: UserId
   ): Update0 =
     sql"insert into expenses (amount, occured_at, description, user_id, comment) values ($amount, $occuredAt, $description, $userId, $comment)".update
 

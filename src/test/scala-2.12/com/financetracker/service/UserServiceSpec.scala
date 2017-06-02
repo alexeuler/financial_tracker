@@ -22,62 +22,62 @@ import com.financetracker.types._
 
 class UserServiceSpec extends FunSpec with Matchers with BeforeAndAfter with AsyncPropertyChecks with PropertyChecks with MockFactory {
 
-  val mockToken = JWToken("token")
-  val mockUser = User(
-    UserId(1),
-    Provider.Email,
-    Identity("123@gmail.com"),
-    Password("123"),
-    Role.Unconfirmed,
-    new Timestamp(0),
-    new Timestamp(0)
-  )
-  val mockJWTService = stub[JWTService]
-  (mockJWTService.createJWT _).when(mockUser).returns(mockToken)
+  // val mockToken = JWToken("token")
+  // val mockUser = User(
+  //   UserId(1),
+  //   Provider.Email,
+  //   Identity("123@gmail.com"),
+  //   Password("123"),
+  //   Role.User,
+  //   new Timestamp(0),
+  //   new Timestamp(0)
+  // )
+  // val mockJWTService = stub[JWTService]
+  // (mockJWTService.createJWT _).when(mockUser).returns(mockToken)
 
-  describe("login") {
-    describe("user exists and passwords match") {
-      it("returns some token") {
-        async {
-          val mockUserRepo = stub[UserRepo]
-          (mockUserRepo.find _).when(mockUser.provider, mockUser.identity).returns(TaskAttempt.pure(Option(mockUser)))
-          val userService = UserServiceImpl(mockUserRepo, mockJWTService)
+  // describe("login") {
+  //   describe("user exists and passwords match") {
+  //     it("returns some token") {
+  //       async {
+  //         val mockUserRepo = stub[UserRepo]
+  //         (mockUserRepo.find _).when(mockUser.provider, mockUser.identity).returns(TaskAttempt.pure(Option(mockUser)))
+  //         val userService = UserServiceImpl(mockUserRepo, mockJWTService)
 
-          userService
-            .login(mockUser.provider, mockUser.identity, mockUser.password)
-            .map(value => value shouldBe Some(mockToken))
-            .value
-        }
-      }
-    }
+  //         userService
+  //           .login(mockUser.provider, mockUser.identity, mockUser.password)
+  //           .map(value => value shouldBe Some(mockToken))
+  //           .value
+  //       }
+  //     }
+  //   }
 
-    describe("user doesn't exist") {
-      it("returns None") {
-        async {
-          val mockUserRepo = stub[UserRepo]
-          (mockUserRepo.find _).when(mockUser.provider, mockUser.identity).returns(TaskAttempt.pure(None))
-          val userService = UserServiceImpl(mockUserRepo, mockJWTService)
+  //   describe("user doesn't exist") {
+  //     it("returns None") {
+  //       async {
+  //         val mockUserRepo = stub[UserRepo]
+  //         (mockUserRepo.find _).when(mockUser.provider, mockUser.identity).returns(TaskAttempt.pure(None))
+  //         val userService = UserServiceImpl(mockUserRepo, mockJWTService)
 
-          userService
-            .login(mockUser.provider, mockUser.identity, mockUser.password)
-            .map(value => value shouldBe None)
-        }
-      }
-    }
+  //         userService
+  //           .login(mockUser.provider, mockUser.identity, mockUser.password)
+  //           .map(value => value shouldBe None)
+  //       }
+  //     }
+  //   }
 
-    describe("user exists, but password doesn't match'") {
-      it("returns None") {
-        async {
-          val mockUserRepo = stub[UserRepo]
-          (mockUserRepo.find _).when(mockUser.provider, mockUser.identity).returns(TaskAttempt.pure(Option(mockUser)))
-          val userService = UserServiceImpl(mockUserRepo, mockJWTService)
+  //   describe("user exists, but password doesn't match'") {
+  //     it("returns None") {
+  //       async {
+  //         val mockUserRepo = stub[UserRepo]
+  //         (mockUserRepo.find _).when(mockUser.provider, mockUser.identity).returns(TaskAttempt.pure(Option(mockUser)))
+  //         val userService = UserServiceImpl(mockUserRepo, mockJWTService)
 
-          userService
-            .login(mockUser.provider, mockUser.identity, Password("Invalid password"))
-            .map(value => value shouldBe None)
-        }
-      }
-    }
+  //         userService
+  //           .login(mockUser.provider, mockUser.identity, Password("Invalid password"))
+  //           .map(value => value shouldBe None)
+  //       }
+  //     }
+  //   }
 
-  }
+  // }
 }

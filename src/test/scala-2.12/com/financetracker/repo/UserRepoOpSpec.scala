@@ -17,9 +17,10 @@ class UserRepoOpSpec extends FunSpec with Matchers with BeforeAndAfter with Prop
   val transactor = lightTransactor
 
   val dbWithUsers: ConnectionIO[Unit] = for {
+        _ <- ExpenseRepoOp.deleteAll.run
         _ <- UserRepoOp.deleteAll.run
-        _ <- UserRepoOp.create(Provider.Email, Identity("1@gmail.com"), Password("password1"), Role.Unconfirmed).run
-        _ <- UserRepoOp.create(Provider.Email, Identity("2@gmail.com"), Password("password2"), Role.Unconfirmed).run
+        _ <- UserRepoOp.create(Provider.Email, Identity("1@gmail.com"), Password("password1"), Role.User).run
+        _ <- UserRepoOp.create(Provider.Email, Identity("2@gmail.com"), Password("password2"), Role.User).run
   } yield (())
 
   describe("all") {
@@ -69,7 +70,7 @@ class UserRepoOpSpec extends FunSpec with Matchers with BeforeAndAfter with Prop
   }
   
   describe("create") {
-    it("typechecks") { check(UserRepoOp.create(Provider.Email, Identity("123@gmail.com"), Password("password"), Role.Unconfirmed)) }
+    it("typechecks") { check(UserRepoOp.create(Provider.Email, Identity("123@gmail.com"), Password("password"), Role.User)) }
 
     it("creates a user") { 
       // do nothing here since in essence this was tested by cases above 
@@ -77,19 +78,19 @@ class UserRepoOpSpec extends FunSpec with Matchers with BeforeAndAfter with Prop
   }
 
   describe("update") {
-    it("typechecks") { check(UserRepoOp.update(UserId(1), Password("new_pass") :: Role.Unconfirmed :: HNil )) }
+    it("typechecks") { check(UserRepoOp.update(UserId(1), Password("new_pass") :: Role.User :: HNil )) }
 
     it("updated fields for user") {
       val query = for {
         _ <- dbWithUsers
         userBefore <- UserRepoOp.find(Provider.Email, Identity("2@gmail.com")).unique
-        _ <- UserRepoOp.update(userBefore.id, Role.User :: Password("new_pass") :: HNil).run
+        _ <- UserRepoOp.update(userBefore.id, Role.Manager :: Password("new_pass") :: HNil).run
         userAfter <- UserRepoOp.find(Provider.Email, Identity("2@gmail.com")).unique
       } yield (userBefore, userAfter)
 
       val (before, after) = query.transact(transactor).unsafePerformIO
 
-      after.role shouldBe Role.User
+      after.role shouldBe Role.Manager
       after.password shouldBe Password("new_pass")
       after.password should not equal (before.password)
       after.role should not equal (before.role)

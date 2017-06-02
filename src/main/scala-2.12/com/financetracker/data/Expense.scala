@@ -6,9 +6,9 @@ import io.circe._
 case class Expense(
   id: ExpenseId,
   amount: Amount,
-  occuredAt: OccuredAt,
   description: Description,
   comment: Option[Comment],
+  occuredAt: OccuredAt,
   userId: UserId,
   createdAt: Timestamp,
   updatedAt: Timestamp
