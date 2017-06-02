@@ -28,7 +28,7 @@ object UsersEndpoint {
           users <- userService.all
         } yield users.asJson
 
-      case GET -> Root / IntVar(userId) =>
+      case req @ GET -> Root / IntVar(userId) =>
         for {
           token <- Endpoint.getAuthToken(req)
           _ <- sessionService.authorize(token, Role.Admin, Role.Manager)
@@ -36,7 +36,7 @@ object UsersEndpoint {
           user <- maybeUser.fold[TaskAttempt[User]](TaskAttempt.fail(NotFoundException))(u => TaskAttempt.pure(u))
         } yield user.asJson
 
-      case req@POST -> Root =>
+      case req @ POST -> Root =>
         for {
           token <- Endpoint.getAuthToken(req)
           _ <- sessionService.authorize(token, Role.Admin, Role.Manager)
@@ -44,7 +44,7 @@ object UsersEndpoint {
           user <- userService.create(Provider.Email, form.email, form.password, form.role)
         } yield user.asJson
 
-      case DELETE -> Root / IntVar(userId) =>
+      case req @ DELETE -> Root / IntVar(userId) =>
         for {
           token <- Endpoint.getAuthToken(req)
           _ <- sessionService.authorize(token, Role.Admin, Role.Manager)
