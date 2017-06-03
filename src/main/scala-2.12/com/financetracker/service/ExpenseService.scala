@@ -9,8 +9,7 @@ import com.financetracker.data._
 import com.financetracker.types._
 
 trait ExpenseService {
-  def all(userId: UserId): TaskAttempt[List[Expense]]
-  def find(expenseId: ExpenseId): TaskAttempt[Option[Expense]]
+  def all(userId: UserId, session: Session): TaskAttempt[List[Expense]]
   def create(
     amount: Amount, 
     description: Description,
@@ -18,13 +17,14 @@ trait ExpenseService {
     occuredAt: OccuredAt, 
     userId: UserId
   ): TaskAttempt[Expense]
-  def update(id: ExpenseId, values: HList): TaskAttempt[Expense]
-  def delete(id: ExpenseId): TaskAttempt[Boolean]
+  def update(id: ExpenseId, values: HList, session: Session): TaskAttempt[Expense]
+  def delete(id: ExpenseId, session: Session): TaskAttempt[Boolean]
 }
 
 case class ExpenseServiceImpl(expenseRepo: ExpenseRepo) extends ExpenseService {
-  def all(userId: UserId): TaskAttempt[List[Expense]] = expenseRepo.all(userId)
-  def find(expenseId: ExpenseId): TaskAttempt[Option[Expense]] = expenseRepo.find(expenseId)
+  def all(userId: UserId, session: Session): TaskAttempt[List[Expense]] = 
+    withPermissionsCheckByUserId(userId, session)(expenseRepo.all(userId))
+
   def create(
     amount: Amount, 
     description: Description,
@@ -32,6 +32,27 @@ case class ExpenseServiceImpl(expenseRepo: ExpenseRepo) extends ExpenseService {
     occuredAt: OccuredAt, 
     userId: UserId
   ): TaskAttempt[Expense] = expenseRepo.create(amount, description, comment, occuredAt, userId)
-  def update(id: ExpenseId, values: HList): TaskAttempt[Expense] = expenseRepo.update(id, values)
-  def delete(id: ExpenseId): TaskAttempt[Boolean] = expenseRepo.delete(id)
+
+  def update(id: ExpenseId, values: HList, session: Session): TaskAttempt[Expense] =
+    withPermissionsCheckByExpenseId(id, session)(expenseRepo.update(id, values))
+
+  def delete(id: ExpenseId, session: Session): TaskAttempt[Boolean] =
+    withPermissionsCheckByExpenseId(id, session)(expenseRepo.delete(id))
+  
+
+  private def isAuthorized(userId: UserId, session: Session): Boolean =
+    session match {
+      case Session(_, Role.Admin, _) | Session(_, Role.Manager, _) | Session(`userId`, Role.User, _) => true
+      case _ => false
+    }
+
+  private def withPermissionsCheckByUserId[A](userId: UserId, session: Session)(task: TaskAttempt[A]): TaskAttempt[A] =
+    if (isAuthorized(userId, session)) task else TaskAttempt.fail(UnauthorizedServiceException)
+
+  private def withPermissionsCheckByExpenseId[A](expenseId: ExpenseId, session: Session)(task: TaskAttempt[A]): TaskAttempt[A] =
+    for {
+      maybeExpense <- expenseRepo.find(expenseId)
+      expense <- maybeExpense.fold[TaskAttempt[Expense]](TaskAttempt.fail(NotFoundServiceException))(TaskAttempt.pure(_))
+      res <- withPermissionsCheckByUserId(expense.userId, session)(task)
+    } yield res
 }
