@@ -45,6 +45,11 @@ object ExpenseRepoOp extends ExpenseRepoOp {
       ++ fr"where id=${id}"
     ).update
 
+  def delete(id: ExpenseId): Update0 =
+    sql"delete from expenses where id=$id".update
+  
+  def deleteAll: Update0 =
+    sql"delete from expenses".update
 
   // Using only fields allowed for update here
   private def fieldNames(list: HList): Fragment = list match {
@@ -62,9 +67,4 @@ object ExpenseRepoOp extends ExpenseRepoOp {
     case _ ::: xs => Fragment.empty ++ fieldNames(xs)
   }
 
-  def delete(id: ExpenseId): Update0 =
-    sql"delete from expenses where id=$id".update
-  
-  def deleteAll: Update0 =
-    sql"delete from expenses".update
 }

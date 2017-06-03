@@ -138,36 +138,22 @@ class ExpenseRepoOpSpec extends FunSpec with Matchers with BeforeAndAfter with P
   }
 
 
-  // describe("delete") {
-  //   it("typechecks") { check(ExpenseRepoOp.delete(UserId(1))) }
+  describe("delete") {
+    it("typechecks") { check(ExpenseRepoOp.delete(ExpenseId(1))) }
 
-  //   it("deletes a user") {
-  //     val query = for {
-  //       _ <- dbWithUsers
-  //       userWithId <- ExpenseRepoOp.find(Provider.Email, Identity("1@gmail.com")).unique
-  //       _ <- ExpenseRepoOp.delete(userWithId.id).run
-  //       users <- ExpenseRepoOp.all.list
-  //     } yield (users)
+    it("deletes an expense") {
+      val query = for {
+        _ <- dbWithExpenses
+        user <- UserRepoOp.find(Provider.Email, Identity("1@gmail.com")).unique
+        expenses <- ExpenseRepoOp.all(user.id).list
+        expense = expenses.head
+        _ <- ExpenseRepoOp.delete(expense.id).run
+        maybeExpense <- ExpenseRepoOp.find(expense.id).option
+      } yield maybeExpense
 
-  //     val res = query.transact(transactor).unsafePerformIO
+      val res = query.transact(transactor).unsafePerformIO
 
-  //     res.map(_.identity.value) shouldBe List("2@gmail.com")
-  //   }
-  // }
-
-  // describe("deleteAll") {
-  //   it("typechecks") { check(ExpenseRepoOp.deleteAll) }
-
-  //   it("deletes a user") {
-  //     val query = for {
-  //       _ <- dbWithUsers
-  //       _ <- ExpenseRepoOp.deleteAll.run
-  //       users <- ExpenseRepoOp.all.list
-  //     } yield (users)
-
-  //     val res = query.transact(transactor).unsafePerformIO
-
-  //     res shouldBe List()
-  //   }
-  // }
+      res shouldBe empty
+    }
+  }
 }
