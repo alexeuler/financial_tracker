@@ -33,18 +33,6 @@ object Endpoint {
         }
       }
     )
-
-  def getAuthToken(request: Request): TaskAttempt[JWToken] = {
-    val maybeToken = for {
-      authHeader <- request.headers.get(Authorization)
-      token <- authHeader.value.split(" ") match {
-        case Array("Bearer", token) => Some(JWToken(token))
-        case _ => None
-      }
-    } yield token
-
-    maybeToken.fold[TaskAttempt[JWToken]](TaskAttempt.fail(UnauthorizedApiException))(TaskAttempt.pure(_))
-  }
   
   private def toJsonResponse[A](result: Option[A], error: Option[Json])(implicit encoder: Encoder[A]): Json =
     Json.obj(

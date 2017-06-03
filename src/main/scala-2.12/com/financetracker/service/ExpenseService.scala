@@ -23,7 +23,9 @@ trait ExpenseService {
 
 case class ExpenseServiceImpl(expenseRepo: ExpenseRepo) extends ExpenseService {
   def all(userId: UserId, session: Session): TaskAttempt[List[Expense]] = 
-    withPermissionsCheckByUserId(userId, session)(expenseRepo.all(userId))
+    withPermissionsCheckByUserId(userId, session)(
+      expenseRepo.all(userId)
+    )
 
   def create(
     amount: Amount, 
@@ -34,10 +36,14 @@ case class ExpenseServiceImpl(expenseRepo: ExpenseRepo) extends ExpenseService {
   ): TaskAttempt[Expense] = expenseRepo.create(amount, description, comment, occuredAt, userId)
 
   def update(id: ExpenseId, values: HList, session: Session): TaskAttempt[Expense] =
-    withPermissionsCheckByExpenseId(id, session)(expenseRepo.update(id, values))
+    withPermissionsCheckByExpenseId(id, session)(
+      expenseRepo.update(id, values)
+    )
 
   def delete(id: ExpenseId, session: Session): TaskAttempt[Boolean] =
-    withPermissionsCheckByExpenseId(id, session)(expenseRepo.delete(id))
+    withPermissionsCheckByExpenseId(id, session)(
+      expenseRepo.delete(id)
+    )
   
 
   private def isAuthorized(userId: UserId, session: Session): Boolean =

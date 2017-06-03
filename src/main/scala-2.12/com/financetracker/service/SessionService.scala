@@ -1,5 +1,7 @@
 package com.financetracker.service
 
+import org.http4s._
+import org.http4s.headers.Authorization
 import pdi.jwt.{JwtAlgorithm, JwtCirce}
 import io.circe._
 import io.circe.syntax._
@@ -15,20 +17,37 @@ import com.financetracker.types._
 
 trait SessionService {
   def login(identity: Identity, password: Password): TaskAttempt[JWToken]
-  def getSessionData(token: JWToken): TaskAttempt[Session]
-  def authorize(token: JWToken, roles: Role*): TaskAttempt[Unit]
+  def getSessionData(req: Request): TaskAttempt[Session]
 }
 
 class SessionServiceImpl(expiration: Duration, key: String, userRepo: UserRepo) extends SessionService {
 
-  override def login(id: Identity, password: Password): TaskAttempt[JWToken] =
+  def login(id: Identity, password: Password): TaskAttempt[JWToken] =
     for {
       maybeUser <- userRepo.find(Provider.Email, id)
       user <- maybeUser.fold[TaskAttempt[User]](TaskAttempt.fail(UnauthorizedServiceException))(TaskAttempt.pure(_))
       _ <- if (password == user.password) TaskAttempt.pure(()) else TaskAttempt.fail(UnauthorizedServiceException)
     } yield createJWT(user)
 
-  override def getSessionData(token: JWToken): TaskAttempt[Session] = {
+  def getSessionData(req: Request): TaskAttempt[Session] =
+    for {
+      token <- getAuthToken(req)
+      session <- getSessionDataFromToken(token)
+    } yield session
+
+  private def getAuthToken(request: Request): TaskAttempt[JWToken] = {
+    val maybeToken = for {
+      authHeader <- request.headers.get(Authorization)
+      token <- authHeader.value.split(" ") match {
+        case Array("Bearer", token) => Some(JWToken(token))
+        case _ => None
+      }
+    } yield token
+
+    maybeToken.fold[TaskAttempt[JWToken]](TaskAttempt.fail(UnauthorizedServiceException))(TaskAttempt.pure(_))
+  }
+
+  private def getSessionDataFromToken(token: JWToken): TaskAttempt[Session] = {
     val maybeSession = for {
       json <- JwtCirce.decodeJson(token.value, key, Seq(algo)).toOption
       sessionData <- json.as[Session].toOption
@@ -39,13 +58,6 @@ class SessionServiceImpl(expiration: Duration, key: String, userRepo: UserRepo) 
       case _ => TaskAttempt.fail(OutdatedTokenServiceException)
     }
   }
-
-  override def authorize(token: JWToken, roles: Role*): TaskAttempt[Unit] =
-    for {
-      session <- getSessionData(token)
-      role = session.role
-      _ <- if (roles.exists(_ == role)) TaskAttempt.pure(()) else TaskAttempt.fail(UnauthorizedServiceException)
-    } yield ()
 
   private val algo = JwtAlgorithm.HS256
 

@@ -23,32 +23,28 @@ object UsersEndpoint {
 
       case req @ GET -> Root =>
         for {
-          token <- Endpoint.getAuthToken(req)
-          _ <- sessionService.authorize(token, Role.Admin, Role.Manager)
-          users <- userService.all
+          session <- sessionService.getSessionData(req)
+          users <- userService.all(session)
         } yield users.asJson
 
       case req @ GET -> Root / IntVar(userId) =>
         for {
-          token <- Endpoint.getAuthToken(req)
-          _ <- sessionService.authorize(token, Role.Admin, Role.Manager)
-          maybeUser <- userService.findById(UserId(userId))
+          session <- sessionService.getSessionData(req)
+          maybeUser <- userService.findById(UserId(userId), session)
           user <- maybeUser.fold[TaskAttempt[User]](TaskAttempt.fail(NotFoundException))(u => TaskAttempt.pure(u))
         } yield user.asJson
 
       case req @ POST -> Root =>
         for {
-          token <- Endpoint.getAuthToken(req)
-          _ <- sessionService.authorize(token, Role.Admin, Role.Manager)
+          session <- sessionService.getSessionData(req)
           form <- TaskAttempt.liftT(req.as(jsonOf[UserForm]))
-          user <- userService.create(Provider.Email, form.email, form.password, form.role)
+          user <- userService.create(Provider.Email, form.email, form.password, form.role, session)
         } yield user.asJson
 
       case req @ DELETE -> Root / IntVar(userId) =>
         for {
-          token <- Endpoint.getAuthToken(req)
-          _ <- sessionService.authorize(token, Role.Admin, Role.Manager)
-          res <- userService.delete(UserId(userId))
+          session <- sessionService.getSessionData(req)
+          res <- userService.delete(UserId(userId), session)
         } yield res.asJson
     }
 }
