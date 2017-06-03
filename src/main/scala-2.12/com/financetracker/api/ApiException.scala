@@ -62,6 +62,7 @@ object ApiException {
       case org.http4s.InvalidMessageBodyFailure(message, e) => (BadTypeJsonException, Some(s"Bad type Json: $message: $e"))
       case e: org.http4s.DecodeFailure => (UnknownJsonException, Some(s"Unknown Json failure: $e"))
       case UnauthorizedServiceException => (UnauthorizedApiException, None)
+      case NotFoundServiceException => (NotFoundException, None)
       case OutdatedTokenServiceException => (OutdatedTokenApiException, None)
       case e => (UnknownException, Some(s"Unknown failure: $e"))
   }
