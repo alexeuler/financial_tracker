@@ -37,9 +37,8 @@ object UsersEndpoint {
 
       case req @ POST -> Root =>
         for {
-          session <- sessionService.getSessionData(req)
           form <- TaskAttempt.liftT(req.as(jsonOf[UserForm]))
-          user <- userService.create(Provider.Email, form.email, form.password, form.role, session)
+          user <- userService.create(form.email, form.password)
         } yield user.asJson
 
       case req @ PATCH -> Root / IntVar(userId) =>

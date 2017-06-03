@@ -10,7 +10,7 @@ import com.financetracker.types._
 
 trait UserService {
   def all(session: Session): TaskAttempt[List[User]]
-  def create(provider: Provider, identity: Identity, password: Password, role: Role, session: Session): TaskAttempt[User]
+  def create(identity: Identity, password: Password): TaskAttempt[User]
   def update(id: UserId, values: HList, session: Session): TaskAttempt[User]
   def findById(userId: UserId, session: Session): TaskAttempt[Option[User]]
   def delete(id: UserId, session: Session): TaskAttempt[Boolean]
@@ -21,10 +21,8 @@ case class UserServiceImpl(userRepo: UserRepo) extends UserService {
     withPermissionsCheck(session)(
       userRepo.all
     )
-  override def create(provider: Provider, identity: Identity, password: Password, role: Role, session: Session): TaskAttempt[User] =
-    withPermissionsCheck(session)(
-      userRepo.create(provider, identity, password, role)
-    )
+  override def create(identity: Identity, password: Password): TaskAttempt[User] =
+    userRepo.create(Provider.Email, identity, password, Role.User)
 
   def update(id: UserId, values: HList, session: Session): TaskAttempt[User] =
     withPermissionsCheckForUpdate(id, session)(
