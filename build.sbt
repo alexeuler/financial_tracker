@@ -57,14 +57,16 @@ libraryDependencies ++= Seq(
 unmanagedResourceDirectories in Compile ++= Seq(
   baseDirectory.value / "conf" / "base",
   baseDirectory.value / "conf" / "secrets",
-  baseDirectory.value / "conf" / "dev"
+  baseDirectory.value / "conf" / "dev",
+  baseDirectory.value / "public"
 )
 
 // Add .conf files to resources (specific for tests)
 unmanagedResourceDirectories in Test ++= Seq(
   baseDirectory.value / "conf" / "base",
   baseDirectory.value / "conf" / "secrets",
-  baseDirectory.value / "conf" / "test"
+  baseDirectory.value / "conf" / "test",
+  baseDirectory.value / "public"
 )
 
 // Fork JVM when running tests

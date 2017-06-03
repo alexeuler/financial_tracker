@@ -27,6 +27,7 @@ object Main extends StreamApp {
         .mountService(Endpoint.serviceFromEndpoint(api.v1.UsersEndpoint.handler(env.sessionService)(env.userService), env.logger), "/api/v1/users")
         .mountService(Endpoint.serviceFromEndpoint(api.v1.ExpensesEndpoint.handler(env.sessionService)(env.expenseService), env.logger), "/api/v1/users")
         .mountService(Endpoint.serviceFromEndpoint(api.v1.SessionsEndpoint.handler(env.sessionService), env.logger), "/api/v1/sessions")
+        .mountService(api.v1.StaticEndpoint.service, "/")
         .serve
     }
 
