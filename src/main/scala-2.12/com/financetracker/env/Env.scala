@@ -1,5 +1,6 @@
 package com.financetracker.env
 
+import doobie.imports._
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.Logger
 import fs2.Task
@@ -28,7 +29,8 @@ object Env {
     http <- HttpEnv.createEnv
     logger = Logger("com.financetracker")
     stateClient = StateClientImpl(AppState.initial, AppState.fold(doobie)(logger))
-    userRepo = UserRepoImpl(UserRepoOp, stateClient)
+    runDoobie = Repo.run(stateClient)
+    userRepo = UserRepoImpl(UserRepoOp, runDoobie)
     sessionService <- SessionEnv.createSessionService(userRepo)
     userService = UserServiceImpl(userRepo)
   } yield Env(stateClient, doobie, http, userService, sessionService, logger)
