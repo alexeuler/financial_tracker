@@ -8,6 +8,7 @@ import java.util.Date
 
 trait ExpenseRepoOp {
   def all(userId: UserId): Query0[Expense]
+  def find(expenseId: ExpenseId): Query0[Expense]
   def create(
     amount: Amount, 
     description: Description,
@@ -23,6 +24,9 @@ trait ExpenseRepoOp {
 object ExpenseRepoOp extends ExpenseRepoOp {
   def all(userId: UserId): Query0[Expense] =
     sql"select * from expenses where user_id=$userId".query[Expense]
+
+  def find(expenseId: ExpenseId): Query0[Expense] =
+    sql"select * from expenses where id=$expenseId".query[Expense]
 
   def create(
     amount: Amount, 
@@ -52,7 +56,10 @@ object ExpenseRepoOp extends ExpenseRepoOp {
       fr"description=${x}," ++ fieldNames(xs)
     case (x: Comment) ::: xs => 
       fr"comment=${x}," ++ fieldNames(xs)
-    case _ => Fragment.empty
+    case (x: UserId) ::: xs => 
+      fr"user_id=${x}," ++ fieldNames(xs)
+    case HNil => Fragment.empty
+    case _ ::: xs => Fragment.empty ++ fieldNames(xs)
   }
 
   def delete(id: ExpenseId): Update0 =

@@ -51,7 +51,8 @@ object UserRepoOp extends UserRepoOp {
       fr"password=${x}," ++ fieldNames(xs)
     case (x: Role) ::: xs => 
       fr"role=${x}," ++ fieldNames(xs)
-    case _ => Fragment.empty
+    case HNil => Fragment.empty
+    case _ ::: xs => Fragment.empty ++ fieldNames(xs)
   }
 
   private def maybeComma(tail: HList): Fragment = tail match {

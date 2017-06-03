@@ -51,7 +51,7 @@ class ExpenseRepoOpSpec extends FunSpec with Matchers with BeforeAndAfter with P
   describe("all") {
     it("typechecks") { check(ExpenseRepoOp.all(UserId(1))) }
 
-    it("returns all users") {
+    it("returns all expenses") {
       val queryForUser1 = for {
         _ <- dbWithExpenses
         user <- UserRepoOp.find(Provider.Email, Identity("1@gmail.com")).unique
@@ -64,73 +64,79 @@ class ExpenseRepoOpSpec extends FunSpec with Matchers with BeforeAndAfter with P
         expenses <- ExpenseRepoOp.all(user.id).list
       } yield expenses
 
+      val queryForUser3 = for {
+        _ <- dbWithExpenses
+        expenses <- ExpenseRepoOp.all(UserId(0)).list
+      } yield expenses
+
+
       val resForUser1 = queryForUser1.transact(transactor).unsafePerformIO
       val resForUser2 = queryForUser2.transact(transactor).unsafePerformIO
+      val resForUser3 = queryForUser3.transact(transactor).unsafePerformIO
+
 
       resForUser1.map(_.amount.value) shouldBe List(100, 50)
       resForUser2.map(_.amount.value) shouldBe List(20)
+      resForUser3.map(_.amount.value) shouldBe List()
     }
   }
 
-  // describe("find by id") {
-  //   it("typechecks") { check(ExpenseRepoOp.find(UserId(1))) }
+  describe("find") {
+    it("typechecks") { check(ExpenseRepoOp.find(ExpenseId(1))) }
 
-  //   it("finds by id") {
-  //     val query = for {
-  //       _ <- dbWithUsers
-  //       userWithId <- ExpenseRepoOp.find(Provider.Email, Identity("2@gmail.com")).unique
-  //       user <- ExpenseRepoOp.find(userWithId.id).option
-  //     } yield user
+    it("finds expense by id") {
+      val queryRes1 = for {
+        _ <- dbWithExpenses
+        user <- UserRepoOp.find(Provider.Email, Identity("1@gmail.com")).unique
+        expenses <- ExpenseRepoOp.all(user.id).list
+        expense = expenses.head
+        foundExpense <- ExpenseRepoOp.find(expense.id).unique
+      } yield (expense == foundExpense)
 
-  //     val res = query.transact(transactor).unsafePerformIO
+      queryRes1.transact(transactor).unsafePerformIO shouldBe true
+    }
+  }
 
-  //     res.map(_.identity.value) shouldBe Some("2@gmail.com")
-  //   }
-  // }
-
-  // describe("find by identity") {
-  //   it("typechecks") { check(ExpenseRepoOp.find(Provider.Email, Identity("123@gmail.com"))) }
-
-  //   it("finds by identity") {
-  //     val query = for {
-  //       _ <- dbWithUsers
-  //       user <- ExpenseRepoOp.find(Provider.Email, Identity("2@gmail.com")).option
-  //     } yield user
-
-  //     val res = query.transact(transactor).unsafePerformIO
-
-  //     res.map(_.identity.value) shouldBe Some("2@gmail.com")
-  //   }
-  // }
   
-  // describe("create") {
-  //   it("typechecks") { check(ExpenseRepoOp.create(Provider.Email, Identity("123@gmail.com"), Password("password"), Role.Unconfirmed)) }
+  describe("create") {
+    it("typechecks") { check(ExpenseRepoOp.create(Amount(200), Description("The $200 expense"), None, OccuredAt(new Timestamp(0)), UserId(0))) }
 
-  //   it("creates a user") { 
-  //     // do nothing here since in essence this was tested by cases above 
-  //   }
-  // }
+    it("creates an expense") { 
+      // do nothing here since in essence this was tested by cases above 
+    }
+  }
 
-  // describe("update") {
-  //   it("typechecks") { check(ExpenseRepoOp.update(UserId(1), Password("new_pass") :: Role.Unconfirmed :: HNil )) }
 
-  //   it("updated fields for user") {
-  //     val query = for {
-  //       _ <- dbWithUsers
-  //       userBefore <- ExpenseRepoOp.find(Provider.Email, Identity("2@gmail.com")).unique
-  //       _ <- ExpenseRepoOp.update(userBefore.id, Role.User :: Password("new_pass") :: HNil).run
-  //       userAfter <- ExpenseRepoOp.find(Provider.Email, Identity("2@gmail.com")).unique
-  //     } yield (userBefore, userAfter)
+  describe("update") {
+    it("typechecks") { check(ExpenseRepoOp.update(ExpenseId(1), Amount(300) :: Description("New desc") :: HNil )) }
 
-  //     val (before, after) = query.transact(transactor).unsafePerformIO
+    it("updates fields for expense that are allowed to update and ignores other fields") {
+      val currentTimestamp = new Timestamp(new Date().getTime)
+      val query = for {
+        _ <- dbWithExpenses
+        user <- UserRepoOp.find(Provider.Email, Identity("1@gmail.com")).unique
+        user2 <- UserRepoOp.find(Provider.Email, Identity("2@gmail.com")).unique
+        expenses <- ExpenseRepoOp.all(user.id).list
+        expenseBefore = expenses.head
+        _ <- ExpenseRepoOp.update(expenseBefore.id,
+          Amount(500) :: user2.id :: "Some unknown field type" ::
+          Description("Some new description") :: 
+          OccuredAt(currentTimestamp) :: ExpenseId(1000) ::
+          Comment("Some new comment") :: HNil
+        ).run
+        expenseAfter <- ExpenseRepoOp.find(expenseBefore.id).unique
+      } yield (expenseBefore, expenseAfter, user2)
 
-  //     after.role shouldBe Role.User
-  //     after.password shouldBe Password("new_pass")
-  //     after.password should not equal (before.password)
-  //     after.role should not equal (before.role)
-  //     after.updatedAt should not equal (before.updatedAt)
-  //   }
-  // }
+      val (before, after, user2) = query.transact(transactor).unsafePerformIO
+
+      after.id shouldBe before.id
+      after.amount.value shouldBe 500
+      after.description.value shouldBe "Some new description"
+      after.comment.get.value shouldBe "Some new comment"
+      after.userId shouldBe user2.id
+    }
+  }
+
 
   // describe("delete") {
   //   it("typechecks") { check(ExpenseRepoOp.delete(UserId(1))) }
