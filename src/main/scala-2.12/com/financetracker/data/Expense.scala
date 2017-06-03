@@ -16,5 +16,5 @@ case class Expense(
 
 object Expense {
   import io.circe.generic.semiauto._
-  implicit val encoder: Encoder[User] = deriveEncoder[User]
+  implicit val encoder: Encoder[Expense] = deriveEncoder
 }

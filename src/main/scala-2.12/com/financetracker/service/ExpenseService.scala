@@ -15,7 +15,8 @@ trait ExpenseService {
     description: Description,
     comment: Option[Comment],
     occuredAt: OccuredAt, 
-    userId: UserId
+    userId: UserId,
+    session: Session
   ): TaskAttempt[Expense]
   def update(id: ExpenseId, values: HList, session: Session): TaskAttempt[Expense]
   def delete(id: ExpenseId, session: Session): TaskAttempt[Boolean]
@@ -31,9 +32,13 @@ case class ExpenseServiceImpl(expenseRepo: ExpenseRepo) extends ExpenseService {
     amount: Amount, 
     description: Description,
     comment: Option[Comment],
-    occuredAt: OccuredAt, 
-    userId: UserId
-  ): TaskAttempt[Expense] = expenseRepo.create(amount, description, comment, occuredAt, userId)
+    occuredAt: OccuredAt,
+    userId: UserId,
+    session: Session
+  ): TaskAttempt[Expense] = 
+    withPermissionsCheckByUserId(userId, session)(
+      expenseRepo.create(amount, description, comment, occuredAt, userId)
+    ) 
 
   def update(id: ExpenseId, values: HList, session: Session): TaskAttempt[Expense] =
     withPermissionsCheckByExpenseId(id, session)(

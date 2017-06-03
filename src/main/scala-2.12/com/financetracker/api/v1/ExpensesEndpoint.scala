@@ -18,31 +18,46 @@ object ExpensesEndpoint {
 
   val handler: SessionService => ExpenseService => PureEndpoint = 
     sessionService => expenseService => {
-      case GET -> Root / "ping" =>
+      case GET -> Root / IntVar(userId) / "expenses" / "ping" =>
         TaskAttempt.pure("pong from expenses".asJson)
 
-    //   case req @ GET -> Root / IntVar(userId) =>
-    //     for {
-    //       token <- Endpoint.getAuthToken(req)
-    //       session <- sessionService.getSessionData(token)
-    //       _ <- sessionService.authorize(token, Role.Admin, Role.Manager)
-    //       users <- userService.all
-    //     } yield users.asJson
+      case req @ GET -> Root / IntVar(userId) / "expenses" =>
+        for {
+          session <- sessionService.getSessionData(req)
+          expenses <- expenseService.all(UserId(userId), session)
+        } yield expenses.asJson
 
-    //   case req @ POST -> Root =>
-    //     for {
-    //       token <- Endpoint.getAuthToken(req)
-    //       _ <- sessionService.authorize(token, Role.Admin, Role.Manager)
-    //       form <- TaskAttempt.liftT(req.as(jsonOf[UserForm]))
-    //       user <- userService.create(Provider.Email, form.email, form.password, form.role)
-    //     } yield user.asJson
+      case req @ POST -> Root / IntVar(userId) / "expenses" =>
+        for {
+          session <- sessionService.getSessionData(req)
+          form <- TaskAttempt.liftT(req.as(jsonOf[ExpenseForm]))
+          expense <- expenseService.create(
+            form.amount, 
+            form.description, 
+            form.comment, 
+            form.occuredAt, 
+            UserId(userId),
+            session
+          )
+        } yield expense.asJson
 
-    //   case req @ DELETE -> Root / IntVar(userId) =>
-    //     for {
-    //       token <- Endpoint.getAuthToken(req)
-    //       _ <- sessionService.authorize(token, Role.Admin, Role.Manager)
-    //       res <- userService.delete(UserId(userId))
-    //     } yield res.asJson
+      case req @ DELETE -> Root / IntVar(userId) / "expenses" / IntVar(expenseId) =>
+        for {
+          session <- sessionService.getSessionData(req)
+          res <- expenseService.delete(ExpenseId(expenseId), session)
+        } yield res.asJson
     }
 }
 
+case class ExpenseForm(
+  amount: Amount,
+  description: Description,
+  comment: Option[Comment],
+  occuredAt: OccuredAt
+)
+
+object ExpenseForm {
+  import io.circe.generic.semiauto._
+  implicit val encoder: Encoder[ExpenseForm] = deriveEncoder
+  implicit val decoder: Decoder[ExpenseForm] = deriveDecoder
+}
