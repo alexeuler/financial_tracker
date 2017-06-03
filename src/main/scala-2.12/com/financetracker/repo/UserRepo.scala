@@ -16,7 +16,7 @@ trait UserRepo {
   def find(provider: Provider, identity: Identity): TaskAttempt[Option[User]]
   def findById(id: UserId): TaskAttempt[Option[User]]
   def create(provider: Provider, identity: Identity, password: Password, role: Role): TaskAttempt[User]
-  def update(id: UserId, values: HList): TaskAttempt[Boolean]
+  def update(id: UserId, values: HList): TaskAttempt[User]
   def delete(id: UserId): TaskAttempt[Boolean]
   def deleteAll: TaskAttempt[Int]
 }
@@ -33,7 +33,11 @@ case class UserRepoImpl(userRepo: UserRepoOp, run: ConnectionIO ~> TaskAttempt) 
         userRepo.create(provider, identity, password, role)
           .withUniqueGeneratedKeys("id", "provider", "identity", "password", "role", "created_at", "updated_at")
     )
-  def update(id: UserId, values: HList): TaskAttempt[Boolean] = userRepo.update(id, values).run.map(_ > 0)
+  def update(id: UserId, values: HList): TaskAttempt[User] = 
+    connToTask(
+      userRepo.update(id, values)
+        .withUniqueGeneratedKeys("id", "provider", "identity", "password", "role", "created_at", "updated_at")
+    )
   def delete(id: UserId): TaskAttempt[Boolean] = userRepo.delete(id).run.map(_ > 0)
   def deleteAll: TaskAttempt[Int] = userRepo.deleteAll.run
 }
