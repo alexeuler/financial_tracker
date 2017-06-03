@@ -25,7 +25,7 @@ trait ExpenseRepo {
   def deleteAll: TaskAttempt[Int]
 }
 
-class ExpenseRepoImpl(expenseRepoOp: ExpenseRepoOp, run: ConnectionIO ~> TaskAttempt) extends ExpenseRepo {
+case class ExpenseRepoImpl(expenseRepoOp: ExpenseRepoOp, run: ConnectionIO ~> TaskAttempt) extends ExpenseRepo {
 
   implicit def connToTask[A](conn: ConnectionIO[A]): TaskAttempt[A] = run(conn)
 

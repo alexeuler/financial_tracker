@@ -20,6 +20,7 @@ case class Env(
   http: HttpEnv,
   userService: UserService,
   sessionService: SessionService,
+  expenseService: ExpenseService,
   logger: Logger
 )
 
@@ -31,7 +32,9 @@ object Env {
     stateClient = StateClientImpl(AppState.initial, AppState.fold(doobie)(logger))
     runDoobie = Repo.run(stateClient)
     userRepo = UserRepoImpl(UserRepoOp, runDoobie)
+    expenseRepo = ExpenseRepoImpl(ExpenseRepoOp, runDoobie)
     sessionService <- SessionEnv.createSessionService(userRepo)
     userService = UserServiceImpl(userRepo)
-  } yield Env(stateClient, doobie, http, userService, sessionService, logger)
+    expenseService = ExpenseServiceImpl(expenseRepo)
+  } yield Env(stateClient, doobie, http, userService, sessionService, expenseService, logger)
 }
