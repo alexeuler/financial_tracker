@@ -11,18 +11,18 @@ const InputGroup = (props) => {
     <div className="mb4 w-100">
       <div className="f4 gray">{props.label}</div>
       <Input {...inputProps} />
-      <ErrorMessage message={props.errorMessage} />
+      {props.errors.map(error => <ErrorMessage message={error} />)}
     </div>
   );
 };
 
 InputGroup.defaultProps = {
-  errorMessage: null,
+  errors: [],
 };
 
 InputGroup.propTypes = {
   label: PropTypes.string.isRequired,
-  errorMessage: PropTypes.string,
+  errors: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default InputGroup;

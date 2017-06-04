@@ -1,3 +1,4 @@
+import { Validation } from '../utils';
 import * as api from '../api';
 import { actions as reduxActions } from '../reducers';
 
@@ -31,6 +32,21 @@ export const login = payload =>
 
 export const signup = payload =>
   async function signupThunk(dispatch) {
+    const emailValidation = new Validation();
+    emailValidation.email(payload.email);
+
+    const passwordValidation = new Validation();
+    passwordValidation.length('Password', payload.password, 3);
+    passwordValidation.equalPasswords(payload.password, payload.passwordConfirmation);
+
+    if (!emailValidation.isValid() || !passwordValidation.isValid()) {
+      const errors = {
+        email: emailValidation.errors,
+        password: passwordValidation.errors,
+      };
+      return dispatch(reduxActions.setErrorsSignupForm(errors));
+    }
+
     dispatch(reduxActions.setLoadingSignupForm(true));
     let response;
     try {
@@ -43,7 +59,7 @@ export const signup = payload =>
     if (response.error) {
       switch (response.error.code) {
         default:
-          return dispatch(reduxActions.setErrorsLoginForm({
+          return dispatch(reduxActions.setErrorsSignupForm({
             general: response.error.message,
           }));
       }
