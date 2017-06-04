@@ -14,7 +14,7 @@ const Signup = (props) => (
   <div className="flex flex-column items-center justify-center vh-100 vw-100">
     <div className="w5 flex flex-column">
       {props.errors.general && props.errors.general.map(error =>
-        <ErrorMessage message={error} />,
+        <ErrorMessage key={error} message={error} />,
       )}
       <InputGroup
         label="Email"

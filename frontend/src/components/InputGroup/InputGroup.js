@@ -11,7 +11,7 @@ const InputGroup = (props) => {
     <div className="mb4 w-100">
       <div className="f4 gray">{props.label}</div>
       <Input {...inputProps} />
-      {props.errors.map(error => <ErrorMessage message={error} />)}
+      {props.errors.map(error => <ErrorMessage key={error} message={error} />)}
     </div>
   );
 };

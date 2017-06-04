@@ -52,7 +52,7 @@ export const signup = payload =>
     try {
       response = await api.signup(payload);
     } catch (e) {
-      return dispatch(reduxActions.setErrorsSignupForm({ general: SERVER_FAILURE_MESSAGE }));
+      return dispatch(reduxActions.setErrorsSignupForm({ general: [SERVER_FAILURE_MESSAGE] }));
     } finally {
       dispatch(reduxActions.setLoadingSignupForm(false));
     }

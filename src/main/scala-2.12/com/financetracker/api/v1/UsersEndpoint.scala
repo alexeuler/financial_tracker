@@ -56,7 +56,7 @@ object UsersEndpoint {
     }
 }
 
-case class UserForm(email: Identity, password: Password, role: Role)
+case class UserForm(email: Identity, password: Password)
 
 object UserForm {
   import io.circe.generic.semiauto._
