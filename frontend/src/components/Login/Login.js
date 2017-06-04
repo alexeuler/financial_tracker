@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import queryString from 'query-string';
 
 import thunks from '../../thunks';
@@ -35,7 +35,7 @@ const Login = (props) => (
       <Button
         title="Sign in"
         className="mb3 w-100"
-        onClick={() => props.login(props.form)}
+        onClick={() => props.login(props.form, props.history)}
       />
       <Link to="/signup" className="tr">Sign up</Link>
     </div>
@@ -49,6 +49,9 @@ Login.propTypes = {
   }).isRequired,
   errors: PropTypes.object.isRequired,
   login: PropTypes.func.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
   location: PropTypes.shape({
     search: PropTypes.string,
   }).isRequired,

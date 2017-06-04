@@ -1,12 +1,10 @@
-import queryString from 'query-string';
-
 import { Validation } from '../utils';
 import * as api from '../api';
 import { actions as reduxActions } from '../reducers';
 
 const SERVER_FAILURE_MESSAGE = 'Could not connect to server. Please try again later.';
 
-export const login = payload =>
+export const login = (payload, history) =>
   async function loginThunk(dispatch) {
     const emailValidation = new Validation();
     emailValidation.email(payload.email);
@@ -41,7 +39,9 @@ export const login = payload =>
           }));
       }
     }
-    return dispatch(reduxActions.setTokenSession(response.result));
+    dispatch(reduxActions.setTokenSession(response.result));
+    history.push('/expenses');
+    return null;
   };
 
 export const updateLoginForm = reduxActions.updateLoginForm;

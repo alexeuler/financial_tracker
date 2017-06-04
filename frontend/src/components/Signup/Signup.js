@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Link, withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import thunks from '../../thunks';
 import { getSignupForm, getLoading, getSignupErrors } from '../../selectors/signup';
@@ -74,4 +74,4 @@ const mapDispatchToProps = {
   updateSignupForm: thunks.updateSignupForm,
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Signup));
+export default connect(mapStateToProps, mapDispatchToProps)(Signup);
