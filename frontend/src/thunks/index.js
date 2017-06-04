@@ -12,7 +12,7 @@ export const login = payload =>
     } finally {
       dispatch(reduxActions.setLoadingLoginForm(false));
     }
-    return dispatch(reduxActions.setToken(response.result));
+    return dispatch(reduxActions.setTokenSession(response.result));
   };
 
 export const updateLoginForm = reduxActions.updateLoginForm;

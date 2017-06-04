@@ -17,4 +17,4 @@ const apiRequest = (url, method, payload) => async (authKey) => {
 const getRequest = url => apiRequest(url, 'GET');
 const postRequest = (url, payload) => apiRequest(url, 'POST', payload);
 
-export const login = payload => postRequest('/sessions/login', payload)();
+export const login = payload => postRequest('/sessions/', payload)();

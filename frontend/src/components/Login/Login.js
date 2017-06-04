@@ -9,15 +9,14 @@ import ErrorMessage from '../ErrorMessage';
 import InputGroup from '../InputGroup';
 import Button from '../Button';
 
-
 const Login = (props) => (
   <div className="flex flex-column items-center justify-center vh-100 vw-100">
     <div className="w5 flex flex-column justify-center">
       <ErrorMessage message={props.errors.general} />
       <InputGroup
-        label="Login"
-        value={props.form.login}
-        onChange={text => props.updateLoginForm({ login: text })}
+        label="Email"
+        value={props.form.email}
+        onChange={text => props.updateLoginForm({ email: text })}
       />
       <InputGroup
         label="Password"
@@ -32,7 +31,7 @@ const Login = (props) => (
 
 Login.propTypes = {
   form: PropTypes.shape({
-    login: PropTypes.string,
+    email: PropTypes.string,
     password: PropTypes.string,
   }).isRequired,
   errors: PropTypes.object.isRequired,

@@ -10,7 +10,7 @@ export const initialState = {
     loading: false,
     errors: {},
   },
-  login: '',
+  email: '',
   password: '',
 };
 
