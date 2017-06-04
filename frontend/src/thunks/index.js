@@ -1,4 +1,5 @@
 import { browserHistory } from 'react-router-dom';
+import queryString from 'query-string';
 
 import { Validation } from '../utils';
 import * as api from '../api';
@@ -66,8 +67,17 @@ export const signup = (payload, history) =>
           }));
       }
     }
-    dispatch(reduxActions.resetSignupForm);
-    history.push('/login');
+    dispatch(reduxActions.resetSignupForm());
+    // Try to autologin, if fails (should never fail actually) send to login page
+    dispatch(login({ email: payload.email, password: payload.password })).then(() =>
+      history.push('/expenses'),
+    ).catch(() => {
+      const search = {
+        message: 'Your account was successfully created. Please use your credentials to login.',
+      };
+      const query = queryString.stringify(search);
+      history.push(`/login?${query}`);
+    });
     return null;
   };
 

@@ -2,17 +2,21 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import queryString from 'query-string';
 
 import { login, updateLoginForm } from '../../thunks';
 import { getLoginForm, getLoginErrors } from '../../selectors/login';
 
+import InfoMessage from '../InfoMessage';
 import ErrorMessage from '../ErrorMessage';
 import InputGroup from '../InputGroup';
 import Button from '../Button';
 
 const Login = (props) => (
+  (() => console.log('-------------', props))() ||
   <div className="flex flex-column items-center justify-center vh-100 vw-100">
     <div className="w5 flex flex-column">
+      <InfoMessage message={queryString.parse(props.location.search).message} />
       <ErrorMessage message={props.errors.general} />
       <InputGroup
         label="Email"
@@ -42,6 +46,9 @@ Login.propTypes = {
   }).isRequired,
   errors: PropTypes.object.isRequired,
   login: PropTypes.func.isRequired,
+  location: PropTypes.shape({
+    search: PropTypes.string,
+  }).isRequired,
   updateLoginForm: PropTypes.func.isRequired,
 };
 
