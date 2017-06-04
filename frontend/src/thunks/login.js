@@ -8,12 +8,24 @@ const SERVER_FAILURE_MESSAGE = 'Could not connect to server. Please try again la
 
 export const login = payload =>
   async function loginThunk(dispatch) {
+    const emailValidation = new Validation();
+    emailValidation.email(payload.email);
+    const passwordValidation = new Validation();
+    passwordValidation.nonEmpty(payload.password);
+    if (!emailValidation.isValid() || !passwordValidation.isValid()) {
+      const errors = {
+        email: emailValidation.errors,
+        password: passwordValidation.errors,
+      };
+      return dispatch(reduxActions.setErrorsLoginForm(errors));
+    }
+
     dispatch(reduxActions.setLoadingLoginForm(true));
     let response;
     try {
       response = await api.login(payload);
     } catch (e) {
-      return dispatch(reduxActions.setErrorsLoginForm({ general: SERVER_FAILURE_MESSAGE }));
+      return dispatch(reduxActions.setErrorsLoginForm({ general: [SERVER_FAILURE_MESSAGE] }));
     } finally {
       dispatch(reduxActions.setLoadingLoginForm(false));
     }
@@ -21,11 +33,11 @@ export const login = payload =>
       switch (response.error.code) {
         case 300:
           return dispatch(reduxActions.setErrorsLoginForm({
-            general: 'Invalid email and/or password.',
+            general: ['Invalid email and/or password.'],
           }));
         default:
           return dispatch(reduxActions.setErrorsLoginForm({
-            general: response.error.message,
+            general: [response.error.message],
           }));
       }
     }
