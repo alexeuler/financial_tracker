@@ -1,6 +1,9 @@
-import _Validation from './Validation';
-import * as localStorage from './localStorage';
+import Validation from './Validation';
+import { getToken, setToken } from './localStorage';
+import { getDataFromJWT } from './jwt';
 
-export const Validation = _Validation;
-export const getToken = localStorage.getToken;
-export const setToken = localStorage.setToken;
+export {
+  Validation,
+  getToken, setToken,
+  getDataFromJWT,
+};

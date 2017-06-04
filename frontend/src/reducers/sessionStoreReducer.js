@@ -1,13 +1,20 @@
-import { merge } from 'ramda';
-import { getToken } from '../utils';
+import { getToken, getDataFromJWT } from '../utils';
 
 const SET_TOKEN = 'SESSION:SET_TOKEN';
 
-export const initialState = {
-  token: getToken(),
+const getStateFromToken = (token) => {
+  let data = null;
+  try {
+    data = getDataFromJWT(token);
+  } catch (e) {
+    return { token };
+  }
+  return { token, ...data };
 };
 
-const setToken = (state, action) => merge(state, { token: action.payload });
+export const initialState = getStateFromToken(getToken());
+
+const setToken = (state, action) => ({ ...state, ...getStateFromToken(action.payload) });
 
 export default (state = initialState, action) => {
   switch (action.type) {

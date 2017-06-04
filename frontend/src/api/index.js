@@ -16,6 +16,13 @@ const apiRequest = (url, method, payload) => async (authKey) => {
 
 const getRequest = url => apiRequest(url, 'GET');
 const postRequest = (url, payload) => apiRequest(url, 'POST', payload);
+const patchRequest = (url, payload) => apiRequest(url, 'PATCH', payload);
+const deleteRequest = url => apiRequest(url, 'DELETE');
 
 export const login = payload => postRequest('/sessions/', payload)();
 export const signup = payload => postRequest('/users/', payload)();
+export const fetchExpenses = token => userId => getRequest(`/users/${userId}/expenses/`)(token);
+export const createExpense = token => (userId, payload) => postRequest(`/users/${userId}/expenses/`, payload)(token);
+export const updateExpense = token => (expenseId, userId, payload) => patchRequest(`/users/${userId}/expenses/${expenseId}`, payload)(token);
+export const deleteExpense = token => (expenseId, userId) => deleteRequest(`/users/${userId}/expenses/${expenseId}`)(token);
+
