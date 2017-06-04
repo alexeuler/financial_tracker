@@ -1,18 +1,24 @@
 {
-  "name": "FinanceTracker",
+  "name": "financetracker",
   "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "start": "./node_modules/http-server/bin/http-server",
-    "build": "webpack",
+    "build": "NODE_ENV=dev webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "isomorphic-fetch": "^2.2.1",
+    "prop-types": "^15.5.10",
+    "ramda": "^0.24.1",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
+    "react-redux": "^5.0.5",
+    "redux": "^3.6.0",
+    "redux-thunk": "^2.2.0",
     "webpack": "^2.6.1"
   },
   "devDependencies": {
@@ -20,11 +26,13 @@
     "babel-loader": "^6.4.1",
     "babel-preset-es2015": "^6.24.0",
     "babel-preset-react": "^6.24.0",
+    "babel-preset-stage-2": "^6.24.0",
     "eslint": "^3.15.0",
     "eslint-config-airbnb": "^14.1.0",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.9.0",
+    "redux-devtools": "^3.4.0",
     "webpack": "^2.6.1"
   }
 }
