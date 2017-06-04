@@ -44,7 +44,7 @@ export const signup = (payload, history) =>
     }
     dispatch(reduxActions.resetSignupForm());
     // Try to autologin, if fails (should never fail actually) send to login page
-    dispatch(login({ email: payload.email, password: payload.password })).catch(() => {
+    dispatch(login({ email: payload.email, password: payload.password }, history)).catch(() => {
       const search = {
         message: 'Your account was successfully created. Please use your credentials to login.',
       };
