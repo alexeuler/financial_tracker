@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
 
-import { signup, updateSignupForm } from '../../thunks';
+import thunks from '../../thunks';
 import { getSignupForm, getLoading, getSignupErrors } from '../../selectors/signup';
 
 import ErrorMessage from '../ErrorMessage';
@@ -70,8 +70,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  signup,
-  updateSignupForm,
+  signup: thunks.signup,
+  updateSignupForm: thunks.updateSignupForm,
 };
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Signup));

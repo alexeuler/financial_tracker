@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import queryString from 'query-string';
 
-import { login, updateLoginForm } from '../../thunks';
+import thunks from '../../thunks';
 import { getLoginForm, getLoginErrors } from '../../selectors/login';
 
 import InfoMessage from '../InfoMessage';
@@ -58,8 +58,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  login,
-  updateLoginForm,
+  login: thunks.login,
+  updateLoginForm: thunks.updateLoginForm,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
