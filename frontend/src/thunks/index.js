@@ -36,7 +36,7 @@ export const signup = payload =>
     emailValidation.email(payload.email);
 
     const passwordValidation = new Validation();
-    passwordValidation.length('Password', payload.password, 3);
+    passwordValidation.length(payload.password, 3);
     passwordValidation.equalPasswords(payload.password, payload.passwordConfirmation);
 
     if (!emailValidation.isValid() || !passwordValidation.isValid()) {
