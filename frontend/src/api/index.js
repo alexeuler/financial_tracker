@@ -18,3 +18,4 @@ const getRequest = url => apiRequest(url, 'GET');
 const postRequest = (url, payload) => apiRequest(url, 'POST', payload);
 
 export const login = payload => postRequest('/sessions/', payload)();
+export const singup = payload => postRequest('/users/', payload)();

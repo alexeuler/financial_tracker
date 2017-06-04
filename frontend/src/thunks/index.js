@@ -29,4 +29,28 @@ export const login = payload =>
     return dispatch(reduxActions.setTokenSession(response.result));
   };
 
+export const signup = payload =>
+  async function signupThunk(dispatch) {
+    dispatch(reduxActions.setLoadingSignupForm(true));
+    let response;
+    try {
+      response = await api.signup(payload);
+    } catch (e) {
+      return dispatch(reduxActions.setErrorsSignupForm({ general: SERVER_FAILURE_MESSAGE }));
+    } finally {
+      dispatch(reduxActions.setLoadingSignupForm(false));
+    }
+    if (response.error) {
+      switch (response.error.code) {
+        default:
+          return dispatch(reduxActions.setErrorsLoginForm({
+            general: response.error.message,
+          }));
+      }
+    }
+    return null;
+    // return dispatch(reduxActions.setTokenSession(response.result));
+  };
+
 export const updateLoginForm = reduxActions.updateLoginForm;
+export const updateSignupForm = reduxActions.updateSignupForm;
