@@ -2,6 +2,8 @@ import { Validation } from '../utils';
 import * as api from '../api';
 import { actions as reduxActions } from '../reducers';
 
+import { setToken } from './session';
+
 const SERVER_FAILURE_MESSAGE = 'Could not connect to server. Please try again later.';
 
 export const login = (payload, history) =>
@@ -39,9 +41,9 @@ export const login = (payload, history) =>
           }));
       }
     }
-    dispatch(reduxActions.setTokenSession(response.result));
+    dispatch(setToken(response.result));
     history.push('/expenses');
-    return null;
+    return Promise.resolve(null);
   };
 
 export const updateLoginForm = reduxActions.updateLoginForm;

@@ -1,9 +1,10 @@
 import { merge } from 'ramda';
+import { getToken } from '../utils';
 
 const SET_TOKEN = 'SESSION:SET_TOKEN';
 
 export const initialState = {
-  token: null,
+  token: getToken(),
 };
 
 const setToken = (state, action) => merge(state, { token: action.payload });
