@@ -5,3 +5,7 @@ export const getLoginForm = pipe(
   getLoginState,
   pick(['login', 'password']),
 );
+export const getLoginErrors = pipe(
+  getLoginState,
+  path(['meta', 'errors']),
+);
