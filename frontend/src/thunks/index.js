@@ -1,3 +1,5 @@
+import { browserHistory } from 'react-router-dom';
+
 import { Validation } from '../utils';
 import * as api from '../api';
 import { actions as reduxActions } from '../reducers';
@@ -30,7 +32,7 @@ export const login = payload =>
     return dispatch(reduxActions.setTokenSession(response.result));
   };
 
-export const signup = payload =>
+export const signup = (payload, history) =>
   async function signupThunk(dispatch) {
     const emailValidation = new Validation();
     emailValidation.email(payload.email);
@@ -64,8 +66,9 @@ export const signup = payload =>
           }));
       }
     }
+    dispatch(reduxActions.resetSignupForm);
+    history.push('/login');
     return null;
-    // return dispatch(reduxActions.setTokenSession(response.result));
   };
 
 export const updateLoginForm = reduxActions.updateLoginForm;

@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 
 import { signup, updateSignupForm } from '../../thunks';
-import { getSignupForm, getSignupErrors } from '../../selectors/signup';
+import { getSignupForm, getLoading, getSignupErrors } from '../../selectors/signup';
 
 import ErrorMessage from '../ErrorMessage';
 import InputGroup from '../InputGroup';
@@ -40,7 +40,8 @@ const Signup = (props) => (
       <Button
         title="Sign up"
         className="mb3 w-100"
-        onClick={() => props.signup(props.form)}
+        disabled={props.loading}
+        onClick={() => props.signup(props.form, props.history)}
       />
       <Link to="/login" className="tr">Login</Link>
     </div>
@@ -53,13 +54,18 @@ Signup.propTypes = {
     password: PropTypes.string,
     passwordConfirmation: PropTypes.string,
   }).isRequired,
+  loading: PropTypes.bool.isRequired,
   errors: PropTypes.object.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
   signup: PropTypes.func.isRequired,
   updateSignupForm: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
   form: getSignupForm(state),
+  loading: getLoading(state),
   errors: getSignupErrors(state),
 });
 
@@ -68,4 +74,4 @@ const mapDispatchToProps = {
   updateSignupForm,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Signup);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Signup));

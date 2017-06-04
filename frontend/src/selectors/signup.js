@@ -9,3 +9,8 @@ export const getSignupErrors = pipe(
   getSignupState,
   path(['meta', 'errors']),
 );
+
+export const getLoading = pipe(
+  getSignupState,
+  path(['meta', 'loading']),
+);
