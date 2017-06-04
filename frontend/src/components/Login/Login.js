@@ -18,6 +18,7 @@ const Login = (props) => (
     <InputGroup
       label="Password"
       value={props.form.password}
+      type="password"
       onChange={text => props.updateLoginForm({ password: text })}
     />
     <Button title="Sing in" />
