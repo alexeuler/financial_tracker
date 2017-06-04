@@ -10,6 +10,7 @@ trait UserRepoOp {
   def all: Query0[User]
   def find(provider: Provider, identity: Identity): Query0[User]
   def find(id: UserId): Query0[User]
+  def count: Query0[Long]
   def create(provider: Provider, identity: Identity, password: Password, role: Role): Update0
   def update(id: UserId, values: HList): Update0
   def delete(id: UserId): Update0
@@ -26,6 +27,9 @@ object UserRepoOp extends UserRepoOp {
 
   def find(id: UserId): Query0[User] =
     sql"select * from users where id=$id".query[User]
+
+  def count: Query0[Long] =
+    sql"select COUNT(id) from users".query[Long]
 
   def create(provider: Provider, identity: Identity, password: Password, role: Role): Update0 =
     sql"insert into users (provider, identity, password, role) values ($provider, $identity, $password, $role)"

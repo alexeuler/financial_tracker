@@ -15,6 +15,7 @@ trait UserRepo {
   def all: TaskAttempt[List[User]]
   def find(provider: Provider, identity: Identity): TaskAttempt[Option[User]]
   def findById(id: UserId): TaskAttempt[Option[User]]
+  def count: TaskAttempt[Long]
   def create(provider: Provider, identity: Identity, password: Password, role: Role): TaskAttempt[User]
   def update(id: UserId, values: HList): TaskAttempt[User]
   def delete(id: UserId): TaskAttempt[Boolean]
@@ -28,6 +29,7 @@ case class UserRepoImpl(userRepo: UserRepoOp, run: ConnectionIO ~> TaskAttempt) 
   def all: TaskAttempt[List[User]] = userRepo.all.list
   def find(provider: Provider, identity: Identity): TaskAttempt[Option[User]] = userRepo.find(provider, identity).option
   def findById(id: UserId): TaskAttempt[Option[User]] = userRepo.find(id).option
+  def count: TaskAttempt[Long] = userRepo.count.unique
   def create(provider: Provider, identity: Identity, password: Password, role: Role): TaskAttempt[User] =
     connToTask(
         userRepo.create(provider, identity, password, role)

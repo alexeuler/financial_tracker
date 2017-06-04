@@ -68,6 +68,22 @@ class UserRepoOpSpec extends FunSpec with Matchers with BeforeAndAfter with Prop
       res.map(_.identity.value) shouldBe Some("2@gmail.com")
     }
   }
+
+  describe("count") {
+    it("typechecks") { check(UserRepoOp.count) }
+
+    it("counts users in db") {
+      val query = for {
+        _ <- dbWithUsers
+        count <- UserRepoOp.count.unique
+      } yield count
+
+      val res = query.transact(transactor).unsafePerformIO
+
+      res shouldBe 2
+    }
+  }
+
   
   describe("create") {
     it("typechecks") { check(UserRepoOp.create(Provider.Email, Identity("123@gmail.com"), Password("password"), Role.User)) }

@@ -22,7 +22,12 @@ case class UserServiceImpl(userRepo: UserRepo) extends UserService {
       userRepo.all
     )
   override def create(identity: Identity, password: Password): TaskAttempt[User] =
-    userRepo.create(Provider.Email, identity, password, Role.User)
+    for {
+      count <- userRepo.count
+      role = if (count == 0) Role.Admin else Role.User
+      user <- userRepo.create(Provider.Email, identity, password, role)
+    } yield user
+    
 
   def update(id: UserId, values: HList, session: Session): TaskAttempt[User] =
     withPermissionsCheckForUpdate(id, session)(
