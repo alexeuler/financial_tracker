@@ -77,7 +77,8 @@ export const createExpense = (userId, history) =>
           }));
       }
     }
-    return dispatch(reduxActions.addExpenses(userId, [response.result]));
+    dispatch(reduxActions.addExpenses(userId, [response.result]));
+    return dispatch(reduxActions.resetFormExpenses());
   };
 
 

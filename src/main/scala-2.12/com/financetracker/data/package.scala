@@ -12,7 +12,7 @@ package object data {
   type Provider = Provider.Value
   type Role = Role.Value
 
-  val dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+  val dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm")
 
   implicit val encodeProvider: Encoder[Provider] =
     Encoder.encodeString.contramap[Provider](_.toString)

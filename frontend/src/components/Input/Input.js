@@ -6,7 +6,7 @@ const DateInput = props => (
   <div className="avenir">
     <DateTime
       input={false}
-      onChange={date => props.onChange(date.format('YYYY-MM-DD HH:mm:ss'))}
+      onChange={date => props.onChange(date.format('YYYY-MM-DD HH:mm'))}
     />
   </div>
 );
@@ -31,10 +31,11 @@ const Input = (props) => {
 
 Input.defaultProps = {
   type: 'text',
+  value: null,
 };
 
 Input.propTypes = {
-  value: PropTypes.string.isRequired,
+  value: PropTypes.string,
   onChange: PropTypes.func.isRequired,
   type: PropTypes.string,
 };

@@ -31,7 +31,11 @@ const expensesLens = userId => lensPath(['entities', userId]);
 const expenseLens = (userId, expenseId) => lensPath(['entities', userId, expenseId]);
 
 const add = (state, action) =>
-  over(expensesLens(action.userId), users => ({ ...users, ...action.payload }), state);
+  over(
+    expensesLens(action.userId),
+    expenses => [...(expenses || []), ...action.payload],
+    state,
+  );
 
 const update = (state, action) =>
   set(expenseLens(action.userId, action.expenseId), action.payload, state);

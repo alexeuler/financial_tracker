@@ -11,7 +11,7 @@ import AddExpense from '../AddExpense';
 class Expenses extends React.Component {
 
   componentDidMount() {
-    this.fetch()
+    this.fetch();
   }
 
   fetch = () => {
@@ -19,10 +19,15 @@ class Expenses extends React.Component {
   }
 
   render() {
+    console.log("+++++++++++++++", this.props);
     return (
       <div>
         <AddExpense history={this.props.history} match={this.props.match} />
-        {this.props.expenses.map(expense => <Expense {...expense} />)}
+        {this.props.expenses.map(
+          expense => <Expense 
+            key={expense.id} 
+            {...expense} 
+          />)}
       </div>
     )
   }

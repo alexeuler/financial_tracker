@@ -51,7 +51,7 @@ const AddExpense = props => (
 
 AddExpense.propTypes = {
   form: PropTypes.shape({
-    occuredAt: PropTypes.string.isRequired,
+    occuredAt: PropTypes.string,
     amount: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
     comment: PropTypes.string.isRequired,

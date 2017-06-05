@@ -1,7 +1,7 @@
 import { path } from 'ramda';
 
 export const getExpenses = (state, userId) =>
-  path(['expensesStore', userId], state);
+  path(['expensesStore', 'entities', userId], state);
 
 export const getExpensesForm =
   path(['expensesStore', 'form']);
