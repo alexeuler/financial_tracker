@@ -41,3 +41,5 @@ export const fetchExpenses = (userId, history) =>
     }
     return dispatch(reduxActions.addExpenses(userId, response.result));
   };
+
+export const updateFormExpenses = reduxActions.updateFormExpenses;

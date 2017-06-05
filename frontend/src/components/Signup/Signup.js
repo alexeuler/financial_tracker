@@ -41,7 +41,7 @@ const Signup = (props) => (
         title="Sign up"
         className="mb3 w-100"
         disabled={props.loading}
-        onClick={() => props.signup(props.form, props.history)}
+        onClick={() => !props.loading && props.signup(props.form, props.history)}
       />
       <Link to="/login" className="tr">Login</Link>
     </div>

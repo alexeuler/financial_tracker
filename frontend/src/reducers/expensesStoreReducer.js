@@ -4,12 +4,12 @@ const ADD = 'EXPENSES:ADD';
 const UPDATE = 'EXPENSES:UPDATE';
 const DELETE = 'EXPENSES:DELETE';
 const RESET_FORM = 'EXPENSES:RESET_FORM';
-const UPDATE_FORM = 'EXPENSES:UPDATE_FORM'
+const UPDATE_FORM = 'EXPENSES:UPDATE_FORM';
 const SET_LOADING = 'EXPENSES:SET_LOADING';
 const SET_ERRORS = 'EXPENSES:SET_ERRORS';
 
 const initialForm = {
-  occuredAt: null,
+  occuredAt: '',
   amount: '',
   description: '',
   comment: '',
@@ -74,6 +74,7 @@ const updateExpenses = (userId, expenseId, payload) =>
   ({ type: UPDATE, userId, expenseId, payload });
 const deleteExpenses = (userId, expenseId) => ({ type: DELETE, userId, expenseId });
 const resetFormExpenses = () => ({ type: RESET_FORM });
+const updateFormExpenses = payload => ({ type: UPDATE_FORM, payload });
 const setLoadingExpenses = payload => ({ type: SET_LOADING, payload });
 const setErrorsExpenses = payload => ({ type: SET_ERRORS, payload });
 
@@ -82,6 +83,7 @@ export const actions = {
   updateExpenses,
   deleteExpenses,
   resetFormExpenses,
+  updateFormExpenses,
   setLoadingExpenses,
   setErrorsExpenses,
 };

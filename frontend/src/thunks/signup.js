@@ -51,7 +51,7 @@ export const signup = (payload, history) =>
       const query = queryString.stringify(search);
       history.push(`/login?${query}`);
     });
-    return dispatch(reduxActions.setErrorsSignupForm({}));
+    return dispatch(reduxActions.resetSignupForm());
   };
 
 export const updateSignupForm = reduxActions.updateSignupForm;

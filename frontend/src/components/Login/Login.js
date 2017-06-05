@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import queryString from 'query-string';
 
 import thunks from '../../thunks';
-import { getLoginForm, getLoginErrors } from '../../selectors/login';
+import { getLoginForm, getLoginErrors, getLoginLoading } from '../../selectors/login';
 
 import InfoMessage from '../InfoMessage';
 import ErrorMessage from '../ErrorMessage';
@@ -35,7 +35,8 @@ const Login = (props) => (
       <Button
         title="Sign in"
         className="mb3 w-100"
-        onClick={() => props.login(props.form, props.history)}
+        disabled={props.loading}
+        onClick={() => !props.loading && props.login(props.form, props.history)}
       />
       <Link to="/signup" className="tr">Sign up</Link>
     </div>
@@ -48,6 +49,7 @@ Login.propTypes = {
     password: PropTypes.string,
   }).isRequired,
   errors: PropTypes.object.isRequired,
+  loading: PropTypes.bool.isRequired,
   login: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
@@ -61,6 +63,7 @@ Login.propTypes = {
 const mapStateToProps = state => ({
   form: getLoginForm(state),
   errors: getLoginErrors(state),
+  loading: getLoginLoading(state),
 });
 
 const mapDispatchToProps = {

@@ -46,7 +46,7 @@ export const login = (payload, history) =>
       const session = getSessionState(getState());
       history.push(`users/${session.id}/expenses`);
     });
-    return dispatch(reduxActions.setErrorsLoginForm({}));
+    return dispatch(reduxActions.resetLoginForm());
   };
 
 export const updateLoginForm = reduxActions.updateLoginForm;

@@ -9,3 +9,8 @@ export const getLoginErrors = pipe(
   getLoginState,
   path(['meta', 'errors']),
 );
+
+export const getLoginLoading = pipe(
+  getLoginState,
+  path(['meta', 'loading']),
+);
