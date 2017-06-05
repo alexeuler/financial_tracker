@@ -54,7 +54,7 @@ class SessionServiceImpl(expiration: Duration, key: String, userRepo: UserRepo) 
     } yield sessionData
 
     maybeSession.fold[TaskAttempt[Session]](TaskAttempt.fail(UnauthorizedServiceException)) {
-      case session@Session(_, _, expires) if expires > (new Date()).getTime => TaskAttempt.pure(session)
+      case session@Session(_, _, _, expires) if expires > (new Date()).getTime => TaskAttempt.pure(session)
       case _ => TaskAttempt.fail(OutdatedTokenServiceException)
     }
   }
@@ -65,7 +65,7 @@ class SessionServiceImpl(expiration: Duration, key: String, userRepo: UserRepo) 
     val now = new Date().getTime
     val exp = new Date(now + expiration.toMillis).getTime
 
-    val claim: Json = Session(user.id, user.role, exp).asJson
+    val claim: Json = Session(user.id, user.identity, user.role, exp).asJson
 
     val token = JwtCirce.encode(claim, key, algo)
     JWToken(token)

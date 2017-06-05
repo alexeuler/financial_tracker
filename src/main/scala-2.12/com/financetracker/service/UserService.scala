@@ -46,13 +46,13 @@ case class UserServiceImpl(userRepo: UserRepo) extends UserService {
 
   private def isAuthorized(session: Session): Boolean =
     session match {
-      case Session(_, Role.Admin, _) => true
+      case Session(_, _, Role.Admin, _) => true
       case _ => false
     }
 
   private def isAuthorizedForUpdate(userId: UserId, session: Session): Boolean =
     session match {
-      case Session(_, Role.Admin, _) | Session(`userId`, _, _) => true
+      case Session(_, _, Role.Admin, _) | Session(`userId`, _, _, _) => true
       case _ => false
     }
 
