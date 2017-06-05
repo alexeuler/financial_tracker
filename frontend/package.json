@@ -13,10 +13,12 @@
   "dependencies": {
     "babel-polyfill": "^6.23.0",
     "isomorphic-fetch": "^2.2.1",
+    "moment": "^2.18.1",
     "prop-types": "^15.5.10",
     "query-string": "^4.3.4",
     "ramda": "^0.24.1",
     "react": "^15.5.4",
+    "react-datetime": "^2.8.10",
     "react-dom": "^15.5.4",
     "react-redux": "^5.0.5",
     "react-router-dom": "^4.1.1",

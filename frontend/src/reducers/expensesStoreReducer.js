@@ -9,7 +9,7 @@ const SET_LOADING = 'EXPENSES:SET_LOADING';
 const SET_ERRORS = 'EXPENSES:SET_ERRORS';
 
 const initialForm = {
-  occuredAt: '',
+  occuredAt: null,
   amount: '',
   description: '',
   comment: '',

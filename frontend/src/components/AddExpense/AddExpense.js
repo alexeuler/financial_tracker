@@ -29,6 +29,7 @@ const AddExpense = props => (
     <InputGroup
       label="Date"
       value={props.form.occuredAt}
+      type="date"
       errors={props.errors.occuredAt}
       onChange={text => props.updateFormExpenses({ occuredAt: text })}
     />
