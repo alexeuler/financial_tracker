@@ -6,6 +6,7 @@ import { getSessionState } from '../../selectors/session';
 import { getExpenses } from '../../selectors/expenses';
 import thunks from '../../thunks';
 import Expense from '../Expense';
+import AddExpense from '../AddExpense';
 
 class Expenses extends React.Component {
 
@@ -20,6 +21,7 @@ class Expenses extends React.Component {
   render() {
     return (
       <div>
+        <AddExpense />
         {this.props.expenses.map(expense => <Expense {...expense} />)}
       </div>
     )

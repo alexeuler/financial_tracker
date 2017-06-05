@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Link, withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import queryString from 'query-string';
 
 import thunks from '../../thunks';
