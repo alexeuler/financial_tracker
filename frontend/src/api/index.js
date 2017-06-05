@@ -9,7 +9,7 @@ const apiRequest = (url, method, payload) => async (authKey) => {
     },
   };
   if (payload) options = { ...options, body: JSON.stringify(payload) };
-  if (authKey) options = { ...options, Authorization: `Bearer ${authKey}` };
+  if (authKey) options = { ...options, headers: { ...options.headers, Authorization: `Bearer ${authKey}` } };
   const response = await fetch(`${API_URL}${url}`, options);
   return response.json();
 };
@@ -21,8 +21,8 @@ const deleteRequest = url => apiRequest(url, 'DELETE');
 
 export const login = payload => postRequest('/sessions/', payload)();
 export const signup = payload => postRequest('/users/', payload)();
-export const fetchExpenses = token => userId => getRequest(`/users/${userId}/expenses/`)(token);
-export const createExpense = token => (userId, payload) => postRequest(`/users/${userId}/expenses/`, payload)(token);
+export const fetchExpenses = token => userId => getRequest(`/users/${userId}/expenses`)(token);
+export const createExpense = token => (userId, payload) => postRequest(`/users/${userId}/expenses`, payload)(token);
 export const updateExpense = token => (expenseId, userId, payload) => patchRequest(`/users/${userId}/expenses/${expenseId}`, payload)(token);
 export const deleteExpense = token => (expenseId, userId) => deleteRequest(`/users/${userId}/expenses/${expenseId}`)(token);
 

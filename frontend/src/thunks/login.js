@@ -1,13 +1,14 @@
 import { Validation } from '../utils';
 import * as api from '../api';
 import { actions as reduxActions } from '../reducers';
+import { getSessionState } from '../selectors/session';
 
 import { setToken } from './session';
 
 const SERVER_FAILURE_MESSAGE = 'Could not connect to server. Please try again later.';
 
 export const login = (payload, history) =>
-  async function loginThunk(dispatch) {
+  async function loginThunk(dispatch, getState) {
     const emailValidation = new Validation();
     emailValidation.email(payload.email);
     const passwordValidation = new Validation();
@@ -42,10 +43,10 @@ export const login = (payload, history) =>
       }
     }
     dispatch(setToken(response.result)).then(() => {
-      history.push('/expenses');
+      const session = getSessionState(getState());
+      history.push(`users/${session.id}/expenses`);
     });
-    dispatch(reduxActions.setErrorsLoginForm({}));
-    return Promise.resolve(null);
+    return dispatch(reduxActions.setErrorsLoginForm({}));
   };
 
 export const updateLoginForm = reduxActions.updateLoginForm;
