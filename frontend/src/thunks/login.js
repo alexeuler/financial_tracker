@@ -41,8 +41,10 @@ export const login = (payload, history) =>
           }));
       }
     }
-    dispatch(setToken(response.result));
-    history.push('/expenses');
+    dispatch(setToken(response.result)).then(() => {
+      history.push('/expenses');
+    });
+    dispatch(reduxActions.setErrorsLoginForm({}));
     return Promise.resolve(null);
   };
 

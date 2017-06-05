@@ -15,20 +15,29 @@ import sessionStoreReducer, {
   actions as sessionStoreActions,
 } from './sessionStoreReducer';
 
+import expensesStoreReducer, {
+  initialState as expensesStoreInitialState,
+  actions as expensesStoreActions,
+} from './expensesStoreReducer';
+
+
 export default combineReducers({
   loginStore: loginStoreReducer,
   signupStore: signupStoreReducer,
   sessionStore: sessionStoreReducer,
+  expensesStore: expensesStoreReducer,
 });
 
 export const initialState = ({
   loginStore: loginStoreInitialState,
   signupStore: signupStoreInitialState,
   sessionStore: sessionStoreInitialState,
+  expensesStore: expensesStoreInitialState,
 });
 
 export const actions = {
   ...loginStoreActions,
   ...signupStoreActions,
   ...sessionStoreActions,
+  ...expensesStoreActions,
 };
