@@ -21,7 +21,7 @@ class Expenses extends React.Component {
   render() {
     return (
       <div>
-        <AddExpense />
+        <AddExpense history={this.props.history} match={this.props.match} />
         {this.props.expenses.map(expense => <Expense {...expense} />)}
       </div>
     )

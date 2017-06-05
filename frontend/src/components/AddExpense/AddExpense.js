@@ -10,11 +10,22 @@ import thunks from '../../thunks';
 import { getExpensesForm, getExpensesErrors, getExpensesLoading } from '../../selectors/expenses';
 
 const AddExpense = props => (
-  (() => console.log('-------------', thunks))() ||
   <div className="w5 flex flex-column">
     {props.errors.general && props.errors.general.map(error =>
       <ErrorMessage key={error} message={error} />,
     )}
+    <InputGroup
+      label="Amount"
+      value={props.form.amount}
+      errors={props.errors.amount}
+      onChange={text => props.updateFormExpenses({ amount: text })}
+    />
+    <InputGroup
+      label="Description"
+      value={props.form.description}
+      errors={props.errors.description}
+      onChange={text => props.updateFormExpenses({ description: text })}
+    />
     <InputGroup
       label="Date"
       value={props.form.occuredAt}
@@ -22,24 +33,9 @@ const AddExpense = props => (
       onChange={text => props.updateFormExpenses({ occuredAt: text })}
     />
     <InputGroup
-      label="Amount"
-      value={props.form.amount}
-      errors={props.errors.amount}
-      type="password"
-      onChange={text => props.updateFormExpenses({ amount: text })}
-    />
-    <InputGroup
-      label="Description"
-      value={props.form.description}
-      errors={props.errors.description}
-      type="password"
-      onChange={text => props.updateFormExpenses({ description: text })}
-    />
-    <InputGroup
       label="Comment"
       value={props.form.comment}
       errors={props.errors.comment}
-      type="password"
       onChange={text => props.updateFormExpenses({ comment: text })}
     />
     <Button
@@ -47,7 +43,7 @@ const AddExpense = props => (
       className="mb3 w-100"
       color="green"
       disabled={props.loading}
-      onClick={console.log}
+      onClick={() => props.createExpense(props.match.params.userId, props.history)}
     />
   </div>
 );
@@ -59,9 +55,18 @@ AddExpense.propTypes = {
     description: PropTypes.string.isRequired,
     comment: PropTypes.string.isRequired,
   }),
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      userId: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
   errors: PropTypes.object.isRequired,
   loading: PropTypes.bool.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
   updateFormExpenses: PropTypes.func.isRequired,
+  createExpense: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -72,6 +77,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   updateFormExpenses: thunks.updateFormExpenses,
+  createExpense: thunks.createExpense,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddExpense);

@@ -59,6 +59,7 @@ object ApiException {
   def fromException(e: Exception): (ApiException, Option[String]) = e match {
       case e: ApiException => (e, None)
       case org.http4s.MalformedMessageBodyFailure(message, err) => (MalformedJsonException, Some(s"Malformed Json: $message: $err"))
+      case e:java.text.ParseException => (MalformedJsonException, Some(s"Malformed Json: $e"))
       case org.http4s.InvalidMessageBodyFailure(message, e) => (BadTypeJsonException, Some(s"Bad type Json: $message: $e"))
       case e: org.http4s.DecodeFailure => (UnknownJsonException, Some(s"Unknown Json failure: $e"))
       case UnauthorizedServiceException => (UnauthorizedApiException, None)
