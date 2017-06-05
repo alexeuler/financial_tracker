@@ -10,7 +10,7 @@ import thunks from '../../thunks';
 import { getExpensesForm, getExpensesErrors, getExpensesLoading } from '../../selectors/expenses';
 
 const AddExpense = props => (
-  <div className="w5 flex flex-column">
+  <div className="flex flex-column pa3 ba b--light-gray mw6">
     {props.errors.general && props.errors.general.map(error =>
       <ErrorMessage key={error} message={error} />,
     )}
@@ -18,12 +18,14 @@ const AddExpense = props => (
       label="Amount"
       value={props.form.amount}
       errors={props.errors.amount}
+      small
       onChange={text => props.updateFormExpenses({ amount: text })}
     />
     <InputGroup
       label="Description"
       value={props.form.description}
       errors={props.errors.description}
+      small
       onChange={text => props.updateFormExpenses({ description: text })}
     />
     <InputGroup
@@ -31,12 +33,14 @@ const AddExpense = props => (
       value={props.form.occuredAt}
       type="date"
       errors={props.errors.occuredAt}
+      small
       onChange={text => props.updateFormExpenses({ occuredAt: text })}
     />
     <InputGroup
       label="Comment"
       value={props.form.comment}
       errors={props.errors.comment}
+      small
       onChange={text => props.updateFormExpenses({ comment: text })}
     />
     <Button

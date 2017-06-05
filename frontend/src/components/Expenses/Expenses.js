@@ -19,15 +19,16 @@ class Expenses extends React.Component {
   }
 
   render() {
-    console.log("+++++++++++++++", this.props);
     return (
-      <div>
-        <AddExpense history={this.props.history} match={this.props.match} />
+      <div className="flex flex-row-l flex-column pa4">
+        <div>
         {this.props.expenses.map(
           expense => <Expense 
             key={expense.id} 
             {...expense} 
           />)}
+        </div>
+        <AddExpense history={this.props.history} match={this.props.match} />
       </div>
     )
   }

@@ -44,7 +44,7 @@ const delete1 = (state, action) =>
   over(expensesLens(action.userId), filter(expense => (expense.id !== action.expenseId)), state);
 
 const resetForm = state =>
-  set(formLens, initialState, state);
+  set(formLens, initialForm, state);
 
 const updateForm = (state, action) =>
   over(formLens, form => ({ ...form, ...action.payload }), state);
