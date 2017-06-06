@@ -12,17 +12,32 @@ import { getUsersForm, getUsersErrors, getUsersLoading, getEditingFocus } from '
 const EditUser = (props) => {
   if (props.hidden) return null;
   return (
-    <div className="flex flex-column pa3 ba b--light-gray mw6">
+    <div className="flex flex-column pa3 ba b--light-gray w5 mw6">
       {props.errors.general && props.errors.general.map(error =>
         <ErrorMessage key={error} message={error} />,
       )}
-      <InputGroup
+      { !props.edit && <InputGroup
         label="Email"
-        value={props.form.identity}
-        errors={props.errors.identity}
+        value={props.form.email}
+        errors={props.errors.email}
         small
-        onChange={text => props.updateFormUsers({ description: text })}
+        onChange={text => props.updateFormUsers({ email: text })}
+      />}
+      <InputGroup
+        label="Password"
+        value={props.form.password}
+        errors={props.errors.password}
+        type="password"
+        small
+        onChange={text => props.updateFormUsers({ password: text })}
       />
+      {props.edit && <InputGroup
+        label="Role"
+        value={props.form.role}
+        errors={props.errors.role}
+        small
+        onChange={text => props.updateFormUsers({ role: text })}
+      />}
       <Button
         title={props.submitTitle}
         className="mb3 w-100"
@@ -42,7 +57,7 @@ const EditUser = (props) => {
 
 EditUser.propTypes = {
   form: PropTypes.shape({
-    identity: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
     password: PropTypes.string.isRequired,
     role: PropTypes.string.isRequired,
   }),
@@ -50,6 +65,7 @@ EditUser.propTypes = {
   loading: PropTypes.bool.isRequired,
   hidden: PropTypes.bool,
   submitTitle: PropTypes.string.isRequired,
+  edit: PropTypes.bool.isRequired,
   userId: PropTypes.number,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,

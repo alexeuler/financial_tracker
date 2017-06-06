@@ -67,6 +67,7 @@ export const createExpense = (userId, history) =>
     if (!isEmpty(errors)) {
       return dispatch(reduxActions.setErrorsExpenses(errors));
     }
+
     dispatch(reduxActions.setLoadingExpenses(true));
     let response;
     try {
@@ -102,12 +103,17 @@ export const createExpense = (userId, history) =>
 
 export const updateExpense = (userId, expenseId, history) =>
   async function updateExpenseThunk(dispatch, getState) {
+    const state = getState();
+    const token = getToken(state);
+    const form = getExpensesForm(state);
+    const errors = validateForm(form);
+    if (!isEmpty(errors)) {
+      return dispatch(reduxActions.setErrorsExpenses(errors));
+    }
+
     dispatch(reduxActions.setLoadingExpenses(true));
     let response;
     try {
-      const state = getState();
-      const token = getToken(state);
-      const form = getExpensesForm(state);
       response = await api.updateExpense(token)(userId, expenseId, form);
     } catch (e) {
       return dispatch(reduxActions.setErrorsExpenses({ general: [SERVER_FAILURE_MESSAGE] }));

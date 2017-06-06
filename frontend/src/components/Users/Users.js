@@ -38,7 +38,8 @@ class Users extends React.Component {
           </a>}
         </div>
         <EditUser
-          history={this.props.history} 
+          history={this.props.history}
+          edit={!!this.props.editingFocus}
           submitTitle={this.props.editingFocus ? 'Update user' : 'Add user'}
         />
       </div>

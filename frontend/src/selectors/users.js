@@ -16,6 +16,11 @@ export const getEditingFocus = path(['usersStore', 'editingFocus']);
 export const getUsersForm =
   path(['usersStore', 'form']);
 
+export const getUsersCreateForm = pipe(
+  getUsersForm,
+  pick(['password', 'email']),
+);
+
 export const getUsersUpdateForm = pipe(
   getUsersForm,
   pick(['password', 'role']),

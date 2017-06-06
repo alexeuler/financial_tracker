@@ -1,3 +1,5 @@
+import { indexOf } from 'ramda';
+
 const emailRegex = /[^\s@]+@[^\s@]+\.[^\s@]+/
 class Validation {
   constructor(value) {

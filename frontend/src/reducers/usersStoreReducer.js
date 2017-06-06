@@ -10,7 +10,7 @@ const SET_LOADING = 'USERS:SET_LOADING';
 const SET_ERRORS = 'USERS:SET_ERRORS';
 
 const initialForm = () => ({
-  identity: '',
+  email: '',
   password: '',
   role: 'User',
 });
