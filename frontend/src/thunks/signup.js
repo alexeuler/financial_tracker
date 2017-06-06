@@ -10,11 +10,11 @@ const SERVER_FAILURE_MESSAGE = 'Could not connect to server. Please try again la
 
 export const signup = (payload, history) =>
   async function signupThunk(dispatch) {
-    const emailValidation = new Validation();
-    emailValidation.email(payload.email);
+    const emailValidation = new Validation(payload.email);
+    emailValidation.email();
 
-    const passwordValidation = new Validation();
-    passwordValidation.length(payload.password, 3);
+    const passwordValidation = new Validation(payload.password);
+    passwordValidation.length(3);
     passwordValidation.equalPasswords(payload.password, payload.passwordConfirmation);
 
     if (!emailValidation.isValid() || !passwordValidation.isValid()) {

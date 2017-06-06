@@ -9,10 +9,10 @@ const SERVER_FAILURE_MESSAGE = 'Could not connect to server. Please try again la
 
 export const login = (payload, history) =>
   async function loginThunk(dispatch, getState) {
-    const emailValidation = new Validation();
-    emailValidation.email(payload.email);
-    const passwordValidation = new Validation();
-    passwordValidation.nonEmpty(payload.password);
+    const emailValidation = new Validation(payload.email);
+    emailValidation.email();
+    const passwordValidation = new Validation(payload.password);
+    passwordValidation.nonEmpty();
     if (!emailValidation.isValid() || !passwordValidation.isValid()) {
       const errors = {
         email: emailValidation.errors,
