@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import InputGroup from '../InputGroup';
+
 class Filters extends React.Component {
   constructor(props) {
     super(props);
@@ -10,7 +12,43 @@ class Filters extends React.Component {
   renderFilters = () => {
     if (!this.state.visible) return null;
     return (
-      <div>Expanded</div>
+      <div>
+        <div className="flex flex-row">
+          <InputGroup
+            label="Amount From"
+            type="number"
+            small
+            className="ph2"
+            onChange={console.log}
+          />
+          <InputGroup
+            label="Amount To"
+            type="number"
+            small
+            className="ph2"
+            onChange={console.log}
+          />
+        </div>
+        <InputGroup
+          label="Containing text"
+          small
+          className="ph2"
+          onChange={console.log}
+        />
+        <InputGroup
+          label="Date From"
+          type="date"
+          small
+          onChange={console.log}
+        />
+        <InputGroup
+          label="Date To"
+          type="date"
+          small
+          onChange={console.log}
+        />
+
+      </div>
     )
   }
 

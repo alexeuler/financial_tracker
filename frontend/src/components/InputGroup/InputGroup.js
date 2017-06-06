@@ -9,7 +9,7 @@ const InputGroup = (props) => {
   const inputProps = omit(['label'], props);
   const fontClass = props.small ? 'f5' : 'f4';
   return (
-    <div className="mb4 w-100">
+    <div className={`mb4 w-100 ${props.className}`}>
       <div className={`${fontClass} gray`}>{props.label}</div>
       <Input {...inputProps} />
       {props.errors.map(error => <ErrorMessage key={error} message={error} />)}
@@ -20,12 +20,14 @@ const InputGroup = (props) => {
 InputGroup.defaultProps = {
   errors: [],
   small: false,
+  className: '',
 };
 
 InputGroup.propTypes = {
   label: PropTypes.string.isRequired,
   small: PropTypes.bool,
   errors: PropTypes.arrayOf(PropTypes.string),
+  className: PropTypes.string,
 };
 
 export default InputGroup;
