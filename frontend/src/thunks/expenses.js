@@ -1,10 +1,11 @@
 import queryString from 'query-string';
+import { pick, map, pipe } from 'ramda';
 
 import { Validation } from '../utils';
 import * as api from '../api';
 import { actions as reduxActions } from '../reducers';
 import { getToken } from '../selectors/session';
-import { getExpensesForm } from '../selectors/expenses';
+import { getExpensesForm, getExpensesEditingFocus, getExpense } from '../selectors/expenses';
 
 const SERVER_FAILURE_MESSAGE = 'Could not connect to server. Please try again later.';
 
@@ -79,6 +80,18 @@ export const createExpense = (userId, history) =>
     }
     dispatch(reduxActions.addExpenses(userId, [response.result]));
     return dispatch(reduxActions.resetFormExpenses());
+  };
+
+export const setEditingFocusExpense = (userId, expenseId) =>
+  async function setEditingFocusExpenseThunk(dispatch, getState) {
+    await dispatch(reduxActions.setEditingFocusExpenses(expenseId));
+    if (!expenseId) return dispatch(reduxActions.resetFormExpenses());
+    const expense = getExpense(getState(), userId, expenseId);
+    const form = pipe(
+      pick(['occuredAt', 'amount', 'comment', 'description']),
+      map(x => x.toString()),
+    )(expense);
+    return dispatch(reduxActions.updateFormExpenses(form));
   };
 
 

@@ -3,6 +3,7 @@ import { lensPath, set, over, filter } from 'ramda';
 const ADD = 'EXPENSES:ADD';
 const UPDATE = 'EXPENSES:UPDATE';
 const DELETE = 'EXPENSES:DELETE';
+const SET_EDITING_FOCUS = 'EXPENSES:SET_EDITING_FOCUS';
 const RESET_FORM = 'EXPENSES:RESET_FORM';
 const UPDATE_FORM = 'EXPENSES:UPDATE_FORM';
 const SET_LOADING = 'EXPENSES:SET_LOADING';
@@ -20,6 +21,7 @@ export const initialState = {
     loading: false,
     errors: {},
   },
+  editingFocus: null,
   form: initialForm,
   entities: {},
 };
@@ -27,6 +29,7 @@ export const initialState = {
 const loadingLens = lensPath(['meta', 'loading']);
 const errorsLens = lensPath(['meta', 'errors']);
 const formLens = lensPath(['form']);
+const editingFocusLens = lensPath(['editingFocus']);
 const expensesLens = userId => lensPath(['entities', userId]);
 const expenseLens = (userId, expenseId) => lensPath(['entities', userId, expenseId]);
 
@@ -42,6 +45,9 @@ const update = (state, action) =>
 
 const delete1 = (state, action) =>
   over(expensesLens(action.userId), filter(expense => (expense.id !== action.expenseId)), state);
+
+const setEditingFocus = (state, action) =>
+  set(editingFocusLens, action.payload, state);
 
 const resetForm = state =>
   set(formLens, initialForm, state);
@@ -60,6 +66,8 @@ export default (state = initialState, action) => {
       return update(state, action);
     case DELETE:
       return delete1(state, action);
+    case SET_EDITING_FOCUS:
+      return setEditingFocus(state, action);
     case RESET_FORM:
       return resetForm(state);
     case UPDATE_FORM:
@@ -77,6 +85,7 @@ const addExpenses = (userId, payload) => ({ type: ADD, userId, payload });
 const updateExpenses = (userId, expenseId, payload) =>
   ({ type: UPDATE, userId, expenseId, payload });
 const deleteExpenses = (userId, expenseId) => ({ type: DELETE, userId, expenseId });
+const setEditingFocusExpenses = expenseId => ({ type: SET_EDITING_FOCUS, payload: expenseId });
 const resetFormExpenses = () => ({ type: RESET_FORM });
 const updateFormExpenses = payload => ({ type: UPDATE_FORM, payload });
 const setLoadingExpenses = payload => ({ type: SET_LOADING, payload });
@@ -86,6 +95,7 @@ export const actions = {
   addExpenses,
   updateExpenses,
   deleteExpenses,
+  setEditingFocusExpenses,
   resetFormExpenses,
   updateFormExpenses,
   setLoadingExpenses,

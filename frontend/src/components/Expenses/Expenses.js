@@ -3,10 +3,10 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { getSessionState } from '../../selectors/session';
-import { getExpenses } from '../../selectors/expenses';
+import { getExpenses, getEditingFocus } from '../../selectors/expenses';
 import thunks from '../../thunks';
 import Expense from '../Expense';
-import AddExpense from '../AddExpense';
+import EditExpense from '../EditExpense';
 
 class Expenses extends React.Component {
 
@@ -22,13 +22,25 @@ class Expenses extends React.Component {
     return (
       <div className="flex flex-row-l flex-column pa4">
         <div>
-        {this.props.expenses.map(
-          expense => <Expense 
-            key={expense.id} 
-            {...expense} 
-          />)}
+          {this.props.expenses.map(
+            expense => <Expense 
+              key={expense.id}
+              edit={this.props.editingFocus === expense.id}
+              onEdit={expenseId => this.props.setEditingFocus(this.props.match.params.userId, expenseId)}
+              {...expense} 
+            />)}
+          <a
+            className={`pa2 underline ${this.props.editingFocus ? 'pointer' : 'blue'}`}
+            onClick={() => this.props.setEditingFocus(this.props.match.params.userId, null)}
+          >
+            New
+          </a>
         </div>
-        <AddExpense history={this.props.history} match={this.props.match} />
+        <EditExpense
+          history={this.props.history} 
+          match={this.props.match}
+          submitTitle={this.props.editingFocus ? 'Update expense' : 'Add expense'}
+        />
       </div>
     )
   }
@@ -36,6 +48,7 @@ class Expenses extends React.Component {
 
 Expenses.defaultProps = {
   expenses: [],
+  editingFocus: null,
 }
 
 Expenses.propTypes = {
@@ -50,17 +63,21 @@ Expenses.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+  editingFocus: PropTypes.number,
   expenses: PropTypes.array.isRequired,
   fetchExpenses: PropTypes.func,
+  setEditingFocus: PropTypes.func,
 };
 
 const mapStateToProps = (state, ownProps) => ({
   session: getSessionState(state),
   expenses: getExpenses(state, ownProps.match.params.userId),
+  editingFocus: getEditingFocus(state),
 })
 
 const mapDispatchToProps = {
   fetchExpenses: thunks.fetchExpenses,
+  setEditingFocus: thunks.setEditingFocusExpense,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Expenses);

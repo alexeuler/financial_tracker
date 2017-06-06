@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 const Expense = props => (
   <div className="flex flex-row">
-    <div className="pa2 w4-ns w5">
+    <div className="pa2 w4-l w5">
       <div>{props.occuredAt.split(' ')[0]}</div>
       <div>{props.occuredAt.split(' ')[1]}</div>
     </div>
@@ -15,7 +15,7 @@ const Expense = props => (
       {props.amount}
     </div>
     <div className="pa2 flex items-center">
-      <a className="pa2 underline pointer" onClick={console.log}>Edit</a>
+      <a className={`pa2 underline ${props.edit ? 'blue' : 'pointer'}`} onClick={() => props.onEdit(props.id)}>Edit</a>
       <a className="pa2 underline pointer" onClick={console.log}>Delete</a>
     </div>
   </div>
@@ -23,6 +23,7 @@ const Expense = props => (
 
 Expense.defaultProps = {
   comment: null,
+  edit: false,
 };
 
 Expense.propTypes = {
@@ -32,6 +33,8 @@ Expense.propTypes = {
   comment: PropTypes.string,
   occuredAt: PropTypes.string.isRequired,
   userId: PropTypes.number.isRequired,
+  edit: PropTypes.bool,
+  onEdit: PropTypes.func.isRequired,
 };
 
 export default Expense;
