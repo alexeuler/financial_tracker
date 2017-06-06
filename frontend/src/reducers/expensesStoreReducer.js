@@ -42,7 +42,7 @@ const add = (state, action) =>
   );
 
 const update = (state, action) =>
-  over(expensesLens(action.userId, action.expenseId), (expenses) => {
+  over(expensesLens(action.userId), (expenses) => {
     const index = findIndex(expense => expense.id === action.expenseId, expenses);
     return rUpdate(index, action.payload, expenses);
   }, state);

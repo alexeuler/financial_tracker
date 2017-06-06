@@ -20,12 +20,18 @@ import expensesStoreReducer, {
   actions as expensesStoreActions,
 } from './expensesStoreReducer';
 
+import usersStoreReducer, {
+  initialState as usersStoreInitialState,
+  actions as usersStoreActions,
+} from './usersStoreReducer';
+
 
 export default combineReducers({
   loginStore: loginStoreReducer,
   signupStore: signupStoreReducer,
   sessionStore: sessionStoreReducer,
   expensesStore: expensesStoreReducer,
+  usersStore: usersStoreReducer,
 });
 
 export const initialState = ({
@@ -33,6 +39,7 @@ export const initialState = ({
   signupStore: signupStoreInitialState,
   sessionStore: sessionStoreInitialState,
   expensesStore: expensesStoreInitialState,
+  usersStore: usersStoreInitialState,
 });
 
 export const actions = {
@@ -40,4 +47,5 @@ export const actions = {
   ...signupStoreActions,
   ...sessionStoreActions,
   ...expensesStoreActions,
+  ...usersStoreActions,
 };

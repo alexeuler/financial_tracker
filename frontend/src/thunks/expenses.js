@@ -118,7 +118,7 @@ export const updateExpense = (userId, expenseId, history) =>
       switch (response.error.code) {
         case 300:
           return dispatch(reduxActions.setErrorsExpenses({
-            general: ['You are unauthorized to create expenses for this user'],
+            general: ['You are unauthorized to update expenses for this user'],
           }));
         case 301: {
           const search = {
@@ -154,7 +154,7 @@ export const deleteExpense = (userId, expenseId, history) =>
       switch (response.error.code) {
         case 300:
           return dispatch(reduxActions.setErrorsExpenses({
-            general: ['You are unauthorized to create expenses for this user'],
+            general: ['You are unauthorized to delete expenses for this user'],
           }));
         case 301: {
           const search = {
