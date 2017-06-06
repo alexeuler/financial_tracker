@@ -1,20 +1,23 @@
 import queryString from 'query-string';
-import { pick, map, pipe, isEmpty } from 'ramda';
+import { pick, isEmpty } from 'ramda';
 
 import { Validation } from '../utils';
 import * as api from '../api';
 import { actions as reduxActions } from '../reducers';
 import { getToken } from '../selectors/session';
-import { getUsersForm, getUser } from '../selectors/users';
+import { getUsersForm, getUsersUpdateForm, getUser } from '../selectors/users';
 
 const SERVER_FAILURE_MESSAGE = 'Could not connect to server. Please try again later.';
 
 const validateForm = (form) => {
-  const passwordValidation = new Validation(form.amount);
+  const emailValidation = new Validation(form.email);
+  emailValidation.email();
+  const passwordValidation = new Validation(form.password);
   passwordValidation.length(3);
-  const roleValidation = new Validation(form.description);
+  const roleValidation = new Validation(form.role);
   roleValidation.oneOf(['User', 'Manager', 'Admin']);
   const errors = {};
+  if (!emailValidation.isValid()) errors.email = emailValidation.errors;
   if (!passwordValidation.isValid()) errors.password = passwordValidation.errors;
   if (!roleValidation.isValid()) errors.role = roleValidation.errors;
   return errors;
@@ -97,14 +100,14 @@ export const createUser = (history) =>
     return dispatch(reduxActions.resetFormUsers());
   };
 
-export const updateUser = (history) =>
+export const updateUser = (userId, history) =>
   async function updateUserThunk(dispatch, getState) {
     dispatch(reduxActions.setLoadingUsers(true));
     let response;
     try {
       const state = getState();
       const token = getToken(state);
-      const form = getUsersForm(state);
+      const form = getUsersUpdateForm(state);
       response = await api.updateUser(token)(userId, form);
     } catch (e) {
       return dispatch(reduxActions.setErrorsUsers({ general: [SERVER_FAILURE_MESSAGE] }));
@@ -176,7 +179,7 @@ export const setEditingFocusUser = userId =>
     await dispatch(reduxActions.setEditingFocusUsers(userId));
     if (!userId) return dispatch(reduxActions.resetFormUsers());
     const user = getUser(getState(), userId);
-    const form = pick(['password', 'role'])(user);
+    const form = pick(['identity', 'password', 'role'])(user);
     return dispatch(reduxActions.updateFormUsers(form));
   };
 

@@ -1,4 +1,4 @@
-import { path, find, pipe, sortBy, prop } from 'ramda';
+import { path, find, pipe, sortBy, prop, pick } from 'ramda';
 
 export const getUsers = state =>
   pipe(
@@ -15,6 +15,11 @@ export const getEditingFocus = path(['usersStore', 'editingFocus']);
 
 export const getUsersForm =
   path(['usersStore', 'form']);
+
+export const getUsersUpdateForm = pipe(
+  getUsersForm,
+  pick(['password', 'role']),
+);
 
 export const getUsersEditingFocus =
   path(['usersStore', 'editingFocus']);
