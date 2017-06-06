@@ -29,12 +29,12 @@ class Expenses extends React.Component {
               onEdit={expenseId => this.props.setEditingFocus(this.props.match.params.userId, expenseId)}
               {...expense} 
             />)}
-          <a
-            className={`pa2 underline ${this.props.editingFocus ? 'pointer' : 'blue'}`}
+          {this.props.editingFocus && <a
+            className="pa2 underline pointer b"
             onClick={() => this.props.setEditingFocus(this.props.match.params.userId, null)}
           >
             New
-          </a>
+          </a>}
         </div>
         <EditExpense
           history={this.props.history} 

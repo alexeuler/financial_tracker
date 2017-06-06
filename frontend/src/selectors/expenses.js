@@ -1,7 +1,11 @@
-import { path, find } from 'ramda';
+import { path, find, pipe, sortBy, prop, reverse } from 'ramda';
 
 export const getExpenses = (state, userId) =>
-  path(['expensesStore', 'entities', userId], state);
+  pipe(
+    path(['expensesStore', 'entities', userId]),
+    expenses => sortBy(prop('occuredAt'))(expenses || []),
+    reverse,
+  )(state);
 
 export const getExpense = (state, userId, expenseId) => {
   const expenses = getExpenses(state, userId);

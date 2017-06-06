@@ -1,15 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import DateTime from 'react-datetime';
+import moment from 'moment';
 
-const DateInput = props => (
-  <div className="avenir">
-    <DateTime
-      input={false}
-      onChange={date => props.onChange(date.format('YYYY-MM-DD HH:mm'))}
-    />
-  </div>
-);
+const DateInput = props => {
+  const format = 'YYYY-MM-DD HH:mm';
+  const date = props.value ? moment(props.value, format) : moment(new Date());
+  return (
+    <div className="avenir">
+      <p>{date.format(format)}</p>
+      <DateTime
+        input={false}
+        value={date}
+        onChange={date1 => props.onChange(date1.format(format))}
+      />
+    </div>
+  );
+};
 
 const StandardInput = props => {
   const fontClass = props.small ? 'f5' : 'f4';

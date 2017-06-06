@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const Expense = props => (
-  <div className="flex flex-row">
+  <div className={`flex flex-row ${props.edit ? 'bg-light-gray' : ''}`}>
     <div className="pa2 w4-l w5">
       <div>{props.occuredAt.split(' ')[0]}</div>
       <div>{props.occuredAt.split(' ')[1]}</div>
