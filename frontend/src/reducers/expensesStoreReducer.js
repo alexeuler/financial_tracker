@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-import { lensPath, set, over, filter, update as rUpdate, findIndex } from 'ramda';
+import { lensPath, set, over, filter, update as rUpdate, findIndex, pipe } from 'ramda';
 
 const ADD = 'EXPENSES:ADD';
 const UPDATE = 'EXPENSES:UPDATE';
@@ -13,7 +13,7 @@ const SET_ERRORS = 'EXPENSES:SET_ERRORS';
 
 const initialForm = () => ({
   occuredAt: moment(new Date()).format('YYYY-MM-DD HH:mm'),
-  amount: '',
+  amount: '0',
   description: '',
   comment: '',
 });
@@ -53,8 +53,10 @@ const delete1 = (state, action) =>
 const setEditingFocus = (state, action) =>
   set(editingFocusLens, action.payload, state);
 
-const resetForm = state =>
-  set(formLens, initialForm(), state);
+const resetForm = pipe(
+  set(formLens, initialForm()),
+  set(errorsLens, {}),
+);
 
 const updateForm = (state, action) =>
   over(formLens, form => ({ ...form, ...action.payload }), state);

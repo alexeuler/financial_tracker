@@ -1,13 +1,27 @@
 import queryString from 'query-string';
-import { pick, map, pipe } from 'ramda';
+import { pick, map, pipe, isEmpty } from 'ramda';
 
 import { Validation } from '../utils';
 import * as api from '../api';
 import { actions as reduxActions } from '../reducers';
 import { getToken } from '../selectors/session';
-import { getExpensesForm, getExpensesEditingFocus, getExpense } from '../selectors/expenses';
+import { getExpensesForm, getExpense } from '../selectors/expenses';
 
 const SERVER_FAILURE_MESSAGE = 'Could not connect to server. Please try again later.';
+
+const validateForm = (form) => {
+  const amountValidation = new Validation(form.amount);
+  amountValidation.number();
+  const descValidation = new Validation(form.description);
+  descValidation.nonEmpty();
+  const dateValidation = new Validation(form.occuredAt);
+  dateValidation.nonEmpty();
+  const errors = {};
+  if (!amountValidation.isValid()) errors.amount = amountValidation.errors;
+  if (!descValidation.isValid()) errors.description = descValidation.errors;
+  if (!dateValidation.isValid()) errors.date = dateValidation.errors;
+  return errors;
+};
 
 export const fetchExpenses = (userId, history) =>
   async function fetchExpensesThunk(dispatch, getState) {
@@ -46,12 +60,16 @@ export const fetchExpenses = (userId, history) =>
 
 export const createExpense = (userId, history) =>
   async function createExpenseThunk(dispatch, getState) {
+    const state = getState();
+    const token = getToken(state);
+    const form = getExpensesForm(state);
+    const errors = validateForm(form);
+    if (!isEmpty(errors)) {
+      return dispatch(reduxActions.setErrorsExpenses(errors));
+    }
     dispatch(reduxActions.setLoadingExpenses(true));
     let response;
     try {
-      const state = getState();
-      const token = getToken(state);
-      const form = getExpensesForm(state);
       response = await api.createExpense(token)(userId, form);
     } catch (e) {
       return dispatch(reduxActions.setErrorsExpenses({ general: [SERVER_FAILURE_MESSAGE] }));

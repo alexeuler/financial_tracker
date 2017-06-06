@@ -21,6 +21,7 @@ const AddExpense = (props) => {
         value={props.form.amount}
         errors={props.errors.amount}
         small
+        type="number"
         onChange={text => props.updateFormExpenses({ amount: text })}
       />
       <InputGroup
