@@ -7,7 +7,7 @@ import InputGroup from '../InputGroup';
 import Button from '../Button';
 
 import thunks from '../../thunks';
-import { getExpensesForm, getExpensesErrors, getExpensesLoading } from '../../selectors/expenses';
+import { getExpensesForm, getExpensesErrors, getExpensesLoading, getEditingFocus } from '../../selectors/expenses';
 
 const AddExpense = (props) => {
   if (props.hidden) return null;
@@ -50,7 +50,13 @@ const AddExpense = (props) => {
         className="mb3 w-100"
         color="green"
         disabled={props.loading}
-        onClick={() => props.createExpense(props.match.params.userId, props.history)}
+        onClick={() => {
+          if (props.expenseId) {
+            props.updateExpense(props.match.params.userId, props.expenseId, props.history);
+          } else {
+            props.createExpense(props.match.params.userId, props.history);
+          }
+        }}
       />
     </div>
   );
@@ -72,22 +78,26 @@ AddExpense.propTypes = {
   loading: PropTypes.bool.isRequired,
   hidden: PropTypes.bool,
   submitTitle: PropTypes.string.isRequired,
+  expenseId: PropTypes.number,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
   updateFormExpenses: PropTypes.func.isRequired,
   createExpense: PropTypes.func.isRequired,
+  updateExpense: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
   form: getExpensesForm(state),
   errors: getExpensesErrors(state),
   loading: getExpensesLoading(state),
+  expenseId: getEditingFocus(state),
 });
 
 const mapDispatchToProps = {
   updateFormExpenses: thunks.updateFormExpenses,
   createExpense: thunks.createExpense,
+  updateExpense: thunks.updateExpense,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddExpense);

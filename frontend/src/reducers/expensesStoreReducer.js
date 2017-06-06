@@ -1,4 +1,4 @@
-import { lensPath, set, over, filter } from 'ramda';
+import { lensPath, set, over, filter, update as rUpdate, findIndex } from 'ramda';
 
 const ADD = 'EXPENSES:ADD';
 const UPDATE = 'EXPENSES:UPDATE';
@@ -31,7 +31,6 @@ const errorsLens = lensPath(['meta', 'errors']);
 const formLens = lensPath(['form']);
 const editingFocusLens = lensPath(['editingFocus']);
 const expensesLens = userId => lensPath(['entities', userId]);
-const expenseLens = (userId, expenseId) => lensPath(['entities', userId, expenseId]);
 
 const add = (state, action) =>
   over(
@@ -41,7 +40,10 @@ const add = (state, action) =>
   );
 
 const update = (state, action) =>
-  set(expenseLens(action.userId, action.expenseId), action.payload, state);
+  over(expensesLens(action.userId, action.expenseId), (expenses) => {
+    const index = findIndex(expense => expense.id === action.expenseId, expenses);
+    return rUpdate(index, action.payload, expenses);
+  }, state);
 
 const delete1 = (state, action) =>
   over(expensesLens(action.userId), filter(expense => (expense.id !== action.expenseId)), state);

@@ -82,6 +82,44 @@ export const createExpense = (userId, history) =>
     return dispatch(reduxActions.resetFormExpenses());
   };
 
+export const updateExpense = (userId, expenseId, history) =>
+  async function updateExpenseThunk(dispatch, getState) {
+    dispatch(reduxActions.setLoadingExpenses(true));
+    let response;
+    try {
+      const state = getState();
+      const token = getToken(state);
+      const form = getExpensesForm(state);
+      response = await api.updateExpense(token)(userId, expenseId, form);
+    } catch (e) {
+      return dispatch(reduxActions.setErrorsExpenses({ general: [SERVER_FAILURE_MESSAGE] }));
+    } finally {
+      dispatch(reduxActions.setLoadingExpenses(false));
+    }
+    if (response.error) {
+      switch (response.error.code) {
+        case 300:
+          return dispatch(reduxActions.setErrorsExpenses({
+            general: ['You are unauthorized to create expenses for this user'],
+          }));
+        case 301: {
+          const search = {
+            message: 'Your session is outdated. Please relogin.',
+          };
+          const query = queryString.stringify(search);
+          history.push(`/login?${query}`);
+          return Promise.resolve(null);
+        }
+        default:
+          return dispatch(reduxActions.setErrorsExpenses({
+            general: [response.error.message],
+          }));
+      }
+    }
+    return dispatch(reduxActions.updateExpenses(userId, expenseId, response.result));
+  };
+
+
 export const setEditingFocusExpense = (userId, expenseId) =>
   async function setEditingFocusExpenseThunk(dispatch, getState) {
     await dispatch(reduxActions.setEditingFocusExpenses(expenseId));
