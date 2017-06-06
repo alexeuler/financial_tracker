@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import DateTime from 'react-datetime';
 import moment from 'moment';
+import { map } from 'ramda';
 
-const DateInput = props => {
+const DateInput = (props) => {
   const format = 'YYYY-MM-DD HH:mm';
   const date = props.value ? moment(props.value, format) : moment(new Date());
   return (
@@ -17,6 +18,16 @@ const DateInput = props => {
     </div>
   );
 };
+
+const SelectInput = props => (
+  <select
+    className="w-100 mv2"
+    value={props.value}
+    onChange={e => props.onChange(e.target.value)}
+  >
+    {map(value => <option key={value} value={value}>{value}</option>, props.options)}
+  </select>
+);
 
 const StandardInput = props => {
   const fontClass = props.small ? 'f5' : 'f4';
@@ -34,6 +45,8 @@ const Input = (props) => {
   switch (props.type) {
     case 'date':
       return <DateInput {...props} />;
+    case 'select':
+      return <SelectInput {...props} />;
     default:
       return <StandardInput {...props} />;
   }
@@ -43,10 +56,12 @@ Input.defaultProps = {
   type: 'text',
   value: null,
   small: false,
+  options: [],
 };
 
 Input.propTypes = {
   value: PropTypes.string,
+  options: PropTypes.array,
   onChange: PropTypes.func.isRequired,
   type: PropTypes.string,
   small: PropTypes.bool,

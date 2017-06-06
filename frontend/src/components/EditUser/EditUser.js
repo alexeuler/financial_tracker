@@ -35,6 +35,8 @@ const EditUser = (props) => {
         label="Role"
         value={props.form.role}
         errors={props.errors.role}
+        type="select"
+        options={['User', 'Manager', 'Admin']}
         small
         onChange={text => props.updateFormUsers({ role: text })}
       />}
