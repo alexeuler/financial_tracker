@@ -7,6 +7,7 @@ import { getExpenses, getEditingFocus } from '../../selectors/expenses';
 import thunks from '../../thunks';
 import Expense from '../Expense';
 import EditExpense from '../EditExpense';
+import Filters from '../Filters';
 
 class Expenses extends React.Component {
 
@@ -22,6 +23,7 @@ class Expenses extends React.Component {
     return (
       <div className="flex flex-row-l flex-column pa4">
         <div>
+          <Filters />
           {this.props.expenses.map(
             expense => <Expense 
               key={expense.id}
