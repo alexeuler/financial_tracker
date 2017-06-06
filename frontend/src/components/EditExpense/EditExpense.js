@@ -9,7 +9,7 @@ import Button from '../Button';
 import thunks from '../../thunks';
 import { getExpensesForm, getExpensesErrors, getExpensesLoading, getEditingFocus } from '../../selectors/expenses';
 
-const AddExpense = (props) => {
+const EditExpense = (props) => {
   if (props.hidden) return null;
   return (
     <div className="flex flex-column pa3 ba b--light-gray mw6">
@@ -63,7 +63,7 @@ const AddExpense = (props) => {
   );
 };
 
-AddExpense.propTypes = {
+EditExpense.propTypes = {
   form: PropTypes.shape({
     occuredAt: PropTypes.string,
     amount: PropTypes.string.isRequired,
@@ -101,4 +101,4 @@ const mapDispatchToProps = {
   updateExpense: thunks.updateExpense,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddExpense);
+export default connect(mapStateToProps, mapDispatchToProps)(EditExpense);

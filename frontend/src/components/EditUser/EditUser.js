@@ -9,7 +9,7 @@ import Button from '../Button';
 import thunks from '../../thunks';
 import { getUsersForm, getUsersErrors, getUsersLoading, getEditingFocus } from '../../selectors/users';
 
-const AddUser = (props) => {
+const EditUser = (props) => {
   if (props.hidden) return null;
   return (
     <div className="flex flex-column pa3 ba b--light-gray mw6">
@@ -30,9 +30,9 @@ const AddUser = (props) => {
         disabled={props.loading}
         onClick={() => {
           if (props.userId) {
-            props.updateUser(props.match.params.userId, props.userId, props.history);
+            props.updateUser(props.userId, props.history);
           } else {
-            props.createUser(props.match.params.userId, props.history);
+            props.createUser(props.history);
           }
         }}
       />
@@ -40,18 +40,12 @@ const AddUser = (props) => {
   );
 };
 
-AddUser.propTypes = {
+EditUser.propTypes = {
   form: PropTypes.shape({
-    occuredAt: PropTypes.string,
-    amount: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    comment: PropTypes.string.isRequired,
+    identity: PropTypes.string.isRequired,
+    password: PropTypes.string.isRequired,
+    role: PropTypes.string.isRequired,
   }),
-  match: PropTypes.shape({
-    params: PropTypes.shape({
-      userId: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
   errors: PropTypes.object.isRequired,
   loading: PropTypes.bool.isRequired,
   hidden: PropTypes.bool,
@@ -78,4 +72,4 @@ const mapDispatchToProps = {
   updateUser: thunks.updateUser,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddUser);
+export default connect(mapStateToProps, mapDispatchToProps)(EditUser);

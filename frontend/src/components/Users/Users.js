@@ -15,7 +15,7 @@ class Users extends React.Component {
   }
 
   fetch = () => {
-    this.props.fetchUsers(this.props.match.params.userId, this.props.history);
+    this.props.fetchUsers(this.props.history);
   }
 
   render() {
@@ -26,20 +26,19 @@ class Users extends React.Component {
             user => <User 
               key={user.id}
               edit={this.props.editingFocus === user.id}
-              onEdit={userId => this.props.setEditingFocus(this.props.match.params.userId, userId)}
-              onDelete={userId => this.props.deleteUser(this.props.match.params.userId, userId)}
+              onEdit={this.props.setEditingFocus}
+              onDelete={this.props.deleteUser}
               {...user} 
             />)}
           {this.props.editingFocus && <a
             className="pa2 underline pointer b"
-            onClick={() => this.props.setEditingFocus(this.props.match.params.userId, null)}
+            onClick={() => this.props.setEditingFocus(null)}
           >
             New
           </a>}
         </div>
         <EditUser
           history={this.props.history} 
-          match={this.props.match}
           submitTitle={this.props.editingFocus ? 'Update user' : 'Add user'}
         />
       </div>
@@ -56,11 +55,6 @@ Users.propTypes = {
   session: PropTypes.shape({
     identity: PropTypes.string,
   }),
-  match: PropTypes.shape({
-    params: PropTypes.shape({
-      userId: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
@@ -73,7 +67,7 @@ Users.propTypes = {
 
 const mapStateToProps = (state, ownProps) => ({
   session: getSessionState(state),
-  users: getUsers(state, ownProps.match.params.userId),
+  users: getUsers(state),
   editingFocus: getEditingFocus(state),
 })
 
