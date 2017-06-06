@@ -16,7 +16,7 @@ const Expense = props => (
     </div>
     <div className="pa2 flex items-center">
       <a className={`pa2 underline ${props.edit ? 'blue' : 'pointer'}`} onClick={() => props.onEdit(props.id)}>Edit</a>
-      <a className="pa2 underline pointer" onClick={console.log}>Delete</a>
+      <a className="pa2 underline pointer" onClick={() => props.onDelete(props.id)}>Delete</a>
     </div>
   </div>
 );
@@ -35,6 +35,7 @@ Expense.propTypes = {
   userId: PropTypes.number.isRequired,
   edit: PropTypes.bool,
   onEdit: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
 };
 
 export default Expense;

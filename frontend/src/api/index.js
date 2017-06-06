@@ -24,5 +24,5 @@ export const signup = payload => postRequest('/users/', payload)();
 export const fetchExpenses = token => userId => getRequest(`/users/${userId}/expenses`)(token);
 export const createExpense = token => (userId, payload) => postRequest(`/users/${userId}/expenses`, payload)(token);
 export const updateExpense = token => (userId, expenseId, payload) => patchRequest(`/users/${userId}/expenses/${expenseId}`, payload)(token);
-export const deleteExpense = token => (expenseId, userId) => deleteRequest(`/users/${userId}/expenses/${expenseId}`)(token);
+export const deleteExpense = token => (userId, expenseId) => deleteRequest(`/users/${userId}/expenses/${expenseId}`)(token);
 

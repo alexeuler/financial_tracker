@@ -27,6 +27,7 @@ class Expenses extends React.Component {
               key={expense.id}
               edit={this.props.editingFocus === expense.id}
               onEdit={expenseId => this.props.setEditingFocus(this.props.match.params.userId, expenseId)}
+              onDelete={expenseId => this.props.deleteExpense(this.props.match.params.userId, expenseId)}
               {...expense} 
             />)}
           {this.props.editingFocus && <a
@@ -66,6 +67,7 @@ Expenses.propTypes = {
   editingFocus: PropTypes.number,
   expenses: PropTypes.array.isRequired,
   fetchExpenses: PropTypes.func,
+  deleteExpense: PropTypes.func,
   setEditingFocus: PropTypes.func,
 };
 
@@ -77,6 +79,7 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = {
   fetchExpenses: thunks.fetchExpenses,
+  deleteExpense: thunks.deleteExpense,
   setEditingFocus: thunks.setEditingFocusExpense,
 };
 
