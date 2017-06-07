@@ -16,7 +16,6 @@ class Report extends React.Component {
   }
 
   render() {
-    console.log('---------------', this.props);
     return (
       <div className="pa4">
         <table className="collapse ba b--light-gray mb3">
@@ -36,7 +35,7 @@ class Report extends React.Component {
               </tr>
             )}
             {this.props.report.entries.length && <tr className="fw6 bt b--black">
-              <td className="pv3 ph4">For all time</td>
+              <td className="pv3 ph4">For all time from first to last expense</td>
               <td className="pv3 ph4">{this.props.report.sum.toFixed(2)}</td>
               <td className="pv3 ph4">{this.props.report.avg.toFixed(2)}</td>
             </tr>}
