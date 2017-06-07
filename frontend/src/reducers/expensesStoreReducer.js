@@ -113,6 +113,8 @@ const updateExpenses = (userId, expenseId, payload) =>
   ({ type: UPDATE, userId, expenseId, payload });
 const deleteExpenses = (userId, expenseId) => ({ type: DELETE, userId, expenseId });
 const setEditingFocusExpenses = expenseId => ({ type: SET_EDITING_FOCUS, payload: expenseId });
+const updateFiltersExpenses = payload => ({ type: UPDATE_FILTERS, payload });
+const resetFiltersExpenses = () => ({ type: RESET_FILTERS });
 const resetFormExpenses = () => ({ type: RESET_FORM });
 const updateFormExpenses = payload => ({ type: UPDATE_FORM, payload });
 const setLoadingExpenses = payload => ({ type: SET_LOADING, payload });
@@ -123,6 +125,8 @@ export const actions = {
   updateExpenses,
   deleteExpenses,
   setEditingFocusExpenses,
+  updateFiltersExpenses,
+  resetFiltersExpenses,
   resetFormExpenses,
   updateFormExpenses,
   setLoadingExpenses,

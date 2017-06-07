@@ -194,3 +194,5 @@ export const setEditingFocusExpense = (userId, expenseId) =>
 
 
 export const updateFormExpenses = reduxActions.updateFormExpenses;
+export const updateFiltersExpenses = reduxActions.updateFiltersExpenses;
+export const resetFiltersExpenses = reduxActions.resetFiltersExpenses;

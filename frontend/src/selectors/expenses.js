@@ -25,3 +25,6 @@ export const getExpensesErrors =
 
 export const getExpensesLoading =
   path(['expensesStore', 'meta', 'loading']);
+
+export const getFilters =
+  path(['expensesStore', 'filters']);

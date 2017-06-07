@@ -1,7 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+
+import { getFilters } from '../../selectors/expenses';
 
 import InputGroup from '../InputGroup';
+import thunks from '../../thunks';
 
 class Filters extends React.Component {
   constructor(props) {
@@ -19,33 +23,40 @@ class Filters extends React.Component {
             type="number"
             small
             className="ph2"
-            onChange={console.log}
+            value={this.props.filters.amountFrom}
+            onChange={(value) => this.props.updateFiltersExpenses({ amountFrom: value })}
           />
           <InputGroup
             label="Amount To"
             type="number"
             small
             className="ph2"
-            onChange={console.log}
+            value={this.props.filters.amountTo}
+            onChange={(value) => this.props.updateFiltersExpenses({ amountTo: value })}
           />
         </div>
         <InputGroup
           label="Containing text"
           small
           className="ph2"
-          onChange={console.log}
+          value={this.props.filters.text}
+          onChange={(value) => this.props.updateFiltersExpenses({ text: value })}
         />
         <InputGroup
           label="Date From"
           type="date"
           small
-          onChange={console.log}
+          className="ph2"
+          value={this.props.filters.dateFrom}
+          onChange={(value) => this.props.updateFiltersExpenses({ dateFrom: value })}
         />
         <InputGroup
           label="Date To"
           type="date"
+          className="ph2"
           small
-          onChange={console.log}
+          value={this.props.filters.dateTo}
+          onChange={(value) => this.props.updateFiltersExpenses({ dateTo: value })}
         />
 
       </div>
@@ -69,8 +80,25 @@ class Filters extends React.Component {
   }
 };
 
-Filters.propTypes = {
+const mapStateToProps = state => ({
+  filters: getFilters(state),
+});
 
+const mapDispatchToProps = {
+  updateFiltersExpenses: thunks.updateFiltersExpenses,
+  resetFiltersExpenses: thunks.resetFiltersExpenses,
 }
 
-export default Filters;
+Filters.propTypes = {
+  filters: PropTypes.shape({
+    dateFrom: PropTypes.string,
+    dateTo: PropTypes.string,
+    amountFrom: PropTypes.string,
+    amountTo: PropTypes.string,
+    text: PropTypes.string,
+  }),
+  updateFiltersExpenses: PropTypes.func.isRequired,
+  resetFiltersExpenses: PropTypes.func.isRequired,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Filters);
