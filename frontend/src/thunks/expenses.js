@@ -19,7 +19,7 @@ const validateForm = (form) => {
   const errors = {};
   if (!amountValidation.isValid()) errors.amount = amountValidation.errors;
   if (!descValidation.isValid()) errors.description = descValidation.errors;
-  if (!dateValidation.isValid()) errors.date = dateValidation.errors;
+  if (!dateValidation.isValid()) errors.occuredAt = dateValidation.errors;
   return errors;
 };
 

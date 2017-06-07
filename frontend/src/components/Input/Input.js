@@ -6,13 +6,16 @@ import { map } from 'ramda';
 
 const DateInput = (props) => {
   const format = 'YYYY-MM-DD HH:mm';
-  const date = props.value ? moment(props.value, format) : moment(new Date());
+  const date = props.value ? moment(props.value, format) : '';
   return (
     <div className="avenir">
-      <p>{date.format(format)}</p>
+      <p>
+        {props.value}
+        {props.value && <a className="pointer underline ml3" onClick={() => props.onChange('')}>Reset</a>}
+      </p>
       <DateTime
         input={false}
-        value={date}
+        value={date || null}
         onChange={date1 => props.onChange(date1.format(format))}
       />
     </div>

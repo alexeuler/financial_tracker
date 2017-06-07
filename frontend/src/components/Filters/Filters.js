@@ -55,12 +55,14 @@ class Filters extends React.Component {
   render() {
     return (
       <div className="pa2">
-        <a 
-          className="underline blue pointer"
-          onClick={() => this.setState({ visible: !this.state.visible })}
-        >
-          Filters
-        </a>
+        <div className="pb3">
+          <a 
+            className="underline blue pointer"
+            onClick={() => this.setState({ visible: !this.state.visible })}
+          >
+            Filters
+          </a>
+        </div>
         {this.renderFilters()}
       </div>
     )
