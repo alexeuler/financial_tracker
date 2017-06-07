@@ -18,8 +18,31 @@ class Report extends React.Component {
   render() {
     console.log('---------------', this.props);
     return (
-      <div>
-        Report
+      <div className="pa4">
+        <table className="collapse ba b--light-gray mb3">
+          <thead>
+            <tr className="fw6">
+              <td className="pv2 ph4">Period</td>
+              <td className="pv2 ph4">Sum</td>
+              <td className="pv2 ph4">Average</td>
+            </tr>
+          </thead>
+          <tbody>
+            {this.props.report.entries.map(entry =>
+              <tr className="striped--light-gray" key={entry.start}>
+                <td className="pv3 ph4">{`${entry.start} - ${entry.end}`}</td>
+                <td className="pv3 ph4">{entry.sum.toFixed(2)}</td>
+                <td className="pv3 ph4">{entry.avg.toFixed(2)}</td>
+              </tr>
+            )}
+            {this.props.report.entries.length && <tr className="fw6 bt b--black">
+              <td className="pv3 ph4">For all time</td>
+              <td className="pv3 ph4">{this.props.report.sum.toFixed(2)}</td>
+              <td className="pv3 ph4">{this.props.report.avg.toFixed(2)}</td>
+            </tr>}
+          </tbody>
+        </table>
+        <a className="underline blue pointer no-print" onClick={window.print}>Print</a>
       </div>
     );
   }
