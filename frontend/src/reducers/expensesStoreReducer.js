@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-import { lensPath, set, over, filter, update as rUpdate, findIndex, pipe } from 'ramda';
+import { lensPath, set, over, filter, update as rUpdate, findIndex, pipe, prop, uniqBy } from 'ramda';
 
 const ADD = 'EXPENSES:ADD';
 const UPDATE = 'EXPENSES:UPDATE';
@@ -49,7 +49,7 @@ const expensesLens = userId => lensPath(['entities', userId]);
 const add = (state, action) =>
   over(
     expensesLens(action.userId),
-    expenses => [...(expenses || []), ...action.payload],
+    expenses => uniqBy(prop('id'))([...(expenses || []), ...action.payload]),
     state,
   );
 

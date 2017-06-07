@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 import { getSessionState } from '../../selectors/session';
 import { getExpenses, getEditingFocus } from '../../selectors/expenses';
@@ -24,6 +25,12 @@ class Expenses extends React.Component {
       <div className="flex flex-row-l flex-column pa4">
         <div>
           <Filters />
+          <Link
+            to={`/users/${this.props.match.params.userId}/expenses/report`}
+            className="blue pa2"
+          >
+            Report
+          </Link>
           {this.props.expenses.map(
             expense => <Expense 
               key={expense.id}
