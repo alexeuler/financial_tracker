@@ -43,7 +43,6 @@ const Signup = (props) => (
         disabled={props.loading}
         onClick={() => !props.loading && props.signup(props.form, props.history)}
       />
-      <Link to="/login" className="tr">Login</Link>
     </div>
   </div>
 );

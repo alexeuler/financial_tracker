@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 
 import { getSessionState } from '../../selectors/session';
+import thunks from '../../thunks';
 
-const renderWithSession = (session) => (
+const renderWithSession = (session, logout) => (
   <div className="pa3 flex-l">
     <div className="pv2">
       {session.role === 'Admin' && <Link className="ph3 blue" to="/users">Manage users and their expenses</Link>}
@@ -18,21 +19,23 @@ const renderWithSession = (session) => (
       {<Link className="ph3 blue" to={`/users/${session.id}/expenses/report`}>Expenses report</Link>}
     </div>
     <div className="pv2">
-      {<Link className="ph3 blue" to="/">Logout</Link>}
+      {<a className="ph3 blue pointer underline" onClick={logout}>Logout</a>}
     </div>
   </div>
 );
 
-const renderWithoutSession = (
-  <div>
-    <Link to="/login">Login</Link>
-    <Link to="/signup">Sign up</Link>
+const renderWithoutSession = () => (
+  <div className="pa3">
+    <Link className="ph3 blue" to="/login">Login</Link>
+    <Link className="ph3 blue" to="/signup">Sign up</Link>
   </div>
 );
 
 const Navbar = props => (
   <div className="no-print">
-    {props.session ? renderWithSession(props.session) : renderWithoutSession()}
+    {props.session.token ?
+      renderWithSession(props.session, () => props.logout(props.history)) :
+      renderWithoutSession()}
   </div>
 );
 
@@ -44,11 +47,20 @@ Navbar.propTypes = {
   session: PropTypes.shape({
     id: PropTypes.number,
     role: PropTypes.string,
+    token: PropTypes.string,
   }),
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+  logout: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
   session: getSessionState(state),
 });
 
-export default withRouter(connect(mapStateToProps)(Navbar));
+const mapDispatchToProps = {
+  logout: thunks.resetSession,
+};
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Navbar));

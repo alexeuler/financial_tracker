@@ -7,3 +7,11 @@ export const setToken = payload =>
     localStorageSetToken(payload);
     return Promise.resolve(null);
   };
+
+export const resetSession = history =>
+  async function resetSessionThunk(dispatch) {
+    dispatch(reduxActions.resetSession());
+    localStorageSetToken(null);
+    history.push('/login');
+    return Promise.resolve(null);
+  };

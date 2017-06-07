@@ -25,12 +25,6 @@ class Expenses extends React.Component {
       <div className="flex flex-row-l flex-column pa4">
         <div>
           <Filters />
-          <Link
-            to={`/users/${this.props.match.params.userId}/expenses/report`}
-            className="blue pa2"
-          >
-            Report
-          </Link>
           {this.props.expenses.map(
             expense => <Expense 
               key={expense.id}
