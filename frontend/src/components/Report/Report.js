@@ -38,8 +38,8 @@ Report.propTypes = {
   }).isRequired,
 };
 
-const mapStateToProps = state => ({
-  report: getReport(state),
+const mapStateToProps = (state, ownProps) => ({
+  report: getReport(state, ownProps.match.params.userId),
 });
 
 const mapDispatchToProps = {
