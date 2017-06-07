@@ -40,6 +40,10 @@ export const getExpense = (state, userId, expenseId) => {
   return find(expense => expense.id === expenseId, expenses);
 };
 
+export const getReport = state => {
+  return {};
+}
+
 export const getEditingFocus = path(['expensesStore', 'editingFocus']);
 
 export const getExpensesForm =

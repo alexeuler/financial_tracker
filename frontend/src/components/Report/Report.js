@@ -1,12 +1,49 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux'
 
-const Report = props => (
-  <div>Report</div>
-);
+import { getReport } from '../../selectors/expenses';
+import thunks from '../../thunks';
 
-Report.propTypes = {
+class Report extends React.Component {
 
+  componentDidMount() {
+    this.fetch();
+  }
+
+  fetch = () => {
+    this.props.fetchExpenses(this.props.match.params.userId, this.props.history);
+  }
+
+  render() {
+    console.log('---------------', this.props);
+    return (
+      <div>
+        Report
+      </div>
+    );
+  }
 }
 
-export default Report;
+Report.propTypes = {
+  report: PropTypes.object.isRequired,
+  fetchExpenses: PropTypes.func.isRequired,
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      userId: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+};
+
+const mapStateToProps = state => ({
+  report: getReport(state),
+});
+
+const mapDispatchToProps = {
+  fetchExpenses: thunks.fetchExpenses,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Report);
