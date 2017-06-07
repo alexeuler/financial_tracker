@@ -43,7 +43,7 @@ class Filters extends React.Component {
           onChange={(value) => this.props.updateFiltersExpenses({ text: value })}
         />
         <InputGroup
-          label="Date From"
+          label="Datetime From"
           type="date"
           small
           className="ph2"
@@ -51,7 +51,7 @@ class Filters extends React.Component {
           onChange={(value) => this.props.updateFiltersExpenses({ dateFrom: value })}
         />
         <InputGroup
-          label="Date To"
+          label="Datetime To"
           type="date"
           className="ph2"
           small
