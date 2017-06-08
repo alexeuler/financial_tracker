@@ -2,4 +2,6 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 VERSION=`$DIR/bump_version`
 TAG="financial-tracker-proxy:$VERSION"
 
+cp $DIR/../../../public/* $DIR/../static && 
+cd $DIR/../../../frontend && npm run build:prod &&
 docker build -t $TAG $DIR/..
