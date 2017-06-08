@@ -75,3 +75,9 @@ javaOptions in Test ++= Seq("-Xms512M", "-Xmx2048M", "-XX:+CMSClassUnloadingEnab
 
 // Display all compile warnings
 scalacOptions ++= List("-deprecation", "-feature")
+
+// Sbt native packager
+enablePlugins(JavaAppPackaging)
+enablePlugins(DockerPlugin)
+dockerExposedPorts := Seq(9000)
+dockerExposedVolumes := Seq("/opt/docker/logs")

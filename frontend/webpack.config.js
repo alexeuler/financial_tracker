@@ -1,12 +1,16 @@
 const webpack = require('webpack');
 const path = require('path');
 
+const isDev = process.env.NODE_ENV === 'dev';
+
 module.exports = {
   entry: {
     app: ['babel-polyfill', './src/app.js'],
   },
   output: {
-    path: path.join(__dirname, '../', 'public'),
+    path: isDev ?
+      path.join(__dirname, '../', 'public') :
+      path.join(__dirname, '../', 'deploy', 'proxy', 'static'),
     filename: '[name].js',
   },
   module: {
@@ -27,8 +31,11 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      __DEV__: JSON.stringify(process.env.NODE_ENV === 'dev'),
+      __DEV__: JSON.stringify(isDev),
+      'process.env': {
+        NODE_ENV: JSON.stringify(isDev ? 'dev' : 'production'),
+      },
     }),
   ],
-  watch: true,
+  watch: isDev,
 };

@@ -2,3 +2,4 @@ target
 conf/secrets/secrets.*
 node_modules
 app.js
+deploy/proxy/static
