@@ -1,0 +1,10 @@
+version: '2'
+services:
+  app:
+    image: "financial-tracker:${APP_VERSION}"
+    ports:
+      - "9000:9000"
+  proxy:
+    image: "financial-tracker-proxy:${PROXY_VERSION}"
+    ports:
+      - "8000:80"

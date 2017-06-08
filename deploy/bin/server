@@ -1,0 +1,9 @@
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+echo "Getting app version"
+export APP_VERSION=`$DIR/../app/bin/version`
+echo $APP_VERSION
+echo "Getting proxy version"
+export PROXY_VERSION=`$DIR/../proxy/bin/version`
+echo $PROXY_VERSION
+echo "Starting docker"
+cd $DIR/.. && docker-compose up

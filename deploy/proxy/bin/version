@@ -1,0 +1,5 @@
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+BUILD=`cat $DIR/../.buildVersion`
+MINOR=`cat $DIR/../.minorVersion`
+MAJOR=`cat $DIR/../.majorVersion`
+echo "$MAJOR.$MINOR.$BUILD"

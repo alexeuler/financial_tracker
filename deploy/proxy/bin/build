@@ -1,0 +1,5 @@
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+VERSION=`$DIR/bump_version`
+TAG="financial-tracker-proxy:$VERSION"
+
+docker build -t $TAG $DIR/..
