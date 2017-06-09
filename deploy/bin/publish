@@ -1,0 +1,20 @@
+echo "------------- PLEASE DON'T FORGET TO LOGIN TO DOCKER BEFORE PUBLISHING -------------"
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+echo "Getting app version"
+export APP_VERSION=`$DIR/../app/bin/version`
+echo $APP_VERSION
+echo "Getting proxy version"
+export PROXY_VERSION=`$DIR/../proxy/bin/version`
+echo $PROXY_VERSION
+APP_IMAGE="financial-tracker:$APP_VERSION"
+PROXY_IMAGE="financial-tracker-proxy:$PROXY_VERSION"
+
+docker tag $APP_IMAGE alleycat/$APP_IMAGE
+docker tag $APP_IMAGE alleycat/financial-tracker:latest
+docker push alleycat/$APP_IMAGE
+docker push alleycat/financial-tracker:latest
+docker tag $PROXY_IMAGE alleycat/$PROXY_IMAGE
+docker tag $PROXY_IMAGE alleycat/financial-tracker-proxy:latest
+docker push alleycat/$PROXY_IMAGE
+docker push alleycat/financial-tracker-proxy:latest

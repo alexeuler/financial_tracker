@@ -1,6 +1,6 @@
 organization := "com.financetracker"
 scalaVersion := "2.12.2"
-version := "0.1.0"
+version := "0.1.2"
 name := "Financial tracker"
 
 val http4sVersion = "0.17.0-M2"

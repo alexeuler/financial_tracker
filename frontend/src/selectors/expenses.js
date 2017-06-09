@@ -75,7 +75,7 @@ export const getReport = (state, userId) => {
   );
 
   const entries = weeks.map((entity, i) => {
-    const sum = reduce((acc, elem) => acc + elem.amount, 0)(expensesGroups[i]);
+    const sum = reduce((acc, elem) => acc + elem.amount, 0)(expensesGroups[i] || []);
     const avg = sum / 7;
     return {
       start: entity.weekStart.format(dateFormat),
