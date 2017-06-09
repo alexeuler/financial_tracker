@@ -53,7 +53,7 @@ case class ExpenseServiceImpl(expenseRepo: ExpenseRepo) extends ExpenseService {
 
   private def isAuthorized(userId: UserId, session: Session): Boolean =
     session match {
-      case Session(_, _, Role.Admin, _) | Session(`userId`, _, Role.User, _) => true
+      case Session(_, _, Role.Admin, _) | Session(`userId`, _, _, _) => true
       case _ => false
     }
 
