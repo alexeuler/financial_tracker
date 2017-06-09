@@ -1,6 +1,6 @@
 organization := "com.financetracker"
 scalaVersion := "2.12.2"
-version := "0.1.2"
+version := "0.1.3"
 name := "Financial tracker"
 
 val http4sVersion = "0.17.0-M2"
@@ -53,11 +53,16 @@ libraryDependencies ++= Seq(
   "org.scalamock" %% "scalamock-scalatest-support" % "3.6.0" % Test
 )
 
+// Get current environment
+val env = sys.props.get("env").orElse(sys.env.get("BUILD_ENV")) match {
+  case Some("prod") | Some("production") => "prod"
+  case _ => "dev"
+}
+
 // Add .conf files to resources
 unmanagedResourceDirectories in Compile ++= Seq(
   baseDirectory.value / "conf" / "base",
-  baseDirectory.value / "conf" / "secrets",
-  baseDirectory.value / "conf" / "dev",
+  baseDirectory.value / "conf" / env,
   baseDirectory.value / "public"
 )
 

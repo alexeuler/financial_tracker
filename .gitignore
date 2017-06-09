@@ -1,4 +1,4 @@
 target
-conf/secrets/secrets.*
+conf/*/secrets.*
 node_modules
 app.js

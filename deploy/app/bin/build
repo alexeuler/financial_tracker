@@ -1,2 +1,2 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-cd $DIR/../../.. && sbt clean test docker:publishLocal
+cd $DIR/../../.. && sbt -Denv=prod clean test docker:publishLocal
