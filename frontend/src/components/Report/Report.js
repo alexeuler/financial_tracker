@@ -23,8 +23,8 @@ class Report extends React.Component {
           <thead>
             <tr className="fw6">
               <td className="pv2 ph4">Period</td>
-              <td className="pv2 ph4">Sum</td>
-              <td className="pv2 ph4">Average</td>
+              <td className="pv2 ph4 tr">Sum</td>
+              <td className="pv2 ph4 tr">Average</td>
             </tr>
           </thead>
           <tbody>
