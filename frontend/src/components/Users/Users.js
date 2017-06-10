@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { getSessionState } from '../../selectors/session';
-import { getUsers, getEditingFocus, getPage, getTotalPages } from '../../selectors/users';
+import { getUsers, getEditingFocus, getPage, getTotalPages, getUsersLoading } from '../../selectors/users';
 import thunks from '../../thunks';
 import User from '../User';
 import EditUser from '../EditUser';
@@ -19,25 +19,51 @@ class Users extends React.Component {
     this.props.fetchUsers(this.props.history);
   }
 
+  renderLoading = () => {
+    if (!this.props.loading) return null;
+    return (
+      <div className="flex items-center justify-center flicker pa3">Loading...</div>
+    )
+  }
+
+  renderUsers = () => {
+    if (!this.props.users || !this.props.users.length) {
+      return (
+        <div className="flex ba b--light-gray pa2">
+          <div className="pa2 w5">No users</div>
+          <div className="pa2 w4"></div>
+          <div className="pa2 w5"></div>
+        </div>
+      )
+    }
+
+    return (
+      <div className="ba b--light-gray pa2">
+        {this.props.users.map(
+          user => <User 
+            key={user.id}
+            edit={this.props.editingFocus === user.id}
+            onEdit={this.props.setEditingFocus}
+            onDelete={this.props.deleteUser}
+            session={this.props.session}
+            {...user} 
+          />)}
+        {this.props.editingFocus && <a
+          className="pa2 underline pointer b"
+          onClick={() => this.props.setEditingFocus(null)}
+        >
+          New
+        </a>}
+      </div>
+    )
+  }
+
   render() {
     return (
       <div className="flex flex-row-l flex-column pa4">
-        <div className="ba b--light-gray pa2">
-          {this.props.users.map(
-            user => <User 
-              key={user.id}
-              edit={this.props.editingFocus === user.id}
-              onEdit={this.props.setEditingFocus}
-              onDelete={this.props.deleteUser}
-              session={this.props.session}
-              {...user} 
-            />)}
-          {this.props.editingFocus && <a
-            className="pa2 underline pointer b"
-            onClick={() => this.props.setEditingFocus(null)}
-          >
-            New
-          </a>}
+        <div>
+          {this.renderUsers()}
+          {this.renderLoading()}
           <Pagination
             selectedPage={this.props.page}
             paginatorWidth={7}
@@ -70,6 +96,7 @@ Users.propTypes = {
   editingFocus: PropTypes.number,
   page: PropTypes.number.isRequired,
   totalPages: PropTypes.number.isRequired,
+  loading: PropTypes.bool.isRequired,
   users: PropTypes.array.isRequired,
   setPageUsers: PropTypes.func.isRequired,
   fetchUsers: PropTypes.func,
@@ -80,6 +107,7 @@ Users.propTypes = {
 const mapStateToProps = (state, ownProps) => ({
   session: getSessionState(state),
   users: getUsers(state),
+  loading: getUsersLoading(state),
   editingFocus: getEditingFocus(state),
   page: getPage(state),
   totalPages: getTotalPages(state),
