@@ -194,6 +194,9 @@ export const setEditingFocusExpense = (userId, expenseId) =>
 
 
 export const updateFormExpenses = reduxActions.updateFormExpenses;
-export const updateFiltersExpenses = reduxActions.updateFiltersExpenses;
+export const updateFiltersExpenses = payload => (dispatch) => {
+  dispatch(reduxActions.setPageExpenses(1));
+  dispatch(reduxActions.updateFiltersExpenses(payload));
+};
 export const resetFiltersExpenses = reduxActions.resetFiltersExpenses;
 export const setPageExpenses = reduxActions.setPageExpenses;

@@ -14,10 +14,7 @@ export const getPage =
 export const getPageSize =
   path(['expensesStore', 'pageSize']);
 
-export const getTotalPages = (state, userId) =>
-  Math.ceil(getRawExpenses(userId)(state).length / getPageSize(state));
-
-export const getExpenses = (state, userId) => {
+export const getFilteredExpenses = (state, userId) => {
   const filters = getFilters(state);
   let predicate = T;
   if (!isNaN(parseInt(filters.amountFrom, 0))) {
@@ -36,18 +33,28 @@ export const getExpenses = (state, userId) => {
   if (filters.dateFrom) predicate = addFilter(predicate, x => x.occuredAt >= filters.dateFrom);
   if (filters.dateTo) predicate = addFilter(predicate, x => x.occuredAt <= filters.dateTo);
 
-  const page = getPage(state);
-  const pageSize = getPageSize(state);
-
   return pipe(
     getRawExpenses(userId),
     filter(predicate),
     expenses => sortBy(prop('occuredAt'))(expenses || []),
     reverse,
+  )(state);
+};
+
+export const getExpenses = (state, userId) => {
+  const page = getPage(state);
+  const pageSize = getPageSize(state);
+
+  return pipe(
+    st => getFilteredExpenses(st, userId),
     drop((page - 1) * pageSize),
     take(pageSize),
   )(state);
 };
+
+export const getTotalPages = (state, userId) =>
+  Math.ceil(getFilteredExpenses(state, userId).length / getPageSize(state));
+
 
 export const getExpense = (state, userId, expenseId) => {
   const expenses = getExpenses(state, userId);
