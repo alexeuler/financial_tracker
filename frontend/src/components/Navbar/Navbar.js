@@ -6,36 +6,50 @@ import { Link, withRouter } from 'react-router-dom';
 import { getSessionState } from '../../selectors/session';
 import thunks from '../../thunks';
 
-const renderWithSession = (session, logout) => (
-  <div className="pa3 flex-l">
-    <div className="pv2">
-      {session.role === 'Admin' && <Link className="ph3 blue" to="/users">Manage users and their expenses</Link>}
-      {session.role === 'Manager' && <Link className="ph3 blue" to="/users">Manage users</Link>}
-    </div>
-    <div className="pv2">
-      {<Link className="ph3 blue" to={`/users/${session.id}/expenses`}>Personal expenses</Link>}
-    </div>
-    <div className="pv2">
-      {<Link className="ph3 blue" to={`/users/${session.id}/expenses/report`}>Expenses report</Link>}
-    </div>
-    <div className="pv2">
-      {<a className="ph3 blue pointer underline" onClick={logout}>Logout</a>}
-    </div>
-  </div>
-);
+const matchedClass = 'dark-gray';
+const unmatchedClass = 'blue';
 
-const renderWithoutSession = () => (
-  <div className="pa3">
-    <Link className="ph3 blue" to="/login">Login</Link>
-    <Link className="ph3 blue" to="/signup">Sign up</Link>
-  </div>
-);
+const renderWithSession = (session, logout, path) => {
+  const manageUsersClass = path === '/users' ? matchedClass : unmatchedClass;
+  const manageExpensesClass = path === '/users/:userId/expenses' ? matchedClass : unmatchedClass;
+  const reportClass = path === '/users/:userId/expenses/report' ? matchedClass : unmatchedClass;
+
+  return (
+    <div className="pa3 flex-l">
+      <div className="pv2">
+        {session.role === 'Admin' && <Link className={`ph3 no-underline ${manageUsersClass}`} to="/users">Manage users and their expenses</Link>}
+        {session.role === 'Manager' && <Link className={`ph3 no-underline ${manageUsersClass}`} to="/users">Manage users</Link>}
+      </div>
+      <div className="pv2">
+        {<Link className={`ph3 no-underline ${manageExpensesClass}`} to={`/users/${session.id}/expenses`}>Personal expenses</Link>}
+      </div>
+      <div className="pv2">
+        {<Link className={`ph3 no-underline ${reportClass}`} to={`/users/${session.id}/expenses/report`}>Expenses report</Link>}
+      </div>
+      <div className="pv2">
+        {<a className="ph3 no-underline blue pointer" onClick={logout}>Logout</a>}
+      </div>
+    </div>
+  );
+}
+
+const renderWithoutSession = (path) => {
+  const loginClass = path === '/login' ? matchedClass : unmatchedClass;
+  const signupClass = path === '/signup' ? matchedClass : unmatchedClass;
+
+  return (
+    <div className="pa3">
+      <Link className={`ph3 no-underline ${loginClass}`} to="/login">Login</Link>
+      <Link className={`ph3 no-underline ${signupClass}`} to="/signup">Sign up</Link>
+    </div>
+  );
+}
 
 const Navbar = props => (
-  <div className="no-print">
+  <div className="no-print bb b--gray">
     {props.session.token ?
-      renderWithSession(props.session, () => props.logout(props.history)) :
-      renderWithoutSession()}
+      renderWithSession(props.session, () => props.logout(props.history), props.match.path) :
+      renderWithoutSession(props.match.path)}
   </div>
 );
 
@@ -53,6 +67,9 @@ Navbar.propTypes = {
     push: PropTypes.func.isRequired,
   }).isRequired,
   logout: PropTypes.func.isRequired,
+  match: PropTypes.shape({
+    path: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 const mapStateToProps = state => ({

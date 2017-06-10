@@ -4,6 +4,6 @@ import Navbar from './Navbar';
 
 export default Component => props =>
   <div>
-    <Navbar />
+    <Navbar match={props.match} />
     <Component {...props} />
   </div>
