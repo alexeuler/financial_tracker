@@ -26,8 +26,9 @@ const renderWithSession = (session, logout, path) => {
       <div className="pv2">
         {<Link className={`ph3 no-underline ${reportClass}`} to={`/users/${session.id}/expenses/report`}>Expenses report</Link>}
       </div>
-      <div className="pv2">
-        {<a className="ph3 no-underline blue pointer" onClick={logout}>Logout</a>}
+      <div className="flex-auto flex items-center justify-end-l justify-start pt0-l pt3">
+        <div className="pl3">{`${session.identity}, ${session.role}`}</div>
+        <a className="ph3 no-underline blue pointer" onClick={logout}>Logout</a>
       </div>
     </div>
   );
@@ -60,6 +61,7 @@ Navbar.defaultProps = {
 Navbar.propTypes = {
   session: PropTypes.shape({
     id: PropTypes.number,
+    identity: PropTypes.string,
     role: PropTypes.string,
     token: PropTypes.string,
   }),
