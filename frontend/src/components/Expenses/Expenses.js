@@ -25,7 +25,6 @@ class Expenses extends React.Component {
     return (
       <div className="flex flex-row-l flex-column pa4">
         <div>
-          <Filters />
           <div className="mh2 ba b--light-gray w-100-m">
             {this.props.expenses.map(
               expense => <Expense 
@@ -48,6 +47,7 @@ class Expenses extends React.Component {
             maxPage={this.props.totalPages}
             onPageSelected={this.props.setPageExpenses}
           />
+          <Filters />
         </div>
         <EditExpense
           history={this.props.history} 
