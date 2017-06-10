@@ -9,6 +9,7 @@ import thunks from '../../thunks';
 import Expense from '../Expense';
 import EditExpense from '../EditExpense';
 import Filters from '../Filters';
+import Pagination from '../Pagination';
 
 class Expenses extends React.Component {
 
@@ -24,6 +25,12 @@ class Expenses extends React.Component {
     return (
       <div className="flex flex-row-l flex-column pa4">
         <div>
+          <Pagination
+            selectedPage={1}
+            paginatorWidth={7}
+            maxPage={50}
+            onPageSelected={console.log}
+          />
           <Filters />
           {this.props.expenses.map(
             expense => <Expense 
