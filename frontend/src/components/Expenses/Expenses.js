@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
 import { getSessionState } from '../../selectors/session';
-import { getExpenses, getEditingFocus, getPage, getTotalPages } from '../../selectors/expenses';
+import { getExpenses, getEditingFocus, getPage, getTotalPages, getExpensesLoading } from '../../selectors/expenses';
 import thunks from '../../thunks';
 import Expense from '../Expense';
 import EditExpense from '../EditExpense';
@@ -21,26 +21,50 @@ class Expenses extends React.Component {
     this.props.fetchExpenses(this.props.match.params.userId, this.props.history);
   }
 
+  renderLoading = () => {
+    if (!this.props.loading) return null;
+    return (
+      <div className="flex items-center justify-center flicker pa3">Loading...</div>
+    )
+  }
+
+  renderExpenses = () => {
+    if (!this.props.expenses || !this.props.expenses.length) {
+      return (
+        <div className="flex flex-row-l flex-column pa2 ba b--light-gray mh2">
+          <div className="pa2 w4">No expenses</div>
+          <div className="pa2 w5"></div>
+          <div className="pa2 w4"></div>
+          <div className="pa2 w4"></div>
+        </div>
+      )
+    }
+    return (
+      <div className="mh2 ba b--light-gray w-100-m">
+        {this.props.expenses.map(
+          expense => <Expense 
+            key={expense.id}
+            edit={this.props.editingFocus === expense.id}
+            onEdit={expenseId => this.props.setEditingFocus(this.props.match.params.userId, expenseId)}
+            onDelete={expenseId => this.props.deleteExpense(this.props.match.params.userId, expenseId)}
+            {...expense} 
+          />)}
+        {this.props.editingFocus && <a
+          className="pa2 underline pointer b"
+          onClick={() => this.props.setEditingFocus(this.props.match.params.userId, null)}
+        >
+          New
+        </a>}
+      </div>
+    );
+  }
+
   render() {
     return (
       <div className="flex flex-row-l flex-column pa4">
         <div>
-          <div className="mh2 ba b--light-gray w-100-m">
-            {this.props.expenses.map(
-              expense => <Expense 
-                key={expense.id}
-                edit={this.props.editingFocus === expense.id}
-                onEdit={expenseId => this.props.setEditingFocus(this.props.match.params.userId, expenseId)}
-                onDelete={expenseId => this.props.deleteExpense(this.props.match.params.userId, expenseId)}
-                {...expense} 
-              />)}
-            {this.props.editingFocus && <a
-              className="pa2 underline pointer b"
-              onClick={() => this.props.setEditingFocus(this.props.match.params.userId, null)}
-            >
-              New
-            </a>}
-          </div>
+          {this.renderExpenses()}
+          {this.renderLoading()}
           <Pagination
             selectedPage={this.props.page}
             paginatorWidth={7}
@@ -76,6 +100,7 @@ Expenses.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+  loading: PropTypes.bool.isRequired,
   editingFocus: PropTypes.number,
   expenses: PropTypes.array.isRequired,
   page: PropTypes.number.isRequired,
@@ -88,6 +113,7 @@ Expenses.propTypes = {
 
 const mapStateToProps = (state, ownProps) => ({
   session: getSessionState(state),
+  loading: getExpensesLoading(state),
   expenses: getExpenses(state, ownProps.match.params.userId),
   page: getPage(state),
   totalPages: getTotalPages(state, ownProps.match.params.userId),
