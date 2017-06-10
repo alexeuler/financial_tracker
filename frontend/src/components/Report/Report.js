@@ -35,14 +35,14 @@ class Report extends React.Component {
                   <span>{' - '}</span>
                   <span style={{'white-space': 'nowrap'}}>{entry.end}</span>
                 </td>
-                <td className="pv3-l ph4-l pv1 ph2">{moneyToString(entry.sum.toFixed(2))}</td>
-                <td className="pv3-l ph4-l pv1 ph2">{moneyToString(entry.avg.toFixed(2))}</td>
+                <td className="pv3-l ph4-l pv1 ph2 tr">{moneyToString(entry.sum.toFixed(2))}</td>
+                <td className="pv3-l ph4-l pv1 ph2 tr">{moneyToString(entry.avg.toFixed(2))}</td>
               </tr>
             )}
             {this.props.report.entries.length && <tr className="fw6 bt b--black">
               <td className="pv3-l ph4-l pv1 ph2">For all time from first to last expense</td>
-              <td className="pv3-l ph4-l pv1 ph2">{moneyToString(this.props.report.sum.toFixed(2))}</td>
-              <td className="pv3-l ph4-l pv1 ph2">{moneyToString(this.props.report.avg.toFixed(2))}</td>
+              <td className="pv3-l ph4-l pv1 ph2 tr">{moneyToString(this.props.report.sum.toFixed(2))}</td>
+              <td className="pv3-l ph4-l pv1 ph2 tr">{moneyToString(this.props.report.avg.toFixed(2))}</td>
             </tr>}
           </tbody>
         </table>
