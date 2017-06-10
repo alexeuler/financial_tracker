@@ -11,12 +11,12 @@ const Expense = props => (
         <div>{props.occuredAt.split(' ')[1]}</div>
       </div>
       <div className="pa2 w5 flex flex-column justify-center">
-        <div className="b">{props.description}</div>
+        <div className="fw6">{props.description}</div>
         <div className="gray">{props.comment}</div>
       </div>
     </div>
     <div className="pa2 flex items-center">
-      <div className="pa2-l pv2 w4 flex items-center">
+      <div className="pa2-l pv2 w4 flex items-center justify-end-l fw4-l fw6">
         {moneyToString(props.amount)}
       </div>
       <a className={`pv2 underline ${props.edit ? 'blue' : 'pointer'}`} onClick={() => props.onEdit(props.id)}>Edit</a>
