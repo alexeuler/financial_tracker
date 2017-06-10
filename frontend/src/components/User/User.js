@@ -29,12 +29,13 @@ const User = props => (
 User.defaultProps = {
   comment: null,
   edit: false,
+  password: '',
 };
 
 User.propTypes = {
   id: PropTypes.number.isRequired,
   identity: PropTypes.string.isRequired,
-  password: PropTypes.string.isRequired,
+  password: PropTypes.string,
   role: PropTypes.string.isRequired,
   edit: PropTypes.bool,
   onEdit: PropTypes.func.isRequired,

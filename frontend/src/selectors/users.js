@@ -8,11 +8,7 @@ export const getPage =
 export const getPageSize =
   path(['usersStore', 'pageSize']);
 
-export const getTotalPages = state => {
-  console.log(getRawUsers(state));
-  console.log(getPageSize(state));
-  return Math.ceil(getRawUsers(state).length / getPageSize(state));
-};
+export const getTotalPages = state => Math.ceil(getRawUsers(state).length / getPageSize(state));
 
 export const getUsers = (state) => {
   const page = getPage(state);

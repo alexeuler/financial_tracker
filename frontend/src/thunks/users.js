@@ -1,5 +1,5 @@
 import queryString from 'query-string';
-import { pick, isEmpty } from 'ramda';
+import { pick, isEmpty, omit } from 'ramda';
 
 import { Validation } from '../utils';
 import * as api from '../api';
@@ -22,7 +22,7 @@ const validateCreateForm = (form) => {
 
 const validateUpdateForm = (form) => {
   const passwordValidation = new Validation(form.password);
-  passwordValidation.length(3);
+  passwordValidation.lengthOrEmpty(3);
   const roleValidation = new Validation(form.role);
   roleValidation.oneOf(['User', 'Manager', 'Admin']);
   const errors = {};
@@ -112,7 +112,8 @@ export const updateUser = (userId, history) =>
   async function updateUserThunk(dispatch, getState) {
     const state = getState();
     const token = getToken(state);
-    const form = getUsersUpdateForm(state);
+    let form = getUsersUpdateForm(state);
+    form = form.password ? form : omit('password', form);
     const errors = validateUpdateForm(form);
     if (!isEmpty(errors)) {
       return dispatch(reduxActions.setErrorsUsers(errors));
@@ -147,6 +148,7 @@ export const updateUser = (userId, history) =>
           }));
       }
     }
+    dispatch(reduxActions.setErrorsUsers({}));
     return dispatch(reduxActions.updateUsers(userId, response.result));
   };
 
@@ -190,9 +192,12 @@ export const deleteUser = (userId, history) =>
 export const setEditingFocusUser = userId =>
   async function setEditingFocusUserThunk(dispatch, getState) {
     await dispatch(reduxActions.setEditingFocusUsers(userId));
-    if (!userId) return dispatch(reduxActions.resetFormUsers());
+    dispatch(reduxActions.resetFormUsers());
+    if (!userId) {
+      return Promise.resolve(null);
+    }
     const user = getUser(getState(), userId);
-    const form = pick(['identity', 'password', 'role'])(user);
+    const form = pick(['identity', 'role'])(user);
     return dispatch(reduxActions.updateFormUsers(form));
   };
 

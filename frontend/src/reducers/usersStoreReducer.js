@@ -1,4 +1,4 @@
-import { lensPath, set, over, filter, update as rUpdate, findIndex, pipe, uniqBy, prop } from 'ramda';
+import { lensPath, set, over, filter, update as rUpdate, findIndex, pipe, uniqBy, prop, map, omit } from 'ramda';
 
 const ADD = 'USERS:ADD';
 const UPDATE = 'USERS:UPDATE';
@@ -38,14 +38,17 @@ const pageLens = lensPath(['page']);
 const add = (state, action) =>
   over(
     usersLens,
-    users => uniqBy(prop('id'))([...(users || []), ...action.payload]),
+    (users) => {
+      const newUsers = map(omit('password'), action.payload);
+      return uniqBy(prop('id'))([...(users || []), ...newUsers]);
+    },
     state,
   );
 
 const update = (state, action) =>
   over(usersLens, (users) => {
     const index = findIndex(expense => expense.id === action.expenseId, users);
-    return rUpdate(index, action.payload, users);
+    return rUpdate(index, omit('password', action.payload), users);
   }, state);
 
 const delete1 = (state, action) =>
