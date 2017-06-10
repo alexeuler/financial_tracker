@@ -1,6 +1,9 @@
 import { range, length, last, head } from 'ramda';
 
 export const pagination = ({ selectedPage, maxPage, paginatorWidth }) => {
+  if (isNaN(maxPage) || isNaN(paginatorWidth) || isNaN(selectedPage) || (paginatorWidth < 1)) {
+    return [];
+  }
   if (maxPage <= paginatorWidth) return range(1, maxPage + 1);
   let result = [selectedPage];
   let cursor = 1;

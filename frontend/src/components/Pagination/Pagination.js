@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import { paginationWithDots } from './utils';
 import PageButton from './PageButton';
 
-const Pagination = props => {
-  console.log(props.maxPage);
+const Pagination = (props) => {
   if (props.maxPage < 2) return null;
   return (
     <div className="flex justify-center pa3">

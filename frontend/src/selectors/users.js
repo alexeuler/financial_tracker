@@ -1,10 +1,29 @@
-import { path, find, pipe, sortBy, prop, pick } from 'ramda';
+import { path, find, pipe, sortBy, prop, pick, drop, take } from 'ramda';
 
-export const getUsers = state =>
-  pipe(
-    path(['usersStore', 'entities']),
+const getRawUsers = path(['usersStore', 'entities']);
+
+export const getPage =
+  path(['usersStore', 'page']);
+
+export const getPageSize =
+  path(['usersStore', 'pageSize']);
+
+export const getTotalPages = state => {
+  console.log(getRawUsers(state));
+  console.log(getPageSize(state));
+  return Math.ceil(getRawUsers(state).length / getPageSize(state));
+};
+
+export const getUsers = (state) => {
+  const page = getPage(state);
+  const pageSize = getPageSize(state);
+  return pipe(
+    getRawUsers,
     users => sortBy(prop('id'))(users || []),
+    drop((page - 1) * pageSize),
+    take(pageSize),
   )(state);
+};
 
 export const getUser = (state, userId) => {
   const users = getUsers(state);

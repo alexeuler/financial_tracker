@@ -1,8 +1,9 @@
-import { lensPath, set, over, filter, update as rUpdate, findIndex, pipe } from 'ramda';
+import { lensPath, set, over, filter, update as rUpdate, findIndex, pipe, uniqBy, prop } from 'ramda';
 
 const ADD = 'USERS:ADD';
 const UPDATE = 'USERS:UPDATE';
 const DELETE = 'USERS:DELETE';
+const SET_PAGE = 'USERS:SET_PAGE';
 const SET_EDITING_FOCUS = 'USERS:SET_EDITING_FOCUS';
 const RESET_FORM = 'USERS:RESET_FORM';
 const UPDATE_FORM = 'USERS:UPDATE_FORM';
@@ -20,9 +21,11 @@ export const initialState = {
     loading: false,
     errors: {},
   },
+  page: 1,
+  pageSize: 15,
   editingFocus: null,
   form: initialForm(),
-  entities: {},
+  entities: [],
 };
 
 const loadingLens = lensPath(['meta', 'loading']);
@@ -30,11 +33,12 @@ const errorsLens = lensPath(['meta', 'errors']);
 const formLens = lensPath(['form']);
 const editingFocusLens = lensPath(['editingFocus']);
 const usersLens = lensPath(['entities']);
+const pageLens = lensPath(['page']);
 
 const add = (state, action) =>
   over(
     usersLens,
-    users => [...(users || []), ...action.payload],
+    users => uniqBy(prop('id'))([...(users || []), ...action.payload]),
     state,
   );
 
@@ -49,6 +53,9 @@ const delete1 = (state, action) =>
 
 const setEditingFocus = (state, action) =>
   set(editingFocusLens, action.payload, state);
+
+const setPage = (state, action) =>
+  set(pageLens, action.payload, state);
 
 const resetForm = pipe(
   set(formLens, initialForm()),
@@ -71,6 +78,8 @@ export default (state = initialState, action) => {
       return delete1(state, action);
     case SET_EDITING_FOCUS:
       return setEditingFocus(state, action);
+    case SET_PAGE:
+      return setPage(state, action);
     case RESET_FORM:
       return resetForm(state);
     case UPDATE_FORM:
@@ -89,6 +98,7 @@ const updateUsers = (expenseId, payload) =>
   ({ type: UPDATE, expenseId, payload });
 const deleteUsers = expenseId => ({ type: DELETE, expenseId });
 const setEditingFocusUsers = expenseId => ({ type: SET_EDITING_FOCUS, payload: expenseId });
+const setPageUsers = payload => ({ type: SET_PAGE, payload })
 const resetFormUsers = () => ({ type: RESET_FORM });
 const updateFormUsers = payload => ({ type: UPDATE_FORM, payload });
 const setLoadingUsers = payload => ({ type: SET_LOADING, payload });
@@ -99,6 +109,7 @@ export const actions = {
   updateUsers,
   deleteUsers,
   setEditingFocusUsers,
+  setPageUsers,
   resetFormUsers,
   updateFormUsers,
   setLoadingUsers,

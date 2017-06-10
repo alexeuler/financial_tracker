@@ -196,4 +196,6 @@ export const setEditingFocusUser = userId =>
     return dispatch(reduxActions.updateFormUsers(form));
   };
 
+export const setPage = reduxActions.setPage;
 export const updateFormUsers = reduxActions.updateFormUsers;
+export const setPageUsers = reduxActions.setPageUsers;
