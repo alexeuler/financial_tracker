@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 
 import { getReport } from '../../selectors/expenses';
 import thunks from '../../thunks';
+import { moneyToString } from '../../utils';
 
 class Report extends React.Component {
 
@@ -30,14 +31,14 @@ class Report extends React.Component {
             {this.props.report.entries.map(entry =>
               <tr className="striped--light-gray" key={entry.start}>
                 <td className="pv3 ph4">{`${entry.start} - ${entry.end}`}</td>
-                <td className="pv3 ph4">{entry.sum.toFixed(2)}</td>
-                <td className="pv3 ph4">{entry.avg.toFixed(2)}</td>
+                <td className="pv3 ph4">{moneyToString(entry.sum.toFixed(2))}</td>
+                <td className="pv3 ph4">{moneyToString(entry.avg.toFixed(2))}</td>
               </tr>
             )}
             {this.props.report.entries.length && <tr className="fw6 bt b--black">
               <td className="pv3 ph4">For all time from first to last expense</td>
-              <td className="pv3 ph4">{this.props.report.sum.toFixed(2)}</td>
-              <td className="pv3 ph4">{this.props.report.avg.toFixed(2)}</td>
+              <td className="pv3 ph4">{moneyToString(this.props.report.sum.toFixed(2))}</td>
+              <td className="pv3 ph4">{moneyToString(this.props.report.avg.toFixed(2))}</td>
             </tr>}
           </tbody>
         </table>

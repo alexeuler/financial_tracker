@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { moneyToString } from '../../utils';
+
 const Expense = props => (
   <div className={`flex flex-row-l flex-column ${props.edit ? 'bg-light-gray' : ''}`}>
     <div className="flex flex-row">
@@ -12,8 +14,8 @@ const Expense = props => (
         <div className="b">{props.description}</div>
         <div className="gray">{props.comment}</div>
       </div>
-      <div className="pa2 w3 flex items-center">
-        {props.amount}
+      <div className="pa2 w4 flex items-center">
+        {moneyToString(props.amount)}
       </div>
     </div>
     <div className="pa2 flex items-center">
