@@ -29,6 +29,7 @@ class Users extends React.Component {
               edit={this.props.editingFocus === user.id}
               onEdit={this.props.setEditingFocus}
               onDelete={this.props.deleteUser}
+              session={this.props.session}
               {...user} 
             />)}
           {this.props.editingFocus && <a
