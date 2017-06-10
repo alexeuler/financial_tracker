@@ -1,4 +1,4 @@
-import { path, find, pipe, sortBy, prop, reverse, filter, T, head, last, groupBy, reduce } from 'ramda';
+import { path, find, pipe, sortBy, prop, reverse, filter, T, head, last, groupBy, reduce, drop, take } from 'ramda';
 import moment from 'moment';
 
 export const getFilters =
@@ -7,6 +7,15 @@ export const getFilters =
 const getRawExpenses = userId => state => path(['expensesStore', 'entities', userId])(state) || [];
 
 const addFilter = (leftFilter, rightFilter) => x => leftFilter(x) && rightFilter(x);
+
+export const getPage =
+  path(['expensesStore', 'page']);
+
+export const getPageSize =
+  path(['expensesStore', 'pageSize']);
+
+export const getTotalPages = (state, userId) =>
+  Math.ceil(getRawExpenses(userId)(state).length / getPageSize(state));
 
 export const getExpenses = (state, userId) => {
   const filters = getFilters(state);
@@ -27,11 +36,16 @@ export const getExpenses = (state, userId) => {
   if (filters.dateFrom) predicate = addFilter(predicate, x => x.occuredAt >= filters.dateFrom);
   if (filters.dateTo) predicate = addFilter(predicate, x => x.occuredAt <= filters.dateTo);
 
+  const page = getPage(state);
+  const pageSize = getPageSize(state);
+
   return pipe(
     getRawExpenses(userId),
     filter(predicate),
     expenses => sortBy(prop('occuredAt'))(expenses || []),
     reverse,
+    drop((page - 1) * pageSize),
+    take(pageSize),
   )(state);
 };
 

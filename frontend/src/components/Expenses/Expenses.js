@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
 import { getSessionState } from '../../selectors/session';
-import { getExpenses, getEditingFocus } from '../../selectors/expenses';
+import { getExpenses, getEditingFocus, getPage, getTotalPages } from '../../selectors/expenses';
 import thunks from '../../thunks';
 import Expense from '../Expense';
 import EditExpense from '../EditExpense';
@@ -25,12 +25,6 @@ class Expenses extends React.Component {
     return (
       <div className="flex flex-row-l flex-column pa4">
         <div>
-          <Pagination
-            selectedPage={1}
-            paginatorWidth={7}
-            maxPage={50}
-            onPageSelected={console.log}
-          />
           <Filters />
           {this.props.expenses.map(
             expense => <Expense 
@@ -46,6 +40,12 @@ class Expenses extends React.Component {
           >
             New
           </a>}
+          <Pagination
+            selectedPage={this.props.page}
+            paginatorWidth={7}
+            maxPage={this.props.totalPages}
+            onPageSelected={this.props.setPageExpenses}
+          />
         </div>
         <EditExpense
           history={this.props.history} 
@@ -76,6 +76,9 @@ Expenses.propTypes = {
   }).isRequired,
   editingFocus: PropTypes.number,
   expenses: PropTypes.array.isRequired,
+  page: PropTypes.number.isRequired,
+  totalPages: PropTypes.number.isRequired,
+  setPageExpenses: PropTypes.func.isRequired,
   fetchExpenses: PropTypes.func,
   deleteExpense: PropTypes.func,
   setEditingFocus: PropTypes.func,
@@ -84,6 +87,8 @@ Expenses.propTypes = {
 const mapStateToProps = (state, ownProps) => ({
   session: getSessionState(state),
   expenses: getExpenses(state, ownProps.match.params.userId),
+  page: getPage(state),
+  totalPages: getTotalPages(state, ownProps.match.params.userId),
   editingFocus: getEditingFocus(state),
 })
 
@@ -91,6 +96,7 @@ const mapDispatchToProps = {
   fetchExpenses: thunks.fetchExpenses,
   deleteExpense: thunks.deleteExpense,
   setEditingFocus: thunks.setEditingFocusExpense,
+  setPageExpenses: thunks.setPageExpenses,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Expenses);

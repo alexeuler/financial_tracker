@@ -9,7 +9,7 @@ const getClasses = ({ active, disabled }) => {
   const common = 'mh1';
   return disabled
     ? `${common} dark-gray`
-    : `${common} blue pointer underline`;
+    : `${common} blue pointer`;
 };
 
 const PageButton = props => (

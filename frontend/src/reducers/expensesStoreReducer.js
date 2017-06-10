@@ -1,11 +1,10 @@
-import moment from 'moment';
-
 import { lensPath, set, over, filter, update as rUpdate, findIndex, pipe, prop, uniqBy } from 'ramda';
 
 const ADD = 'EXPENSES:ADD';
 const UPDATE = 'EXPENSES:UPDATE';
 const DELETE = 'EXPENSES:DELETE';
 const SET_EDITING_FOCUS = 'EXPENSES:SET_EDITING_FOCUS';
+const SET_PAGE = 'EXPENSES:SET_PAGE';
 const RESET_FORM = 'EXPENSES:RESET_FORM';
 const UPDATE_FORM = 'EXPENSES:UPDATE_FORM';
 const RESET_FILTERS = 'EXPENSES:RESET_FILTERS';
@@ -36,6 +35,8 @@ export const initialState = {
   filters: initialFilters(),
   editingFocus: null,
   form: initialForm(),
+  page: 1,
+  pageSize: 15,
   entities: {},
 };
 
@@ -44,6 +45,7 @@ const errorsLens = lensPath(['meta', 'errors']);
 const formLens = lensPath(['form']);
 const filtersLens = lensPath(['filters']);
 const editingFocusLens = lensPath(['editingFocus']);
+const pageLens = lensPath(['page']);
 const expensesLens = userId => lensPath(['entities', userId]);
 
 const add = (state, action) =>
@@ -64,6 +66,9 @@ const delete1 = (state, action) =>
 
 const setEditingFocus = (state, action) =>
   set(editingFocusLens, action.payload, state);
+
+const setPage = (state, action) =>
+  set(pageLens, action.payload, state);
 
 const resetForm = pipe(
   set(formLens, initialForm()),
@@ -91,6 +96,8 @@ export default (state = initialState, action) => {
       return delete1(state, action);
     case SET_EDITING_FOCUS:
       return setEditingFocus(state, action);
+    case SET_PAGE:
+      return setPage(state, action);
     case RESET_FORM:
       return resetForm(state);
     case UPDATE_FORM:
@@ -117,6 +124,7 @@ const updateFiltersExpenses = payload => ({ type: UPDATE_FILTERS, payload });
 const resetFiltersExpenses = () => ({ type: RESET_FILTERS });
 const resetFormExpenses = () => ({ type: RESET_FORM });
 const updateFormExpenses = payload => ({ type: UPDATE_FORM, payload });
+const setPageExpenses = payload => ({ type: SET_PAGE, payload });
 const setLoadingExpenses = payload => ({ type: SET_LOADING, payload });
 const setErrorsExpenses = payload => ({ type: SET_ERRORS, payload });
 
@@ -129,6 +137,7 @@ export const actions = {
   resetFiltersExpenses,
   resetFormExpenses,
   updateFormExpenses,
+  setPageExpenses,
   setLoadingExpenses,
   setErrorsExpenses,
 };
