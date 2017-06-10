@@ -14,11 +14,11 @@ const Expense = props => (
         <div className="b">{props.description}</div>
         <div className="gray">{props.comment}</div>
       </div>
-      <div className="pa2 w4 flex items-center">
-        {moneyToString(props.amount)}
-      </div>
     </div>
     <div className="pa2 flex items-center">
+      <div className="pa2-l pv2 w4 flex items-center">
+        {moneyToString(props.amount)}
+      </div>
       <a className={`pv2 underline ${props.edit ? 'blue' : 'pointer'}`} onClick={() => props.onEdit(props.id)}>Edit</a>
       <a className="pa2 underline pointer" onClick={() => props.onDelete(props.id)}>Delete</a>
     </div>
