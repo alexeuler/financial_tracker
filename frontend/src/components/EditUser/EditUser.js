@@ -12,7 +12,7 @@ import { getUsersForm, getUsersErrors, getUsersLoading, getEditingFocus } from '
 const EditUser = (props) => {
   if (props.hidden) return null;
   return (
-    <div className="flex flex-column pa3 ba b--light-gray w5 mw6">
+    <div className="flex flex-column pa3 ba b--light-gray mh2-l mv2 mv0-l w-100 w5-l">
       {props.errors.general && props.errors.general.map(error =>
         <ErrorMessage key={error} message={error} />,
       )}

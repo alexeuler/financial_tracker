@@ -20,10 +20,9 @@ class Users extends React.Component {
   }
 
   render() {
-    console.log('------------------------', this.props);
     return (
       <div className="flex flex-row-l flex-column pa4">
-        <div>
+        <div className="ba b--light-gray pa2">
           {this.props.users.map(
             user => <User 
               key={user.id}
