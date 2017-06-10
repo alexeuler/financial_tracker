@@ -30,15 +30,19 @@ class Report extends React.Component {
           <tbody>
             {this.props.report.entries.map(entry =>
               <tr className="striped--light-gray" key={entry.start}>
-                <td className="pv3 ph4">{`${entry.start} - ${entry.end}`}</td>
-                <td className="pv3 ph4">{moneyToString(entry.sum.toFixed(2))}</td>
-                <td className="pv3 ph4">{moneyToString(entry.avg.toFixed(2))}</td>
+                <td className="pv3-l ph4-l pv1 ph2">
+                  <span style={{'white-space': 'nowrap'}}>{entry.start}</span>
+                  <span>{' - '}</span>
+                  <span style={{'white-space': 'nowrap'}}>{entry.end}</span>
+                </td>
+                <td className="pv3-l ph4-l pv1 ph2">{moneyToString(entry.sum.toFixed(2))}</td>
+                <td className="pv3-l ph4-l pv1 ph2">{moneyToString(entry.avg.toFixed(2))}</td>
               </tr>
             )}
             {this.props.report.entries.length && <tr className="fw6 bt b--black">
-              <td className="pv3 ph4">For all time from first to last expense</td>
-              <td className="pv3 ph4">{moneyToString(this.props.report.sum.toFixed(2))}</td>
-              <td className="pv3 ph4">{moneyToString(this.props.report.avg.toFixed(2))}</td>
+              <td className="pv3-l ph4-l pv1 ph2">For all time from first to last expense</td>
+              <td className="pv3-l ph4-l pv1 ph2">{moneyToString(this.props.report.sum.toFixed(2))}</td>
+              <td className="pv3-l ph4-l pv1 ph2">{moneyToString(this.props.report.avg.toFixed(2))}</td>
             </tr>}
           </tbody>
         </table>
