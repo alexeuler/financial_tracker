@@ -26,20 +26,22 @@ class Expenses extends React.Component {
       <div className="flex flex-row-l flex-column pa4">
         <div>
           <Filters />
-          {this.props.expenses.map(
-            expense => <Expense 
-              key={expense.id}
-              edit={this.props.editingFocus === expense.id}
-              onEdit={expenseId => this.props.setEditingFocus(this.props.match.params.userId, expenseId)}
-              onDelete={expenseId => this.props.deleteExpense(this.props.match.params.userId, expenseId)}
-              {...expense} 
-            />)}
-          {this.props.editingFocus && <a
-            className="pa2 underline pointer b"
-            onClick={() => this.props.setEditingFocus(this.props.match.params.userId, null)}
-          >
-            New
-          </a>}
+          <div className="mh2 ba b--light-gray w-100-m">
+            {this.props.expenses.map(
+              expense => <Expense 
+                key={expense.id}
+                edit={this.props.editingFocus === expense.id}
+                onEdit={expenseId => this.props.setEditingFocus(this.props.match.params.userId, expenseId)}
+                onDelete={expenseId => this.props.deleteExpense(this.props.match.params.userId, expenseId)}
+                {...expense} 
+              />)}
+            {this.props.editingFocus && <a
+              className="pa2 underline pointer b"
+              onClick={() => this.props.setEditingFocus(this.props.match.params.userId, null)}
+            >
+              New
+            </a>}
+          </div>
           <Pagination
             selectedPage={this.props.page}
             paginatorWidth={7}

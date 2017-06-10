@@ -16,7 +16,7 @@ class Filters extends React.Component {
   renderFilters = () => {
     if (!this.state.visible) return null;
     return (
-      <div>
+      <div className="mh2-ns pv2 ba b--light-gray">
         <div className="flex flex-row">
           <InputGroup
             label="Amount From"
