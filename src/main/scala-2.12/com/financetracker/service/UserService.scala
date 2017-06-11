@@ -3,6 +3,7 @@ package com.financetracker.service
 import cats.instances.either._
 import fs2.interop.cats._
 import shapeless.HList
+import scala.util.matching._
 
 import com.financetracker.repo._
 import com.financetracker.data._
@@ -17,6 +18,8 @@ trait UserService {
 }
 
 case class UserServiceImpl(userRepo: UserRepo) extends UserService {
+  private val emailRegex = """[^\s@]+@[^\s@]+\.[^\s@]+""".r
+
   override def all(session: Session): TaskAttempt[List[User]] = 
     withPermissionsCheck(session)(
       userRepo.all
@@ -24,6 +27,10 @@ case class UserServiceImpl(userRepo: UserRepo) extends UserService {
   override def create(identity: Identity, password: Password): TaskAttempt[User] =
     TaskAttempt.mapException(
       for {
+        _ <- if (emailRegex.findFirstIn(identity.value).isDefined) 
+            TaskAttempt.pure(()) 
+          else
+            TaskAttempt.fail(InvalidEmailServiceException)
         count <- userRepo.count
         role = if (count == 0) Role.Admin else Role.User
         user <- userRepo.create(Provider.Email, identity, password, role)

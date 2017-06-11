@@ -5,4 +5,5 @@ case object UnauthorizedServiceException extends ServiceException
 case object OutdatedTokenServiceException extends ServiceException
 case object NotFoundServiceException extends ServiceException
 case object UserAlreadyExistsServiceException extends ServiceException
+case object InvalidEmailServiceException extends ServiceException
 case object UnknownServiceException extends ServiceException

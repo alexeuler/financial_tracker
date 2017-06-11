@@ -176,6 +176,7 @@ class ListSpec extends FunSpec with Matchers with BeforeAndAfter with PropertyCh
             uri = baseUrl / "users"
           )
           for {
+            _ <- serviceWithUsers
             response <- TaskAttempt.liftT(httpClient.fetchAs[Json](req))
           } yield {
             withClue(s"Response: $response, expected: $expected: ") {

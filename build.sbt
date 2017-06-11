@@ -101,7 +101,8 @@ lazy val testPackage = project
 
     testOptions in IntegrationTest += Tests.Setup( () => ITHelper.startServer(baseDirectory.value.getAbsolutePath()) ),
     testOptions in IntegrationTest += Tests.Cleanup( () => ITHelper.shutdownServer() ),
-    test in IntegrationTest := ((test in IntegrationTest) dependsOn (stage in Universal)).value
+    test in IntegrationTest := ((test in IntegrationTest) dependsOn (stage in Universal)).value,
+    testOnly in IntegrationTest := ((testOnly in IntegrationTest) dependsOn (stage in Universal)).evaluated
   )
 
 lazy val prodPackage = project

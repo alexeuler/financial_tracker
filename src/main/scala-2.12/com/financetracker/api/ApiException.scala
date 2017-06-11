@@ -15,6 +15,7 @@ case object UnknownJsonException extends ApiException
 case object UnauthorizedApiException extends ApiException
 case object OutdatedTokenApiException extends ApiException
 case object UserAlreadyExistsApiException extends ApiException
+case object InvalidEmailApiException extends ApiException
 
 case object UnknownException extends ApiException
 
@@ -57,6 +58,12 @@ object ApiException {
         ("message", "User with this email already exists".asJson)
       )
 
+    case InvalidEmailApiException =>
+      Json.obj(
+        ("code", 303.asJson), 
+        ("message", "Invalid email".asJson)
+      )
+
     case _ => Json.obj(
       ("code", 999.asJson), 
       ("message", "Unknown error".asJson)
@@ -72,6 +79,7 @@ object ApiException {
       case UnauthorizedServiceException => (UnauthorizedApiException, None)
       case NotFoundServiceException => (NotFoundException, None)
       case UserAlreadyExistsServiceException => (UserAlreadyExistsApiException, None)
+      case InvalidEmailServiceException => (InvalidEmailApiException, None)
       case OutdatedTokenServiceException => (OutdatedTokenApiException, None)
       case e => (UnknownException, Some(s"Unknown failure: $e"))
   }
