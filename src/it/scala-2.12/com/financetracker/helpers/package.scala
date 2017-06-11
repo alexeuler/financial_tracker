@@ -7,6 +7,9 @@ import fs2.interop.cats._
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 import io.circe._
+import ch.qos.logback.classic.Level
+import ch.qos.logback.classic.Logger
+import org.slf4j.LoggerFactory
 
 import com.typesafe.config._
 import com.financetracker.env._
@@ -62,6 +65,11 @@ package object helpers {
     case Left(e) => throw e
     case Right(x) => x
   }
-  private lazy val config = ConfigFactory.load()
+  private lazy val config = { 
+    val root: Logger = LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME).asInstanceOf[Logger]
+    root.setLevel(Level.ERROR)
+    ConfigFactory.load()
+  }
+
   private val timeout = 20000.millis
 }

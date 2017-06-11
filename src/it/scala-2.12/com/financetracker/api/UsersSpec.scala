@@ -63,7 +63,9 @@ class UsersServiceSpec extends FunSpec with Matchers with BeforeAndAfter with Pr
           )
           response <- TaskAttempt.liftT(httpClient.expect[Json](req))
         } yield {
-          compareJsonsIgnoring(List("id", "createdAt", "updatedAt"))(response, expected) shouldBe true
+          withClue(s"Response: $response, expected: $expected: ") {
+            compareJsonsIgnoring(List("id", "createdAt", "updatedAt"))(response, expected) shouldBe true
+          }
         }
       }
 
