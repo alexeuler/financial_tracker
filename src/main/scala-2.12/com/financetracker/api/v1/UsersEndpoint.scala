@@ -19,9 +19,6 @@ object UsersEndpoint {
 
   val handler: SessionService => UserService => PureEndpoint = 
     sessionService => userService => {
-      case GET -> Root / "ping" =>
-        TaskAttempt.pure("pong from users".asJson)
-
       case req @ GET -> Root =>
         for {
           session <- sessionService.getSessionData(req)

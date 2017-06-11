@@ -20,14 +20,24 @@ object ExpensesEndpoint {
 
   val handler: SessionService => ExpenseService => PureEndpoint = 
     sessionService => expenseService => {
-      case GET -> Root / IntVar(userId) / "expenses" / "ping" =>
-        TaskAttempt.pure("pong from expenses".asJson)
+      case req @ GET -> Root / IntVar(userId) / "expenses" =>
+        for {
+          session <- sessionService.getSessionData(req)
+          expenses <- expenseService.all(UserId(userId), session)
+        } yield expenses.asJson
 
       case req @ GET -> Root / IntVar(userId) / "expenses" =>
         for {
           session <- sessionService.getSessionData(req)
           expenses <- expenseService.all(UserId(userId), session)
         } yield expenses.asJson
+
+      case req @ GET -> Root / IntVar(userId) / "expenses" / IntVar(expenseId) =>
+        for {
+          session <- sessionService.getSessionData(req)
+          expenses <- expenseService.find(ExpenseId(expenseId), UserId(userId), session)
+        } yield expenses.asJson
+
 
       case req @ POST -> Root / IntVar(userId) / "expenses" =>
         for {
@@ -47,13 +57,13 @@ object ExpensesEndpoint {
         for {
           session <- sessionService.getSessionData(req)
           form <- TaskAttempt.liftT(req.as[Json].map(UpdateExpenseForm(_)))
-          expense <- expenseService.update(ExpenseId(expenseId), form, session)
+          expense <- expenseService.update(ExpenseId(expenseId), UserId(userId), form, session)
         } yield expense.asJson
 
       case req @ DELETE -> Root / IntVar(userId) / "expenses" / IntVar(expenseId) =>
         for {
           session <- sessionService.getSessionData(req)
-          res <- expenseService.delete(ExpenseId(expenseId), session)
+          res <- expenseService.delete(ExpenseId(expenseId), UserId(userId), session)
         } yield res.asJson
     }
 }

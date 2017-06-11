@@ -61,7 +61,7 @@ class Users extends React.Component {
 
   render() {
     return (
-      <div className="flex flex-row-l flex-column pa4">
+    <div className="flex flex-row-l flex-column pa4">
         <div>
           {this.props.errors.general && this.props.errors.general.map(error =>
             <ErrorMessage key={error} message={error} className="pl2" />,

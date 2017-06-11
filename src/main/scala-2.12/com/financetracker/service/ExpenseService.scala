@@ -10,6 +10,7 @@ import com.financetracker.types._
 
 trait ExpenseService {
   def all(userId: UserId, session: Session): TaskAttempt[List[Expense]]
+  def find(id: ExpenseId, userId: UserId, session: Session): TaskAttempt[Option[Expense]]
   def create(
     amount: Amount, 
     description: Description,
@@ -18,14 +19,19 @@ trait ExpenseService {
     userId: UserId,
     session: Session
   ): TaskAttempt[Expense]
-  def update(id: ExpenseId, values: HList, session: Session): TaskAttempt[Expense]
-  def delete(id: ExpenseId, session: Session): TaskAttempt[Boolean]
+  def update(id: ExpenseId, userId: UserId, values: HList, session: Session): TaskAttempt[Expense]
+  def delete(id: ExpenseId, userId: UserId, session: Session): TaskAttempt[Boolean]
 }
 
 case class ExpenseServiceImpl(expenseRepo: ExpenseRepo) extends ExpenseService {
   def all(userId: UserId, session: Session): TaskAttempt[List[Expense]] = 
     withPermissionsCheckByUserId(userId, session)(
       expenseRepo.all(userId)
+    )
+
+  def find(expenseId: ExpenseId, userId: UserId, session: Session): TaskAttempt[Option[Expense]] =
+    withPermissionsCheckByExpenseId(expenseId, userId, session)(
+      expenseRepo.find(expenseId)
     )
 
   def create(
@@ -40,13 +46,13 @@ case class ExpenseServiceImpl(expenseRepo: ExpenseRepo) extends ExpenseService {
       expenseRepo.create(amount, description, comment, occuredAt, userId)
     ) 
 
-  def update(id: ExpenseId, values: HList, session: Session): TaskAttempt[Expense] =
-    withPermissionsCheckByExpenseId(id, session)(
+  def update(id: ExpenseId, userId: UserId, values: HList, session: Session): TaskAttempt[Expense] =
+    withPermissionsCheckByExpenseId(id, userId, session)(
       expenseRepo.update(id, values)
     )
 
-  def delete(id: ExpenseId, session: Session): TaskAttempt[Boolean] =
-    withPermissionsCheckByExpenseId(id, session)(
+  def delete(id: ExpenseId, userId: UserId, session: Session): TaskAttempt[Boolean] =
+    withPermissionsCheckByExpenseId(id, userId, session)(
       expenseRepo.delete(id)
     )
   
@@ -60,10 +66,11 @@ case class ExpenseServiceImpl(expenseRepo: ExpenseRepo) extends ExpenseService {
   private def withPermissionsCheckByUserId[A](userId: UserId, session: Session)(task: TaskAttempt[A]): TaskAttempt[A] =
     if (isAuthorized(userId, session)) task else TaskAttempt.fail(UnauthorizedServiceException)
 
-  private def withPermissionsCheckByExpenseId[A](expenseId: ExpenseId, session: Session)(task: TaskAttempt[A]): TaskAttempt[A] =
+  private def withPermissionsCheckByExpenseId[A](expenseId: ExpenseId, userId: UserId, session: Session)(task: TaskAttempt[A]): TaskAttempt[A] =
     for {
       maybeExpense <- expenseRepo.find(expenseId)
       expense <- maybeExpense.fold[TaskAttempt[Expense]](TaskAttempt.fail(NotFoundServiceException))(TaskAttempt.pure(_))
+      _ <- if (expense.userId == userId) TaskAttempt.pure(()) else TaskAttempt.fail(NotFoundServiceException)
       res <- withPermissionsCheckByUserId(expense.userId, session)(task)
     } yield res
 }
