@@ -28,9 +28,11 @@ class Report extends React.Component {
     if ((!this.props.report || !this.props.report.entries || !this.props.report.entries.length)) {
       return (
         <tbody>
-          <td className="w5 pv3-l ph4-l pv1 ph2">No items</td>
-          <td className="w5"></td>
-          <td className="w4"></td>
+          <tr>
+            <td className="w5 pv3-l ph4-l pv1 ph2">No items</td>
+            <td className="w5"></td>
+            <td className="w4"></td>
+          </tr>
         </tbody>
       )
     }
@@ -40,9 +42,9 @@ class Report extends React.Component {
         {this.props.report.entries.map(entry =>
           <tr className="striped--light-gray" key={entry.start}>
             <td className="pv3-l ph4-l pv1 ph2">
-              <span style={{'white-space': 'nowrap'}}>{entry.start}</span>
+              <span style={{whiteSpace: 'nowrap'}}>{entry.start}</span>
               <span>{' - '}</span>
-              <span style={{'white-space': 'nowrap'}}>{entry.end}</span>
+              <span style={{whiteSpace: 'nowrap'}}>{entry.end}</span>
             </td>
             <td className="pv3-l ph4-l pv1 ph2 tr">{moneyToString(entry.sum.toFixed(2))}</td>
             <td className="pv3-l ph4-l pv1 ph2 tr">{moneyToString(entry.avg.toFixed(2))}</td>

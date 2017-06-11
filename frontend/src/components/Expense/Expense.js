@@ -16,7 +16,7 @@ const Expense = props => (
       </div>
     </div>
     <div className="pa2 flex items-center">
-      <div className="pa2-l pv2 w4 flex items-center justify-end-l fw4-l fw6">
+      <div className="pa2-l pv2 w4 tr-l fw4-l fw6">
         {moneyToString(props.amount)}
       </div>
       <a className={`pv2 underline ${props.edit ? 'blue' : 'pointer'}`} onClick={() => props.onEdit(props.id)}>Edit</a>

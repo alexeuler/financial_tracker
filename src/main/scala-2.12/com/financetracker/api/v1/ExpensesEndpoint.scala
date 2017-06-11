@@ -26,12 +26,6 @@ object ExpensesEndpoint {
           expenses <- expenseService.all(UserId(userId), session)
         } yield expenses.asJson
 
-      case req @ GET -> Root / IntVar(userId) / "expenses" =>
-        for {
-          session <- sessionService.getSessionData(req)
-          expenses <- expenseService.all(UserId(userId), session)
-        } yield expenses.asJson
-
       case req @ GET -> Root / IntVar(userId) / "expenses" / IntVar(expenseId) =>
         for {
           session <- sessionService.getSessionData(req)

@@ -1,6 +1,6 @@
 import { map, over, lensPath, isNil } from 'ramda';
 
-const API_URL = '/api/v1/345';
+const API_URL = '/api/v1';
 
 const apiRequest = (url, method, payload) => async (authKey) => {
   let options = {

@@ -18,9 +18,6 @@ object SessionsEndpoint {
 
   val handler: SessionService => PureEndpoint = 
     sessionService => {
-      case GET -> Root / "ping" =>
-        TaskAttempt.pure("pong from sessions".asJson)
-
       case req @ POST -> Root =>
         for {
           login <- TaskAttempt.liftT(req.as(jsonOf[Login]))

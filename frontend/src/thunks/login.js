@@ -42,11 +42,11 @@ export const login = (payload, history) =>
           }));
       }
     }
-    dispatch(setToken(response.result)).then(() => {
-      const session = getSessionState(getState());
-      history.push(`users/${session.id}/expenses`);
-    });
-    return dispatch(reduxActions.resetLoginForm());
+    dispatch(reduxActions.resetLoginForm());
+    await dispatch(setToken(response.result));
+    const session = getSessionState(getState());
+    history.push(`users/${session.id}/expenses`);
+    return Promise.resolve(null);
   };
 
 export const updateLoginForm = reduxActions.updateLoginForm;
