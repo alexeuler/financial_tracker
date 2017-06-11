@@ -46,7 +46,7 @@ case class UserServiceImpl(userRepo: UserRepo) extends UserService {
     )
 
   override def findById(userId: UserId, session: Session): TaskAttempt[Option[User]] =
-    withPermissionsCheck(session)(
+    withPermissionsCheckForUpdate(userId, session)(
       userRepo.findById(userId)
     )
 
