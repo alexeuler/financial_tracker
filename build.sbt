@@ -82,6 +82,7 @@ lazy val testPackage = project
     resourceDirectory in Compile := (resourceDirectory in (app, Compile)).value,
     sourceDirectory in Compile := (sourceDirectory in (app, Compile)).value,
     sourceDirectory in Test := (sourceDirectory in (app, Test)).value,
+    watchSources in Test := (watchSources in (app, Test)).value,
     sourceDirectory in IntegrationTest := (baseDirectory in app).value / "src" / "it",
 
     unmanagedResourceDirectories in Compile ++= Seq(

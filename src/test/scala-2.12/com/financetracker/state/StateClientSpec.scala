@@ -68,3 +68,4 @@ class StateClientSpec extends AsyncFunSpec with Matchers with BeforeAndAfter {
     }
   ) 
 }
+
