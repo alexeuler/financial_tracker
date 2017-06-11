@@ -1,7 +1,8 @@
 package com.financetracker
 
-import org.http4s.Uri
+import org.http4s._
 import org.http4s.client.blaze._
+import org.http4s.headers._
 import fs2.Task
 import fs2.interop.cats._
 import scala.concurrent.duration._
@@ -60,6 +61,9 @@ package object helpers {
     }
     json1 == json2
   }
+
+  def authHeader(token: JWToken): Headers = 
+    Headers(Header("authorization", s"Bearer ${token.value}"))
 
   def async[A](task: TaskAttempt[A]): A = Await.result(task.value.unsafeRunAsyncFuture, timeout) match {
     case Left(e) => throw e

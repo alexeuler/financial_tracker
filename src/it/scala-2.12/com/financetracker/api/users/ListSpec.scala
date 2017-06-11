@@ -1,4 +1,4 @@
-package com.financetracker.api
+package com.financetracker.api.users
 
 import org.scalatest._
 import org.scalatest.prop._
@@ -15,7 +15,7 @@ import com.financetracker.helpers._
 import com.financetracker.data._
 import com.financetracker.types._
 
-class UsersServiceSpec extends FunSpec with Matchers with BeforeAndAfter with PropertyChecks {
+class ListSpec extends FunSpec with Matchers with BeforeAndAfter with PropertyChecks {
   describe("GET /users") {
     describe("admin") {
       it("returns list of all users") {
@@ -60,7 +60,7 @@ class UsersServiceSpec extends FunSpec with Matchers with BeforeAndAfter with Pr
             req = Request(
               method = GET, 
               uri = baseUrl / "users", 
-              headers = Headers(Header("authorization", s"Bearer ${userWithToken._2.value}"))
+              headers = authHeader(userWithToken._2)
             )
             response <- TaskAttempt.liftT(httpClient.fetchAs[Json](req))
           } yield {
@@ -116,7 +116,7 @@ class UsersServiceSpec extends FunSpec with Matchers with BeforeAndAfter with Pr
             req = Request(
               method = GET, 
               uri = baseUrl / "users", 
-              headers = Headers(Header("authorization", s"Bearer ${userWithToken._2.value}"))
+              headers = authHeader(userWithToken._2)
             )
             response <- TaskAttempt.liftT(httpClient.fetchAs[Json](req))
           } yield {
@@ -146,8 +146,36 @@ class UsersServiceSpec extends FunSpec with Matchers with BeforeAndAfter with Pr
             req = Request(
               method = GET, 
               uri = baseUrl / "users", 
-              headers = Headers(Header("authorization", s"Bearer ${userWithToken._2.value}"))
+              headers = authHeader(userWithToken._2)
             )
+            response <- TaskAttempt.liftT(httpClient.fetchAs[Json](req))
+          } yield {
+            withClue(s"Response: $response, expected: $expected: ") {
+              compareJsonsIgnoring(List("id", "createdAt", "updatedAt"))(response, expected) shouldBe true
+            }
+          }
+        }
+      }
+    }
+
+    describe("not logged in") {
+      it("fails with 300 unauthorized") {
+        val expected: Json = json"""
+          {
+            "error" : {
+              "code": 300,
+              "message": "Unauthorized"
+            },
+            "result" : null
+          }      
+        """
+
+        async {
+          val req = Request(
+            method = GET, 
+            uri = baseUrl / "users"
+          )
+          for {
             response <- TaskAttempt.liftT(httpClient.fetchAs[Json](req))
           } yield {
             withClue(s"Response: $response, expected: $expected: ") {
