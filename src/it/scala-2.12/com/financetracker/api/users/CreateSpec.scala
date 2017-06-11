@@ -109,6 +109,45 @@ class CreateSpec extends FunSpec with Matchers with BeforeAndAfter with Property
         }
       }
 
+      describe("User with this email already exists") {
+        it("fails with 302 user alredy exists") {
+          val expected = json"""
+            {
+              "error" : {
+                "code": 302,
+                "message": "User with this email already exists"
+              },
+              "result" : null
+            }      
+          """
+
+          val payload = """
+            {
+              "email": "admin@gmail.com",
+              "password": "secret"
+            }
+          """
+
+          async {
+            for {
+              _ <- serviceWithUsers
+              body <- TaskAttempt.liftT(EntityEncoder[String].toEntity(payload).map(_.body))
+              req = Request(
+                method = POST,
+                uri = baseUrl / "users",
+                body = body
+              )
+              response <- TaskAttempt.liftT(httpClient.fetchAs[Json](req))
+            } yield {
+              withClue(s"Response: $response, expected: $expected: ") {
+                compareJsonsIgnoring(List("id", "createdAt", "updatedAt"))(response, expected) shouldBe true
+              }
+            }
+          }
+        }
+      }
+
+
       describe("Malformed Json") {
         it("fails with 200 malformed json") {
           val expected = json"""
