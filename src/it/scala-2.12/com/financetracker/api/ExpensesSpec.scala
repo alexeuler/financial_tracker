@@ -5,9 +5,9 @@ import org.scalatest.prop._
 
 import com.financetracker.helpers._
 
-class UsersServiceSpec extends FunSpec with Matchers with BeforeAndAfter with PropertyChecks {
-  describe("GET /users") {
-    it("returns list of all users") {
+class ExpensesServiceSpec extends FunSpec with Matchers with BeforeAndAfter with PropertyChecks {
+  describe("GET /expenses") {
+    it("returns list of all expenses") {
       println("+++++++++++++++++++")
       (1 + 1) shouldBe 2
     }

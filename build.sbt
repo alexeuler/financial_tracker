@@ -2,16 +2,7 @@ val http4sVersion = "0.17.0-M2"
 val doobieVersion = "0.4.1"
 val circeVersion = "0.7.1"
 
-// Get current environment
-val env = sys.props.get("env").orElse(sys.env.get("BUILD_ENV")) match {
-  case Some("prod") | Some("production") => "prod"
-  case _ => "dev"
-}
-
-lazy val root = (project in file("."))
-  .configs(IntegrationTest)
-  .settings(
-    Defaults.itSettings,
+lazy val commonSettings = Seq(
     organization := "com.financetracker",
     scalaVersion := "2.12.2",
     version := "0.1.7",
@@ -56,6 +47,70 @@ lazy val root = (project in file("."))
       "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0"
     ),
 
+    // Display all compile warnings
+    scalacOptions ++= List("-deprecation", "-feature")
+)
+
+    // // Fork JVM when running tests
+    // fork in Test := true,
+    // javaOptions in Test ++= Seq("-Xms512M", "-Xmx2048M", "-XX:+CMSClassUnloadingEnabled"),
+    // // Sbt native packager
+    // dockerExposedPorts := Seq(9000),
+    // dockerExposedVolumes := Seq("/opt/docker/logs"),
+
+    // testOptions in IntegrationTest += Tests.Setup( () => println("Setup") ),
+    // testOptions in IntegrationTest += Tests.Cleanup( () => println("Cleanup") ),
+    // test in IntegrationTest := ((test in IntegrationTest) dependsOn (stage in Universal)).value
+    // // Add .conf files to resources (specific for tests)
+    // unmanagedResourceDirectories in Test ++= Seq(
+    //   baseDirectory.value / "conf" / "base",
+    //   baseDirectory.value / "conf" / "secrets",
+    //   baseDirectory.value / "conf" / "test",
+    //   baseDirectory.value / "public"
+    // ),
+
+    // // Add .conf files to resources (specific for integration tests)
+    // unmanagedResourceDirectories in IntegrationTest ++= Seq(
+    //   baseDirectory.value / "conf" / "base",
+    //   baseDirectory.value / "conf" / "secrets",
+    //   baseDirectory.value / "conf" / "test",
+    //   baseDirectory.value / "public"
+    // ),
+
+  // .configs(IntegrationTest)
+  // .enablePlugins(JavaAppPackaging)
+  // .enablePlugins(DockerPlugin)
+
+    // libraryDependencies ++= Seq(
+    //   "org.scalatest" %% "scalatest" % "3.0.3" % "it, test",
+    //   "org.scalacheck" %% "scalacheck" % "1.13.5" % "it, test",
+    //   "org.tpolecat" %% "doobie-scalatest-cats" % doobieVersion % "it, test",
+    //   "org.scalamock" %% "scalamock-scalatest-support" % "3.6.0" % "it, test"
+    // ),
+
+    // Defaults.itSettings,
+
+lazy val app = (project in file("."))
+  .settings(
+    commonSettings,
+
+    // Add .conf files to resources
+    unmanagedResourceDirectories in Compile ++= Seq(
+      baseDirectory.value / "conf" / "base",
+      baseDirectory.value / "conf" / "secrets",
+      baseDirectory.value / "conf" / "dev",
+      baseDirectory.value / "public"
+    )
+  )
+
+lazy val testPackage = project
+  .in(file("build/test"))
+  .enablePlugins(JavaAppPackaging)
+  .configs(IntegrationTest)
+  .settings(
+    commonSettings,
+    Defaults.itSettings,
+
     libraryDependencies ++= Seq(
       "org.scalatest" %% "scalatest" % "3.0.3" % "it, test",
       "org.scalacheck" %% "scalacheck" % "1.13.5" % "it, test",
@@ -63,30 +118,23 @@ lazy val root = (project in file("."))
       "org.scalamock" %% "scalamock-scalatest-support" % "3.6.0" % "it, test"
     ),
 
-    // Add .conf files to resources
-    unmanagedResourceDirectories in Compile ++= Seq(
-      baseDirectory.value / "conf" / "base",
-      baseDirectory.value / "conf" / env,
-      baseDirectory.value / "public"
-    ),
+    resourceDirectory in Compile := (resourceDirectory in (app, Compile)).value,
+    sourceDirectory in Compile := (sourceDirectory in (app, Compile)).value,
+    sourceDirectory in Test := (sourceDirectory in (app, Test)).value,
+    sourceDirectory in IntegrationTest := (baseDirectory in app).value / "src" / "it",
 
-    // Add .conf files to resources (specific for tests)
-    unmanagedResourceDirectories in Test ++= Seq(
-      baseDirectory.value / "conf" / "base",
-      baseDirectory.value / "conf" / "secrets",
-      baseDirectory.value / "conf" / "test",
-      baseDirectory.value / "public"
+    unmanagedResourceDirectories in Compile ++= Seq(
+      (baseDirectory in app).value / "conf" / "base",
+      (baseDirectory in app).value / "conf" / "secrets",
+      (baseDirectory in app).value / "conf" / "test",
+      (baseDirectory in app).value / "public"
     ),
 
     // Fork JVM when running tests
     fork in Test := true,
     javaOptions in Test ++= Seq("-Xms512M", "-Xmx2048M", "-XX:+CMSClassUnloadingEnabled"),
 
-    // Display all compile warnings
-    scalacOptions ++= List("-deprecation", "-feature"),
-
-    // Sbt native packager
-    dockerExposedPorts := Seq(9000),
-    dockerExposedVolumes := Seq("/opt/docker/logs")
+    testOptions in IntegrationTest += Tests.Setup( () => println("Setup") ),
+    testOptions in IntegrationTest += Tests.Cleanup( () => println("Cleanup") ),
+    test in IntegrationTest := ((test in IntegrationTest) dependsOn (stage in Universal)).value
   )
-
