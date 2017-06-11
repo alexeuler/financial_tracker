@@ -14,6 +14,13 @@ object TaskAttempt {
 
   def fail[A](error: Throwable): TaskAttempt[A] = lift[A](Left(error))
 
+  def mapException[A](task: TaskAttempt[A])(mapper: PartialFunction[Throwable, Throwable]): TaskAttempt[A] = apply(
+    task.value.map {
+      case Left(e) => if (mapper.isDefinedAt(e)) Left(mapper.apply(e)) else Left(e)
+      case x@Right(_) => x
+    }
+  )
+
   def liftT[A](task: Task[A]): TaskAttempt[A] =
     apply(task.attempt)
 

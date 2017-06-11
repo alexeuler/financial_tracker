@@ -38,7 +38,7 @@ export const signup = (payload, history) =>
       switch (response.error.code) {
         default:
           return dispatch(reduxActions.setErrorsSignupForm({
-            general: response.error.message,
+            general: [response.error.message],
           }));
       }
     }

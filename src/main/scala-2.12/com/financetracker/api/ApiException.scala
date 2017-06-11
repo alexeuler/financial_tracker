@@ -14,6 +14,7 @@ case object UnknownJsonException extends ApiException
 
 case object UnauthorizedApiException extends ApiException
 case object OutdatedTokenApiException extends ApiException
+case object UserAlreadyExistsApiException extends ApiException
 
 case object UnknownException extends ApiException
 
@@ -50,6 +51,12 @@ object ApiException {
         ("message", "Token has expired".asJson)
       )
 
+    case UserAlreadyExistsApiException =>
+      Json.obj(
+        ("code", 302.asJson), 
+        ("message", "User with this email already exists".asJson)
+      )
+
     case _ => Json.obj(
       ("code", 999.asJson), 
       ("message", "Unknown error".asJson)
@@ -64,6 +71,7 @@ object ApiException {
       case e: org.http4s.DecodeFailure => (UnknownJsonException, Some(s"Unknown Json failure: $e"))
       case UnauthorizedServiceException => (UnauthorizedApiException, None)
       case NotFoundServiceException => (NotFoundException, None)
+      case UserAlreadyExistsServiceException => (UserAlreadyExistsApiException, None)
       case OutdatedTokenServiceException => (OutdatedTokenApiException, None)
       case e => (UnknownException, Some(s"Unknown failure: $e"))
   }

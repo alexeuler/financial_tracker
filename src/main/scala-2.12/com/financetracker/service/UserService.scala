@@ -22,11 +22,15 @@ case class UserServiceImpl(userRepo: UserRepo) extends UserService {
       userRepo.all
     )
   override def create(identity: Identity, password: Password): TaskAttempt[User] =
-    for {
-      count <- userRepo.count
-      role = if (count == 0) Role.Admin else Role.User
-      user <- userRepo.create(Provider.Email, identity, password, role)
-    } yield user
+    TaskAttempt.mapException(
+      for {
+        count <- userRepo.count
+        role = if (count == 0) Role.Admin else Role.User
+        user <- userRepo.create(Provider.Email, identity, password, role)
+      } yield user
+    ) {
+      case e: org.postgresql.util.PSQLException => UserAlreadyExistsServiceException
+    }
     
 
   def update(id: UserId, values: HList, session: Session): TaskAttempt[User] =
