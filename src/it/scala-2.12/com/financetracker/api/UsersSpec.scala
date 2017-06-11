@@ -17,64 +17,146 @@ import com.financetracker.types._
 
 class UsersServiceSpec extends FunSpec with Matchers with BeforeAndAfter with PropertyChecks {
   describe("GET /users") {
-    it("returns list of all users") {
-      val expected: Json = json"""
-        {
-          "error" : null,
-          "result" : [
-            {
-              "id" : "ignored",
-              "provider" : "Email",
-              "identity" : "admin@gmail.com",
-              "password" : "[filtered]",
-              "role" : "Admin",
-              "createdAt" : "ignored",
-              "updatedAt" : "ignored"
-            },
-            {
-              "id" : 506,
-              "provider" : "Email",
-              "identity" : "manager@gmail.com",
-              "password" : "[filtered]",
-              "role" : "Manager",
-              "createdAt" : "ignored",
-              "updatedAt" : "ignored"
-            },
-            {
-              "id" : "ignored",
-              "provider" : "Email",
-              "identity" : "user@gmail.com",
-              "password" : "[filtered]",
-              "role" : "User",
-              "createdAt" : "ignored",
-              "updatedAt" : "ignored"
-            }
-          ]
-        }      
-      """
+    describe("admin") {
+      it("returns list of all users") {
+        val expected: Json = json"""
+          {
+            "error" : null,
+            "result" : [
+              {
+                "id" : "ignored",
+                "provider" : "Email",
+                "identity" : "admin@gmail.com",
+                "password" : "[filtered]",
+                "role" : "Admin",
+                "createdAt" : "ignored",
+                "updatedAt" : "ignored"
+              },
+              {
+                "id" : 506,
+                "provider" : "Email",
+                "identity" : "manager@gmail.com",
+                "password" : "[filtered]",
+                "role" : "Manager",
+                "createdAt" : "ignored",
+                "updatedAt" : "ignored"
+              },
+              {
+                "id" : "ignored",
+                "provider" : "Email",
+                "identity" : "user@gmail.com",
+                "password" : "[filtered]",
+                "role" : "User",
+                "createdAt" : "ignored",
+                "updatedAt" : "ignored"
+              }
+            ]
+          }      
+        """
 
-      async {
-        for {
-          userWithToken <- loggedInUser(Role.Admin)
-          req = Request(
-            method = GET, 
-            uri = baseUrl / "users", 
-            headers = Headers(Header("authorization", s"Bearer ${userWithToken._2.value}"))
-          )
-          response <- TaskAttempt.liftT(httpClient.expect[Json](req))
-        } yield {
-          withClue(s"Response: $response, expected: $expected: ") {
-            compareJsonsIgnoring(List("id", "createdAt", "updatedAt"))(response, expected) shouldBe true
+        async {
+          for {
+            userWithToken <- loggedInUser(Role.Admin)
+            req = Request(
+              method = GET, 
+              uri = baseUrl / "users", 
+              headers = Headers(Header("authorization", s"Bearer ${userWithToken._2.value}"))
+            )
+            response <- TaskAttempt.liftT(httpClient.fetchAs[Json](req))
+          } yield {
+            withClue(s"Response: $response, expected: $expected: ") {
+              compareJsonsIgnoring(List("id", "createdAt", "updatedAt"))(response, expected) shouldBe true
+            }
           }
         }
       }
-
-
-      // async {
-      //   httpClient.expect[String](baseUrl / "users").map {resp =>
-      //     resp shouldBe "123"
-      //   }
-      // }
     }
+
+
+    describe("manager") {
+      it("returns list of all users") {
+        val expected: Json = json"""
+          {
+            "error" : null,
+            "result" : [
+              {
+                "id" : "ignored",
+                "provider" : "Email",
+                "identity" : "admin@gmail.com",
+                "password" : "[filtered]",
+                "role" : "Admin",
+                "createdAt" : "ignored",
+                "updatedAt" : "ignored"
+              },
+              {
+                "id" : 506,
+                "provider" : "Email",
+                "identity" : "manager@gmail.com",
+                "password" : "[filtered]",
+                "role" : "Manager",
+                "createdAt" : "ignored",
+                "updatedAt" : "ignored"
+              },
+              {
+                "id" : "ignored",
+                "provider" : "Email",
+                "identity" : "user@gmail.com",
+                "password" : "[filtered]",
+                "role" : "User",
+                "createdAt" : "ignored",
+                "updatedAt" : "ignored"
+              }
+            ]
+          }      
+        """
+
+        async {
+          for {
+            userWithToken <- loggedInUser(Role.Manager)
+            req = Request(
+              method = GET, 
+              uri = baseUrl / "users", 
+              headers = Headers(Header("authorization", s"Bearer ${userWithToken._2.value}"))
+            )
+            response <- TaskAttempt.liftT(httpClient.fetchAs[Json](req))
+          } yield {
+            withClue(s"Response: $response, expected: $expected: ") {
+              compareJsonsIgnoring(List("id", "createdAt", "updatedAt"))(response, expected) shouldBe true
+            }
+          }
+        }
+      }
+    }
+
+    describe("user") {
+      it("fails with 300 unauthorized") {
+        val expected: Json = json"""
+          {
+            "error" : {
+              "code": 300,
+              "message": "Unauthorized"
+            },
+            "result" : null
+          }      
+        """
+
+        async {
+          for {
+            userWithToken <- loggedInUser(Role.User)
+            req = Request(
+              method = GET, 
+              uri = baseUrl / "users", 
+              headers = Headers(Header("authorization", s"Bearer ${userWithToken._2.value}"))
+            )
+            response <- TaskAttempt.liftT(httpClient.fetchAs[Json](req))
+          } yield {
+            withClue(s"Response: $response, expected: $expected: ") {
+              compareJsonsIgnoring(List("id", "createdAt", "updatedAt"))(response, expected) shouldBe true
+            }
+          }
+        }
+      }
+    }
+
   }
 }
