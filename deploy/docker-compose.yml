@@ -4,6 +4,13 @@ services:
     image: "financial-tracker:${APP_VERSION}"
     ports:
       - "9000:9000"
+    environment:
+      - FT_DB_HOST=${FT_DB_HOST}
+      - FT_DB_PORT=${FT_DB_PORT}
+      - FT_DB_NAME=${FT_DB_NAME}
+      - FT_DB_USER=${FT_DB_USER}
+      - FT_DB_PASSWORD=${FT_DB_PASSWORD}
+      - FT_SECRET=${FT_SECRET}
   proxy:
     image: "financial-tracker-proxy:${PROXY_VERSION}"
     ports:
