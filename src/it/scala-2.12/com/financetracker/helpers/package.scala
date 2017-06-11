@@ -37,12 +37,12 @@ package object helpers {
       user <- env.userRepo.create(Provider.Email, Identity("user@gmail.com"), Password("user"), Role.User)
     } yield Map(Role.Admin -> admin, Role.Manager -> manager, Role.User -> user)
 
-  def loggedInUser(role: Role): TaskAttempt[(User, JWToken)] =
+  def loggedInUser(role: Role): TaskAttempt[(User, JWToken, List[User])] =
     for {
       users <- serviceWithUsers
       user = users(role)
       token <- env.sessionService.login(user.identity, user.password)
-    } yield (user, token)
+    } yield (user, token, users.values.toList)
 
   def compareJsonsIgnoring(ignoreList: List[String])(json1: Json, json2: Json): Boolean = {
     if (json1.isObject) {

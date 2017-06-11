@@ -41,7 +41,7 @@ case class UserServiceImpl(userRepo: UserRepo) extends UserService {
     
 
   def update(id: UserId, values: HList, session: Session): TaskAttempt[User] =
-    withPermissionsCheckForUpdate(id, session)(
+    withPermissionsCheck(session)(
       userRepo.update(id, values)
     )
 
