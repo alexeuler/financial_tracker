@@ -16,7 +16,7 @@ import com.financetracker.data._
 import com.financetracker.types._
 
 class UpdateSpec extends FunSpec with Matchers with BeforeAndAfter with PropertyChecks {
-  describe("PATCH /users") {
+  describe("PATCH /users/:id") {
     describe("admin") {
       it("updates any user's fields: role and password") {
         val expected: Json = json"""
@@ -118,13 +118,12 @@ class UpdateSpec extends FunSpec with Matchers with BeforeAndAfter with Property
       }
 
       describe("User with id doesn't exist") {
-        it("fails with 304 entity not found") {
-          // Entity not found
+        it("fails with 100 not found") {
           val expected: Json = json"""
             {
               "error" : {
-                "code": 304,
-                "message": "Entity not found"
+                "code": 100,
+                "message": "Not found"
               },
               "result" : null
             }      
