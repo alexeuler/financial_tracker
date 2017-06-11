@@ -12,6 +12,7 @@ case object MalformedJsonException extends ApiException
 case object BadTypeJsonException extends ApiException
 case object UnknownJsonException extends ApiException
 
+case object NotFoundApiException extends ApiException
 case object UnauthorizedApiException extends ApiException
 case object OutdatedTokenApiException extends ApiException
 case object UserAlreadyExistsApiException extends ApiException
@@ -64,6 +65,13 @@ object ApiException {
         ("message", "Invalid email".asJson)
       )
 
+    case NotFoundApiException =>
+      Json.obj(
+        ("code", 304.asJson), 
+        ("message", "Entity not found".asJson)
+      )
+
+
     case _ => Json.obj(
       ("code", 999.asJson), 
       ("message", "Unknown error".asJson)
@@ -76,6 +84,7 @@ object ApiException {
       case e:java.text.ParseException => (MalformedJsonException, Some(s"Malformed Json: $e"))
       case org.http4s.InvalidMessageBodyFailure(message, e) => (BadTypeJsonException, Some(s"Bad type Json: $message: $e"))
       case e: org.http4s.DecodeFailure => (UnknownJsonException, Some(s"Unknown Json failure: $e"))
+      case doobie.util.invariant.UnexpectedEnd => (NotFoundApiException, Some(""))
       case UnauthorizedServiceException => (UnauthorizedApiException, None)
       case NotFoundServiceException => (NotFoundException, None)
       case UserAlreadyExistsServiceException => (UserAlreadyExistsApiException, None)

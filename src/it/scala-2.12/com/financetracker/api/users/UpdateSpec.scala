@@ -117,6 +117,48 @@ class UpdateSpec extends FunSpec with Matchers with BeforeAndAfter with Property
         }
       }
 
+      describe("User with id doesn't exist") {
+        it("fails with 304 entity not found") {
+          // Entity not found
+          val expected: Json = json"""
+            {
+              "error" : {
+                "code": 304,
+                "message": "Entity not found"
+              },
+              "result" : null
+            }      
+          """
+
+          val payload = """
+            {
+              "identity": "new@email.com",
+              "provider": "Facebook"
+            }
+          """
+
+          async {
+            for {
+              adminWithTokenAndUsers <- loggedInUser(Role.Admin)
+              body <- TaskAttempt.liftT(EntityEncoder[String].toEntity(payload).map(_.body))
+              req = Request(
+                method = PATCH, 
+                uri = baseUrl / "users" / "0",
+                body = body,
+                headers = authHeader(adminWithTokenAndUsers._2)
+              )
+              response <- TaskAttempt.liftT(httpClient.fetchAs[Json](req))
+            } yield {
+              withClue(s"Response: $response, expected: $expected: ") {
+                compareJsonsIgnoring(List("id", "createdAt", "updatedAt"))(response, expected) shouldBe true
+              }
+
+            }
+          }
+        }
+
+      }
+
 
 
     }
