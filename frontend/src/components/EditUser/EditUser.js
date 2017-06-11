@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import ErrorMessage from '../ErrorMessage';
 import InputGroup from '../InputGroup';
 import Button from '../Button';
 
@@ -13,9 +12,6 @@ const EditUser = (props) => {
   if (props.hidden) return null;
   return (
     <div className="flex flex-column pa3 ba b--light-gray mh2-l mv2 mv0-l w-100 w5-l">
-      {props.errors.general && props.errors.general.map(error =>
-        <ErrorMessage key={error} message={error} />,
-      )}
       { !props.edit && <InputGroup
         label="Email"
         value={props.form.email}

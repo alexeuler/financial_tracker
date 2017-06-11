@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import ErrorMessage from '../ErrorMessage';
 import InputGroup from '../InputGroup';
 import Button from '../Button';
 
@@ -14,9 +13,6 @@ const EditExpense = (props) => {
   return (
     <div className="flex flex-column mh2 mw6-l w-100-m">
       <div className="pa3-ns pa1 ba b--light-gray">
-        {props.errors.general && props.errors.general.map(error =>
-          <ErrorMessage key={error} message={error} />,
-        )}
         <InputGroup
           label="Amount"
           value={props.form.amount}

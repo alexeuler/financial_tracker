@@ -2,9 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux'
 
-import { getReport, getExpensesLoading } from '../../selectors/expenses';
+import { getReport, getExpensesLoading, getExpensesErrors } from '../../selectors/expenses';
 import thunks from '../../thunks';
 import { moneyToString } from '../../utils';
+import ErrorMessage from '../ErrorMessage';
 
 class Report extends React.Component {
 
@@ -59,6 +60,9 @@ class Report extends React.Component {
   render() {
     return (
       <div className="pa4">
+        {this.props.errors.general && this.props.errors.general.map(error =>
+          <ErrorMessage key={error} message={error} />,
+        )}
         <table className="collapse ba b--light-gray mb3">
           <thead>
             <tr className="fw6">
@@ -88,11 +92,13 @@ Report.propTypes = {
     push: PropTypes.func.isRequired,
   }).isRequired,
   loading: PropTypes.bool.isRequired,
+  errors: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state, ownProps) => ({
   report: getReport(state, ownProps.match.params.userId),
   loading: getExpensesLoading(state),
+  errors: getExpensesErrors(state),
 });
 
 const mapDispatchToProps = {

@@ -3,11 +3,12 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { getSessionState } from '../../selectors/session';
-import { getUsers, getEditingFocus, getPage, getTotalPages, getUsersLoading } from '../../selectors/users';
+import { getUsers, getEditingFocus, getUsersErrors, getPage, getTotalPages, getUsersLoading } from '../../selectors/users';
 import thunks from '../../thunks';
 import User from '../User';
 import EditUser from '../EditUser';
 import Pagination from '../Pagination';
+import ErrorMessage from '../ErrorMessage';
 
 class Users extends React.Component {
 
@@ -62,6 +63,9 @@ class Users extends React.Component {
     return (
       <div className="flex flex-row-l flex-column pa4">
         <div>
+          {this.props.errors.general && this.props.errors.general.map(error =>
+            <ErrorMessage key={error} message={error} className="pl2" />,
+          )}
           {this.renderUsers()}
           {this.renderLoading()}
           <Pagination
@@ -97,6 +101,7 @@ Users.propTypes = {
   page: PropTypes.number.isRequired,
   totalPages: PropTypes.number.isRequired,
   loading: PropTypes.bool.isRequired,
+  errors: PropTypes.object.isRequired,
   users: PropTypes.array.isRequired,
   setPageUsers: PropTypes.func.isRequired,
   fetchUsers: PropTypes.func,
@@ -108,6 +113,7 @@ const mapStateToProps = (state, ownProps) => ({
   session: getSessionState(state),
   users: getUsers(state),
   loading: getUsersLoading(state),
+  errors: getUsersErrors(state),
   editingFocus: getEditingFocus(state),
   page: getPage(state),
   totalPages: getTotalPages(state),

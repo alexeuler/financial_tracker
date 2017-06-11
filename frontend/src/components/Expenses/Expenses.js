@@ -4,12 +4,13 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
 import { getSessionState } from '../../selectors/session';
-import { getExpenses, getEditingFocus, getPage, getTotalPages, getExpensesLoading } from '../../selectors/expenses';
+import { getExpenses, getEditingFocus, getPage, getTotalPages, getExpensesLoading, getExpensesErrors } from '../../selectors/expenses';
 import thunks from '../../thunks';
 import Expense from '../Expense';
 import EditExpense from '../EditExpense';
 import Filters from '../Filters';
 import Pagination from '../Pagination';
+import ErrorMessage from '../ErrorMessage';
 
 class Expenses extends React.Component {
 
@@ -63,6 +64,9 @@ class Expenses extends React.Component {
     return (
       <div className="flex flex-row-l flex-column pa4">
         <div>
+          {this.props.errors.general && this.props.errors.general.map(error =>
+            <ErrorMessage key={error} message={error} className="pl2" />,
+          )}
           {this.renderExpenses()}
           {this.renderLoading()}
           <Pagination
@@ -101,6 +105,7 @@ Expenses.propTypes = {
     push: PropTypes.func.isRequired,
   }).isRequired,
   loading: PropTypes.bool.isRequired,
+  errors: PropTypes.object.isRequired,
   editingFocus: PropTypes.number,
   expenses: PropTypes.array.isRequired,
   page: PropTypes.number.isRequired,
@@ -114,6 +119,7 @@ Expenses.propTypes = {
 const mapStateToProps = (state, ownProps) => ({
   session: getSessionState(state),
   loading: getExpensesLoading(state),
+  errors: getExpensesErrors(state),
   expenses: getExpenses(state, ownProps.match.params.userId),
   page: getPage(state),
   totalPages: getTotalPages(state, ownProps.match.params.userId),
