@@ -132,9 +132,12 @@ lazy val testPackage = project
 
     // Fork JVM when running tests
     fork in Test := true,
+    fork in IntegrationTest := true,
     javaOptions in Test ++= Seq("-Xms512M", "-Xmx2048M", "-XX:+CMSClassUnloadingEnabled"),
+    javaOptions in IntegrationTest ++= Seq("-Xms512M", "-Xmx2048M", "-XX:+CMSClassUnloadingEnabled"),
+    parallelExecution in IntegrationTest := false,
 
-    testOptions in IntegrationTest += Tests.Setup( () => println("Setup") ),
-    testOptions in IntegrationTest += Tests.Cleanup( () => println("Cleanup") ),
+    testOptions in IntegrationTest += Tests.Setup( () => ITHelper.startServer(baseDirectory.value.getAbsolutePath()) ),
+    testOptions in IntegrationTest += Tests.Cleanup( () => ITHelper.shutdownServer() ),
     test in IntegrationTest := ((test in IntegrationTest) dependsOn (stage in Universal)).value
   )
