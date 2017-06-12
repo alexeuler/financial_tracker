@@ -5,7 +5,7 @@ val circeVersion = "0.7.1"
 lazy val commonSettings = Seq(
     organization := "com.financetracker",
     scalaVersion := "2.12.2",
-    version := "0.1.8",
+    version := "0.1.9",
     name := "Financial tracker",
 
     libraryDependencies ++= Seq(
