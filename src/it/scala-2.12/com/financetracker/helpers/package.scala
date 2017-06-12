@@ -11,6 +11,7 @@ import io.circe._
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.Logger
 import org.slf4j.LoggerFactory
+import java.sql.Timestamp
 
 import com.typesafe.config._
 import com.financetracker.env._
@@ -25,8 +26,8 @@ package object helpers {
 
   val serviceClean: TaskAttempt[Unit] =
     for {
-      _ <- env.userRepo.deleteAll
       _ <- env.expenseRepo.deleteAll
+      _ <- env.userRepo.deleteAll
     } yield (())
 
   val serviceWithUsers: TaskAttempt[Map[Role, User]] =
@@ -35,6 +36,12 @@ package object helpers {
       admin <- env.userRepo.create(Provider.Email, Identity("admin@gmail.com"), Password("admin"), Role.Admin)
       manager <- env.userRepo.create(Provider.Email, Identity("manager@gmail.com"), Password("manager"), Role.Manager)
       user <- env.userRepo.create(Provider.Email, Identity("user@gmail.com"), Password("user"), Role.User)
+      expense1 <- env.expenseRepo.create(Amount(100), Description("Admin McDonalds"), Some(Comment("Big Mac")), OccuredAt(new Timestamp(0)), admin.id)
+      expense2 <- env.expenseRepo.create(Amount(200), Description("Admin Shoes"), None, OccuredAt(new Timestamp(5000)), admin.id)
+      expense3 <- env.expenseRepo.create(Amount(100), Description("Manager McDonalds"), Some(Comment("Big Mac")), OccuredAt(new Timestamp(0)), manager.id)
+      expense4 <- env.expenseRepo.create(Amount(200), Description("Manager Shoes"), None, OccuredAt(new Timestamp(5000)), manager.id)
+      expense5 <- env.expenseRepo.create(Amount(100), Description("User McDonalds"), Some(Comment("Big Mac")), OccuredAt(new Timestamp(0)), user.id)
+      expense6 <- env.expenseRepo.create(Amount(200), Description("User Shoes"), None, OccuredAt(new Timestamp(5000)), user.id)
     } yield Map(Role.Admin -> admin, Role.Manager -> manager, Role.User -> user)
 
   def loggedInUser(role: Role): TaskAttempt[(User, JWToken, List[User])] =
