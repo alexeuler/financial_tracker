@@ -18,6 +18,7 @@ trait ExpenseRepoOp {
   ): Update0
   def update(id: ExpenseId, values: HList): Update0
   def delete(id: ExpenseId): Update0
+  def deleteAllForUser(id: UserId): Update0
   def deleteAll: Update0
 }
 
@@ -47,7 +48,10 @@ object ExpenseRepoOp extends ExpenseRepoOp {
 
   def delete(id: ExpenseId): Update0 =
     sql"delete from expenses where id=$id".update
-  
+
+  def deleteAllForUser(id: UserId): Update0 =
+    sql"delete from expenses where user_id=$id".update
+
   def deleteAll: Update0 =
     sql"delete from expenses".update
 

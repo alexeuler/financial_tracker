@@ -22,6 +22,7 @@ trait ExpenseRepo {
   ): TaskAttempt[Expense]
   def update(id: ExpenseId, values: HList): TaskAttempt[Expense]
   def delete(id: ExpenseId): TaskAttempt[Boolean]
+  def deleteAllForUser(id: UserId): TaskAttempt[Int]
   def deleteAll: TaskAttempt[Int]
 }
 
@@ -55,6 +56,9 @@ case class ExpenseRepoImpl(expenseRepoOp: ExpenseRepoOp, run: ConnectionIO ~> Ta
 
   def delete(id: ExpenseId): TaskAttempt[Boolean] =
     expenseRepoOp.delete(id).run.map(_ > 0)
+
+  def deleteAllForUser(id: UserId): TaskAttempt[Int] =
+    expenseRepoOp.deleteAllForUser(id).run
 
   def deleteAll: TaskAttempt[Int] = expenseRepoOp.deleteAll.run
 

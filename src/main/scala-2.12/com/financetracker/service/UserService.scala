@@ -17,7 +17,7 @@ trait UserService {
   def delete(id: UserId, session: Session): TaskAttempt[Boolean]
 }
 
-case class UserServiceImpl(userRepo: UserRepo) extends UserService {
+case class UserServiceImpl(userRepo: UserRepo, expenseRepo: ExpenseRepo) extends UserService {
   private val emailRegex = """[^\s@]+@[^\s@]+\.[^\s@]+""".r
 
   override def all(session: Session): TaskAttempt[List[User]] = 
@@ -52,7 +52,10 @@ case class UserServiceImpl(userRepo: UserRepo) extends UserService {
 
   override def delete(id: UserId, session: Session): TaskAttempt[Boolean] = 
     withPermissionsCheck(session)(
-      userRepo.delete(id)
+      for {
+        _ <- expenseRepo.deleteAllForUser(id)
+        res <-userRepo.delete(id)
+      } yield res
     )
 
   private def isAuthorized(session: Session): Boolean =

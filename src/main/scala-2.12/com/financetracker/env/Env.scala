@@ -36,7 +36,7 @@ object Env {
     userRepo = UserRepoImpl(UserRepoOp, runDoobie)
     expenseRepo = ExpenseRepoImpl(ExpenseRepoOp, runDoobie)
     sessionService <- SessionEnv.createSessionService(userRepo)
-    userService = UserServiceImpl(userRepo)
+    userService = UserServiceImpl(userRepo, expenseRepo)
     expenseService = ExpenseServiceImpl(expenseRepo)
   } yield Env(stateClient, doobie, http, userRepo, expenseRepo, userService, sessionService, expenseService, logger)
 }
