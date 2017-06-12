@@ -1,0 +1,618 @@
+#%RAML 1.0
+title: Financial tracker
+version: 1
+baseUri: http://financial-tracker-balancer-61856578.eu-west-2.elb.amazonaws.com/api/v1
+mediaType: application/json
+documentation: 
+  - title: Overview
+    content: Example of financial tracker api
+/users:
+  get:
+    description: List of all users
+    responses: 
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "error": null,
+                "result" : [
+                  {
+                    "id" : 1,
+                    "provider" : "Email",
+                    "identity" : "admin@gmail.com",
+                    "password" : "[filtered]",
+                    "role" : "Admin",
+                    "createdAt" : "2017-05-20 13:47",
+                    "updatedAt" : "2017-05-20 13:47"
+                  },
+                  {
+                    "id" : 2,
+                    "provider" : "Email",
+                    "identity" : "manager@gmail.com",
+                    "password" : "[filtered]",
+                    "role" : "Manager",
+                    "createdAt" : "2017-05-20 13:47",
+                    "updatedAt" : "2017-05-20 13:47"
+                  },
+                  {
+                    "id" : 3,
+                    "provider" : "Email",
+                    "identity" : "user@gmail.com",
+                    "password" : "[filtered]",
+                    "role" : "User",
+                    "createdAt" : "2017-05-20 13:47",
+                    "updatedAt" : "2017-05-20 13:47"
+                  }
+                ]
+              }
+      400:
+        body: 
+          application/json:
+            examples: 
+              Unauthorized: |
+                {
+                  "error" : {
+                    "code": 300,
+                    "message": "Unauthorized"
+                  },
+                  "result" : null
+                }
+              Unknown: |
+                {
+                  "error" : {
+                    "code": 999,
+                    "message": "Unknown error"
+                  },
+                  "result" : null
+                }
+  post:
+    description: "Creates a user"
+    body:
+      application/json:
+        example: |
+          {
+            email: "admin@gmail.com"
+            password: "secret"
+          }
+    responses:
+      200:
+        body: 
+          application/json:
+            example: |
+              {
+                "error": null,
+                "result" : {
+                    "id" : 1,
+                    "provider" : "Email",
+                    "identity" : "admin@gmail.com",
+                    "password" : "[filtered]",
+                    "role" : "Admin",
+                    "createdAt" : "2017-05-20 13:47",
+                    "updatedAt" : "2017-05-20 13:47"
+                  }
+              }
+      400:
+        body: 
+          application/json:
+            examples:
+              Unauthorized: |
+                {
+                  "error" : {
+                    "code": 300,
+                    "message": "Unauthorized"
+                  },
+                  "result" : null
+                }
+              InvalidEmail: |
+                {
+                  "error" : {
+                    "code": 303,
+                    "message": "Invalid email"
+                  },
+                  "result" : null
+                }
+              AlreadyExists: |
+                {
+                  "error" : {
+                    "code": 302,
+                    "message": "User with this email already exists"
+                  },
+                  "result" : null
+                }
+              MalformedJson: |
+                {
+                  "error" : {
+                    "code": 200,
+                    "message": "Malformed json body in request"
+                  },
+                  "result" : null
+                }
+              TypeMismatch: |
+                {
+                  "error" : {
+                    "code": 201,
+                    "message": "Json structure doesn't match expected type"
+                  },
+                  "result" : null
+                }
+              Unknown: |
+                {
+                  "error" : {
+                    "code": 999,
+                    "message": "Unknown error"
+                  },
+                  "result" : null
+                }                
+  /{id}:
+    get:
+      description: "Fetches a user"
+      responses: 
+        200:
+          body: 
+            application/json:
+              example: |
+                {
+                  "error": null,
+                  "result" : {
+                      "id" : 1,
+                      "provider" : "Email",
+                      "identity" : "admin@gmail.com",
+                      "password" : "[filtered]",
+                      "role" : "Admin",
+                      "createdAt" : "2017-05-20 13:47",
+                      "updatedAt" : "2017-05-20 13:47"
+                    }
+                }
+        400:
+          body: 
+            application/json:
+              examples:
+                Unauthorized: |
+                  {
+                    "error" : {
+                      "code": 300,
+                      "message": "Unauthorized"
+                    },
+                    "result" : null
+                  }
+                Unknown: |
+                  {
+                    "error" : {
+                      "code": 999,
+                      "message": "Unknown error"
+                    },
+                    "result" : null
+                  }                
+          
+    patch:
+      description: "Updated a user"
+      body:
+        application/json:
+          example: |
+            {
+              password: "new secret"
+              role: "Manager"
+            }
+      responses:
+        200:
+          body: 
+            application/json:
+              example: |
+                {
+                  "error": null,
+                  "result" : {
+                      "id" : 1,
+                      "provider" : "Email",
+                      "identity" : "admin@gmail.com",
+                      "password" : "[filtered]",
+                      "role" : "Admin",
+                      "createdAt" : "2017-05-20 13:47",
+                      "updatedAt" : "2017-05-20 13:47"
+                    }
+                }
+        400:
+          body: 
+            application/json:
+              examples:
+                NotFound: |
+                  {
+                    "error" : {
+                      "code": 100,
+                      "message": "Not found"
+                    },
+                    "result" : null
+                  }    
+                Unauthorized: |
+                  {
+                    "error" : {
+                      "code": 300,
+                      "message": "Unauthorized"
+                    },
+                    "result" : null
+                  }
+                MalformedJson: |
+                  {
+                    "error" : {
+                      "code": 200,
+                      "message": "Malformed json body in request"
+                    },
+                    "result" : null
+                  }
+                TypeMismatch: |
+                  {
+                    "error" : {
+                      "code": 201,
+                      "message": "Json structure doesn't match expected type"
+                    },
+                    "result" : null
+                  }
+                Unknown: |
+                  {
+                    "error" : {
+                      "code": 999,
+                      "message": "Unknown error"
+                    },
+                    "result" : null
+                  }                
+    delete:
+      description: "Deletes a user"
+      responses:
+        200:
+          body: 
+            application/json:
+              examples:
+                Found: |
+                  {
+                    "error": null,
+                    "result" : true
+                  }
+                NotFound: |
+                  {
+                    "error": null,
+                    "result" : false
+                  }
+
+        400:
+          body: 
+            application/json:
+              examples:
+                Unauthorized: |
+                  {
+                    "error" : {
+                      "code": 300,
+                      "message": "Unauthorized"
+                    },
+                    "result" : null
+                  }
+                Unknown: |
+                  {
+                    "error" : {
+                      "code": 999,
+                      "message": "Unknown error"
+                    },
+                    "result" : null
+                  }  
+    /expenses:
+      get:
+        description: List of all expeses for a user
+        responses: 
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "error": null,
+                    "result" : [
+                      {
+                        "id" : 1,
+                        "amount" : 100,
+                        "description" : "User McDonalds",
+                        "comment" : "Big Mac",
+                        "occuredAt" : "1970-01-01 05:00",
+                        "userId" : 1,
+                        "createdAt" : "2017-05-20 13:47",
+                        "updatedAt" : "2017-05-20 13:47"
+                      },
+                      {
+                        "id" : 2,
+                        "amount" : 150,
+                        "description" : "Shoes",
+                        "comment" : "Asos",
+                        "occuredAt" : "1970-01-01 05:00",
+                        "userId" : 1,
+                        "createdAt" : "2017-05-20 13:47",
+                        "updatedAt" : "2017-05-20 13:47"
+                      },
+                      {
+                        "id" : 3,
+                        "amount" : 170,
+                        "description" : "Cola",
+                        "comment" : "Burger King",
+                        "occuredAt" : "1970-01-01 05:00",
+                        "userId" : 2,
+                        "createdAt" : "2017-05-20 13:47",
+                        "updatedAt" : "2017-05-20 13:47"
+                      },
+                    ]
+                  }
+          400:
+            body: 
+              application/json:
+                examples: 
+                  Unauthorized: |
+                    {
+                      "error" : {
+                        "code": 300,
+                        "message": "Unauthorized"
+                      },
+                      "result" : null
+                    }
+                  Unknown: |
+                    {
+                      "error" : {
+                        "code": 999,
+                        "message": "Unknown error"
+                      },
+                      "result" : null
+                    }
+      post:
+        description: "Creates an expense"
+        body:
+          application/json:
+            example: |
+              {
+                "amount" : 100,
+                "description" : "User McDonalds",
+                "comment" : "Big Mac",
+                "occuredAt" : "1970-01-01 05:00"
+              }
+        responses:
+          200:
+            body: 
+              application/json:
+                example: |
+                  {
+                    "error": null,
+                    "result" : {
+                        "id" : 1,
+                        "amount" : 100,
+                        "description" : "User McDonalds",
+                        "comment" : "Big Mac",
+                        "occuredAt" : "1970-01-01 05:00",
+                        "userId" : 1,
+                        "createdAt" : "2017-05-20 13:47",
+                        "updatedAt" : "2017-05-20 13:47"
+                      },
+                  }
+          400:
+            body: 
+              application/json:
+                examples:
+                  Unauthorized: |
+                    {
+                      "error" : {
+                        "code": 300,
+                        "message": "Unauthorized"
+                      },
+                      "result" : null
+                    }
+                  MalformedJson: |
+                    {
+                      "error" : {
+                        "code": 200,
+                        "message": "Malformed json body in request"
+                      },
+                      "result" : null
+                    }
+                  TypeMismatch: |
+                    {
+                      "error" : {
+                        "code": 201,
+                        "message": "Json structure doesn't match expected type"
+                      },
+                      "result" : null
+                    }
+                  Unknown: |
+                    {
+                      "error" : {
+                        "code": 999,
+                        "message": "Unknown error"
+                      },
+                      "result" : null
+                    }                
+      /{expenseId}:
+        get:
+          description: "Fetches an expense user"
+          responses: 
+            200:
+              body: 
+                application/json:
+                  example: |
+                    {
+                      "error": null,
+                      "result" : {
+                          "id" : 1,
+                          "amount" : 100,
+                          "description" : "User McDonalds",
+                          "comment" : "Big Mac",
+                          "occuredAt" : "1970-01-01 05:00",
+                          "userId" : 1,
+                          "createdAt" : "2017-05-20 13:47",
+                          "updatedAt" : "2017-05-20 13:47"
+                        },
+                    }
+            400:
+              body: 
+                application/json:
+                  examples:
+                    Unauthorized: |
+                      {
+                        "error" : {
+                          "code": 300,
+                          "message": "Unauthorized"
+                        },
+                        "result" : null
+                      }
+                    Unknown: |
+                      {
+                        "error" : {
+                          "code": 999,
+                          "message": "Unknown error"
+                        },
+                        "result" : null
+                      }                
+
+        patch:
+          description: "Updates an expense"
+          body:
+            application/json:
+              example: |
+                {
+                  "amount" : 200,
+                  "description" : "User McDonalds ++",
+                  "comment" : "Big Mac and Cola",
+                  "occuredAt" : "1970-01-07 12:30"
+                }
+          responses:
+            200:
+              body: 
+                application/json:
+                  example: |
+                    {
+                      "error": null,
+                      "result" : {
+                          "id" : 1,
+                          "amount" : 200,
+                          "description" : "User McDonalds ++",
+                          "comment" : "Big Mac and Cola",
+                          "occuredAt" : "1970-01-07 12:30",
+                          "userId" : 1,
+                          "createdAt" : "2017-05-20 13:47",
+                          "updatedAt" : "2017-05-20 13:47"
+                        },
+                    }
+            400:
+              body: 
+                application/json:
+                  examples:
+                    NotFound: |
+                      {
+                        "error" : {
+                          "code": 100,
+                          "message": "Not found"
+                        },
+                        "result" : null
+                      }    
+                    Unauthorized: |
+                      {
+                        "error" : {
+                          "code": 300,
+                          "message": "Unauthorized"
+                        },
+                        "result" : null
+                      }
+                    MalformedJson: |
+                      {
+                        "error" : {
+                          "code": 200,
+                          "message": "Malformed json body in request"
+                        },
+                        "result" : null
+                      }
+                    TypeMismatch: |
+                      {
+                        "error" : {
+                          "code": 201,
+                          "message": "Json structure doesn't match expected type"
+                        },
+                        "result" : null
+                      }
+                    Unknown: |
+                      {
+                        "error" : {
+                          "code": 999,
+                          "message": "Unknown error"
+                        },
+                        "result" : null
+                      }                
+        delete:
+          description: "Deletes an exepnse"
+          responses:
+            200:
+              body: 
+                application/json:
+                  examples:
+                    Found: |
+                      {
+                        "error": null,
+                        "result" : true
+                      }
+                    NotFound: |
+                      {
+                        "error": null,
+                        "result" : false
+                      }
+
+            400:
+              body: 
+                application/json:
+                  examples:
+                    Unauthorized: |
+                      {
+                        "error" : {
+                          "code": 300,
+                          "message": "Unauthorized"
+                        },
+                        "result" : null
+                      }
+                    Unknown: |
+                      {
+                        "error" : {
+                          "code": 999,
+                          "message": "Unknown error"
+                        },
+                        "result" : null
+                      }          
+            
+            
+/sessions:
+  post:
+    description: "Creates a session"
+    body:
+      application/json:
+        example: |
+          {
+            email: "admin@gmail.com"
+            password: "secret"
+          }
+    responses:
+      200:
+        body: 
+          application/json:
+            example: |
+              {
+                "error": null,
+                "result" : "834795etert7.hggfh80dhg.dfh9gd0f9gh"
+              }
+      400:
+        body: 
+          application/json:
+            examples:
+              Unauthorized: |
+                {
+                  "error" : {
+                    "code": 300,
+                    "message": "Unauthorized"
+                  },
+                  "result" : null
+                }
+              Unknown: |
+                {
+                  "error" : {
+                    "code": 999,
+                    "message": "Unknown error"
+                  },
+                  "result" : null
+                }            
+
